@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const userSchema = new mongoose.Schema({
 
-    fullName: { type: String, required: true },
+    name: { type: String, required: true },
 
   email: {
     type: String,
@@ -54,11 +54,10 @@ const userSchema = new mongoose.Schema({
    paymentMethods: [{ type: String }],
    favoriteRestaurants: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' }],
-    default: [agadir],
+    
   },
    orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-   default: [],
-
+  
    paymentMethods: [{ type: String }],
 
 //    profileImage: { type: String },

@@ -1,10 +1,10 @@
 const crypto = require("crypto")
-const User = require('./../models/usersModel')
+const User = require('./../models/userModel')
 const AppError = require('./../utils/AppError')
 const jwt = require('jsonwebtoken')
 const {promisify} = require('util')
 const asyncHandler = require('express-async-handler')
-const sendEmail = require("./../utils/email");
+
 
 exports.registerUser = asyncHandler(async(req, res ,next)=>{
     const {email, name, password, confirmPassword} = req.body;
@@ -168,15 +168,16 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     })
   })
 
-  exports.logout = (req, res)=>{
+  exports.logoutUser = asyncHandler((req, res) => {
     res.cookie('jwt', '', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      expires: new Date(0)
-  })
-  res.status(200).json({
-    status: 'success',
-    message: 'Logout success'
-})
-  }
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Cross-site cookies if production
+        expires: new Date(0) // Expire the cookie
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Logout successful'
+    });
+});

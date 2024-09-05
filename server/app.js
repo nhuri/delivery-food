@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const restaurantRouter = require('./routes/restaurants.Routes')
 const AppError = require('./utils/AppError')
 const globalErrorHandler = require('./utils/errorHandler')
+const userRoutes = require('./routes/user.Routes');
 const app = express()
 app.use(cookieParser())
 app.use(express.json())
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 
 app.use('/api/restaurants', restaurantRouter);
+app.use('/api/users', userRoutes);
 
 
 
