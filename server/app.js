@@ -3,6 +3,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 // const usersRouter = require('./routes/user.Routes')
+const restaurantRouter = require('./routes/restaurants.Routes')
 const AppError = require('./utils/AppError')
 const globalErrorHandler = require('./utils/errorHandler')
 const app = express()
@@ -18,8 +19,7 @@ app.use(cors(
 app.use(cookieParser())
 
 
-// app.use('/api/products' , productsRouter)
-// app.use('/api/users' , usersRouter)
+app.use('/api/restaurants', restaurantRouter);
 
 
 
