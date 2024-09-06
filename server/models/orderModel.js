@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MenuItem = require('./menuItemModel'); // Import MenuItem model
 
 const orderSchema = new mongoose.Schema({
     customer: {
@@ -14,7 +15,7 @@ const orderSchema = new mongoose.Schema({
     items: [{
         menuItem: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'MenuItem',
+            ref: 'MenuItem', // Ensure you use the correct reference here
             required: true
         },
         quantity: {
@@ -30,7 +31,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     deliveryTime: {
-        type: Date, // Immediate or future time for delivery
+        type: Date,
         required: true
     },
     status: {
@@ -43,9 +44,10 @@ const orderSchema = new mongoose.Schema({
         ref: 'DeliveryPerson'
     },
     communication: {
-        type: String, // For communication between restaurant or delivery person
+        type: String
     }
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
+
 module.exports = Order;
