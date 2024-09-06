@@ -1,11 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import RestrauntList from "../restraunt/RestrauntList";
-
+import RestaurantList from "../restaurant/RestaurantList";
+import NavbarHome from "../components/navbarHome";
 const Home = () => {
   return (
     <>
-      <RestrauntList />
+      <NavbarHome />
+      <RestaurantList />
     </>
   );
 };
