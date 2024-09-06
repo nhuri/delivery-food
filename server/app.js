@@ -7,6 +7,7 @@ const restaurantRouter = require('./routes/restaurants.Routes')
 const AppError = require('./utils/AppError')
 const globalErrorHandler = require('./utils/errorHandler')
 const userRoutes = require('./routes/user.Routes');
+const OrdersRoutes = require('./routes/order.Routes');
 const app = express()
 app.use(cookieParser())
 app.use(express.json())
@@ -14,7 +15,7 @@ app.use(morgan('dev'))
 app.use(cors(
     {
         credentials: true,
-        origin: ["http://127.0.0.1:5500"]
+        origin: ["http://127.0.0.1:5173"]
     }
 ))
 app.use(cookieParser())
@@ -22,6 +23,7 @@ app.use(cookieParser())
 
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/users', userRoutes);
+app.use('/api/orders', OrdersRoutes);
 
 
 
