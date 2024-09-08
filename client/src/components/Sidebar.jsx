@@ -6,9 +6,7 @@ const Sidebar = () => {
   return (
     <Navbar bg="light" expand="lg" className="flex-column vh-100 p-3">
       <Container fluid className="d-flex flex-column align-items-start">
-        <Navbar.Brand href="/" className="mb-4">
-          delivery food
-        </Navbar.Brand>
+        <Navbar.Brand href="/" className="mb-4"></Navbar.Brand>
 
         <Navbar.Toggle aria-controls="sidebar-nav" />
         <Navbar.Collapse id="sidebar-nav">

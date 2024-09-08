@@ -1,0 +1,16 @@
+#login {
+  width: 20vw;
+  display: flex;
+  justify-content: right;
+}
+#openLoginModal img {
+  width: 45px;
+}
+#openLogoutModal img {
+  width: 45px;
+}
+#userLogin {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
