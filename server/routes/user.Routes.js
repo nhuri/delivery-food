@@ -11,5 +11,7 @@ router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getUserById);
 router.patch('/:id', userController.updateUserById);
 router.delete('/:id', userController.deleteUserById);
+router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resetPassword/:plainResetToken', authController.resetPassword);
 
 module.exports = router;

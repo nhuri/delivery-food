@@ -4,12 +4,13 @@ const AppError = require('./../utils/AppError')
 const jwt = require('jsonwebtoken')
 const {promisify} = require('util')
 const asyncHandler = require('express-async-handler')
+const sendSMS = require('../utils/config')
 
 
 exports.registerUser = asyncHandler(async(req, res ,next)=>{
-    const {email, name, password, confirmPassword} = req.body;
+    const {email, name, password, confirmPassword, phoneNumber} = req.body;
     if (!email ||!password||!confirmPassword || !name) return next(new AppError(403, 'Missing details'))
-        const newUser = await User.create({email, name, password, confirmPassword})
+        const newUser = await User.create({email, name, password, confirmPassword, phoneNumber})
      res.status(201).json({
         status:'success', 
         newUser
@@ -93,80 +94,71 @@ exports.restrictByRole = (...alowedRoles) =>{
 //נבדוק את המייל  ונשלח אליו קישור לשינוי סיסמה  הקישור יהיה תקף כ 5 דק
 //sending emails
 //change password
-exports.forgotPassword = asyncHandler(async (req, res, next) => {
-    const { email } = req.body;
-    if (!email) return next(new AppError(401, "Bad request email is missing"));
-    const user = await User.findOne({ email });
-    if (!user)
-      return next(
-        new AppError(404, "No account associated with the given email")
-      );
-    //change password token
-    const resetToken = user.createPasswordResetToken();
-  
-    // user.passwordResetToken = hashedPasswordResetToken;
-    
-    await user.save({
-      validateBeforeSave: false,
-    });
-    // const resetUrl = `${req.protocol}://${req.get(
-    //   "host"
-    // )}/api/users/resetPassword/${resetToken}`;
-    // console.log(resetUrl);
-    const resetUrl = `${req.get(
-      "origin"
-    )}/resetPassword.html?resetToken=${resetToken}`;
-    console.log(resetUrl);
-    ///send this reset url to the users email
-    const mailOptions = {
-      from: "Shoppi <donotreplay@shoppi.com>",
-      to: user.email,
-      subject: "Password reset",
-      text: `<h3>Please follow this link to reset your password </h3> <a href="${resetUrl}">Click here to reset your password</a> `,
-    };
-    try {
-      await sendEmail(mailOptions);
-      res.status(200).json({
-        status: "success",
-        message: "The password reset link has been sent to your email",
-        resetToken,
-      });
-    } catch (err) {
-      user.passwordResetToken = undefined;
-      user.passwordResetExpires = undefined;
-      await user.save({ validateBeforeSave: false });
-      return next(new AppError(500, "There was a problem sending email"));
-    }
-  });
 
-  exports.resetPassword = asyncHandler(async (req, res, next)=> {
-    const {password, confirmPassword } = req.body;
-    const {plainResetToken } = req.params;
-    if (!password || !confirmPassword || !plainResetToken)
-        return next(new AppError(401,"Misssing Detailes"));
-    //encryps plain token to match the reset token in db
-    const hashedToken = crypto.createHash('sha256')
-    .update(plainResetToken)
-    .digest("hex")
-    //find user based on the reset token
-    const user = await User.findOne({passwordResetToken: hashedToken,
-     passwordResetExpires:{ $gte: Date.now()},}).select('+password');
-    //  if (user.checkPassword(password, user.password))
-    //     return next(new AppError(401, "You can`t use the same password twice"))
-    if (!user ) return next(new AppError(400, "Do forgot password again"))
-    //change password
-    user.password = password;
-    user.confirmPassword = confirmPassword;
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email, phoneNumber } = req.body;
+  if (!email || !phoneNumber) return next(new AppError(400, "Missing email or phone number"));
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError(404, "No user found with this email"));
+
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+console.log(resetToken);
+
+  const message = `Your password reset code is: ${resetToken}. It is valid for 5 minutes.`;
+  try {
+    await sendSMS(phoneNumber, message); // Pass phoneNumber and message to sendSMS
+    res.status(200).json({
+      status: "success",
+      message: "Password reset token sent to your phone.",
+    });
+
+  } catch (err) {
+    console.error("SMS send error:", err);  // Log the actual error for debugging
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    
-    //save user
-    await user.save()
-    res.status(200).json({
-        status: 'success',
-        message: 'The password has been change'
-    })
-  })
+    await user.save({ validateBeforeSave: false });
+    return next(new AppError(500, `There was an error sending the SMS: ${err.message}`));
+  }
+});
+
+
+
+
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const { password, confirmPassword } = req.body;
+  const { plainResetToken } = req.params;
+
+  if (!password || !confirmPassword || !plainResetToken)
+    return next(new AppError(401, "Missing details"));
+
+  const hashedToken = crypto.createHash('sha256')
+    .update(plainResetToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gte: Date.now() },
+  }).select('+password');
+
+  if (!user) return next(new AppError(400, "Token is invalid or has expired"));
+
+  user.password = password;
+  user.confirmPassword = confirmPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Password has been changed',
+  });
+});
+
+
+
 
   exports.logoutUser = asyncHandler((req, res) => {
     res.cookie('jwt', '', {

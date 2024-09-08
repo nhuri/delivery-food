@@ -2,103 +2,78 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+
 const userSchema = new mongoose.Schema({
-
-    name: { type: String, required: true },
-
+  name: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
   email: {
     type: String,
     required: [true, "The user must have an email"],
-    validate: {
-      /*  validator: function(){
-                return this.email.match('[a-zA-Z0-9.*%Â±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}')
-             },
-             */
-      validator: function (el) {
-        return validator.isEmail(el);
-      },
-
-      message: "The email is not valid",
-    },
+    validate: [validator.isEmail, "Please provide a valid email"],
     unique: true,
   },
   password: {
     type: String,
-    minLength: [8, "The password must be at least 8 characters or longer"],
+    minlength: 8,
     select: false,
-    required: [true, "The password is required"],
+    required: [true, "Please provide a password"],
   },
   confirmPassword: {
     type: String,
-    minLength: [
-      8,
-      "The password confirmation must be at least 8 characters or longer",
-    ],
-    required: [true, "The retype the password"],
+    required: [true, "Please confirm your password"],
     validate: {
       validator: function (el) {
-        return this.password === el;
+        return el === this.password;
       },
-      message: "The passwords not match",
+      message: "Passwords do not match",
     },
   },
   role: {
     type: String,
-    enum: {
-      values: ["user"],
-      message: "The role can only user",
-    },
+    enum: ["user", "premium"],
     default: "user",
   },
-   addresses: [{ type: String }],
-   paymentMethods: [{ type: String }],
-   favoriteRestaurants: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' }],
-    
-  },
-   orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-  
-   paymentMethods: [{ type: String }],
-
-//    profileImage: { type: String },
-
-  
   passwordResetToken: String,
   passwordResetExpires: Date,
   passwordChangedAt: Date,
-
 });
 
-
-
-
-
-//Document miiddleware - THIS refers to a current document before the actual save into db
+// Password encryption middleware
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    this.confirmPassword = undefined;
-  }
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined;
   next();
 });
-userSchema.pre("save", function (next) {
-  if (this.isModified("password") || this.isNew) {
-    this.passwordChangedAt = Date.now() - 1000;
-  }
-  next();
-});
-userSchema.methods.checkPassword = async function (password, hashedPassword) {
-  return await bcrypt.compare(password, hashedPassword);
+
+// Password check method
+userSchema.methods.checkPassword = async function (inputPassword, hashedPassword) {
+  return await bcrypt.compare(inputPassword, hashedPassword);
 };
+
+// Create Password Reset Token
+// userSchema.methods.createPasswordResetToken = function () {
+//   const resetToken = crypto.randomBytes(32).toString("hex");
+//   this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+//   this.passwordResetExpires = Date.now() + 5 * 60 * 1000; // Token valid for 5 minutes
+//   return resetToken;
+// };
+
+
 userSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString("hex");
+  // Generate a 6-digit numeric token
+  const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Hash the token and set expiration
   this.passwordResetToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(resetToken)
-    .digest("hex");
+    .digest('hex');
   this.passwordResetExpires = Date.now() + 5 * 60 * 1000;
+  
   return resetToken;
 };
+
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
