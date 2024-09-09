@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createMenuItem, getMenuItems, getMenuItemById, updateMenuItem, deleteMenuItem } = require('../controllers/menuItemController');
-const upload = require('../config/multerConfig');
+const upload = require('../utils/multerConfig');
 
 // Route to add a new menu item with image upload (Create)
 router.post('/', upload.single('image'), createMenuItem);

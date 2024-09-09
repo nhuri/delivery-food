@@ -4,7 +4,7 @@ const AppError = require('./../utils/AppError')
 const jwt = require('jsonwebtoken')
 const {promisify} = require('util')
 const asyncHandler = require('express-async-handler')
-const sendSMS = require('../utils/config')
+const sendSMS = require('../utils/smsConfig')
 
 
 exports.registerUser = asyncHandler(async(req, res ,next)=>{
