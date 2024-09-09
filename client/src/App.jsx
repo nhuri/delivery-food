@@ -5,10 +5,12 @@ import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Order from "./pages/Order";
 import Review from "./pages/Review";
-import LoginPage from "./pages/LoginPage";
+import LoginPage1 from "./pages/LoginPage1";
 import Payment from "./pages/Payment";
 import Contact from "./pages/Contact";
 import Login from "./users/Login";
+import RegisterPage from "./users/RegisterPage";
+import ForgotPasswordPage from "./users/ForgotPasswordPage";
 
 function App() {
   return (
@@ -26,12 +28,18 @@ function App() {
 
           <div className="content-container p-4">
             <Routes>
+              <Route path="/" element={<Home />} />
               <Route path="/Home" element={<Home />} />
               <Route path="/Order" element={<Order />} />
               <Route path="/Review" element={<Review />} />
               <Route path="/Payment" element={<Payment />} />
-              <Route path="/LoginPage" element={<LoginPage />} />
+              <Route path="/LoginPage1" element={<LoginPage1 />} />
               <Route path="/Contact" element={<Contact />} />
+              <Route path="/RegisterPage" element={<RegisterPage />} />
+              <Route
+                path="/ForgotPasswordPage"
+                element={<ForgotPasswordPage />}
+              />
             </Routes>
           </div>
         </div>

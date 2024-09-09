@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { logout, setUserInfoOnLoginOrRegister } from "../slices/authSlice";
 // import Loader from "../components/Loader";
 
-const Login = () => {
+const Login = ({ setLoginModal, loginModal, source }) => {
   const [registerModal, setRegisterModal] = useState(false);
   const handleCloseRegisterModal = () => setRegisterModal(false);
   const handleOpenRegisterModal = () => {
@@ -25,7 +25,7 @@ const Login = () => {
   const handleOpenForgotPasswordModal = () => setForgotPasswordModal(true);
   const [forgotPassword, { isLoading1 }] = useForgotPasswordMutation();
 
-  const [loginModal, setLoginModal] = useState(false);
+  // const [loginModal, setLoginModal] = useState(false);
 
   const handleCloseLoginModal = () => setLoginModal(false);
   const handleOpenLoginModal = () => setLoginModal(true);
@@ -33,7 +33,7 @@ const Login = () => {
 
   const [logout] = useLogoutUserMutation();
 
-  const [mail, setMail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const Login = () => {
   const handleVerifyDetails = async (e) => {
     e.preventDefault();
     logout().unwrap();
-    const response = await login({ mail, password }).unwrap();
+    const response = await login({ email, password }).unwrap();
     dispatch(setUserInfoOnLoginOrRegister({ ...response }));
     if (response.status === "success") {
       handleCloseLoginModal();
@@ -58,27 +58,27 @@ const Login = () => {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    if (mail === "") {
-      alert("You must enter mail before you press on forgot password");
+    if (email === "") {
+      alert("You must enter email before you press on forgot password");
     } else {
-      const response = forgotPassword({ mail }).unwrap();
+      const response = forgotPassword({ email }).unwrap();
       dispatch(setUserInfoOnLoginOrRegister({ ...response }));
       handleCloseLoginModal();
       alert(
-        "Enter to your mail and Press on the link in the mail you got right now"
+        "Enter to your email and Press on the link in the email you got right now"
       );
     }
   };
   const [bool, setBool] = useState(true);
-  const { data } = useIsAuthQuery();
-  useEffect(() => {
-    if (data) {
-      setBool(data.isAuth);
-    }
-  }, [data]);
-  useEffect(() => {
-    bool;
-  }, [bool]);
+  //   const { data } = useIsAuthQuery();
+  //   useEffect(() => {
+  //     if (data) {
+  //       setBool(data.isAuth);
+  //     }
+  //   }, [data]);
+  //   useEffect(() => {
+  //     bool;
+  //   }, [bool]);
 
   // useEffect(() => {
   //   if (data) {
@@ -93,12 +93,12 @@ const Login = () => {
   return (
     <>
       <div id="login">
-        {!bool && (
+        {!bool && !source && (
           <button id="openLoginModal" onClick={handleOpenLoginModal}>
             <img src="images/login.png" alt="sc-icon" />
           </button>
         )}
-        {bool && (
+        {bool && !source && (
           <button id="openLogoutModal" onClick={handleLogout}>
             <img src="images/logout.jpg" alt="sc-icon" />
           </button>
@@ -110,7 +110,7 @@ const Login = () => {
           <Modal.Title>Register form</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <RegisterPage />
+          <RegisterPage setRegisterModal={setRegisterModal} />
         </Modal.Body>
       </Modal>
 
@@ -122,9 +122,9 @@ const Login = () => {
           <input
             type="text"
             id="usernameLogin"
-            placeholder="enter your mail"
-            onChange={(e) => setMail(e.target.value)}
-            value={mail}
+            placeholder="enter your email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
           <Button
             id="forgot-password-btn"
@@ -136,7 +136,7 @@ const Login = () => {
         </Modal.Body>
       </Modal>
 
-      <Modal show={loginModal} onHide={handleCloseLoginModal}>
+      <Modal id="loginModal" show={loginModal} onHide={handleCloseLoginModal}>
         <Modal.Header closeButton>
           <Modal.Title>Login form</Modal.Title>
         </Modal.Header>
@@ -145,9 +145,9 @@ const Login = () => {
             <input
               type="text"
               id="usernameLogin"
-              placeholder="enter your mail"
-              onChange={(e) => setMail(e.target.value)}
-              value={mail}
+              placeholder="enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
             <input
               type="text"
