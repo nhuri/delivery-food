@@ -5,18 +5,27 @@ import { useRegisterUserMutation } from "../slices/userApiSlice";
 // import Loader from "../components/Loader";
 import { useDispatch } from "react-redux";
 import { setUserInfoOnLoginOrRegister } from "../slices/authSlice";
-const RegisterPage = () => {
+const RegisterPage = ({ setRegisterModal }) => {
   const [name, setName] = useState("");
-  const [mail, setMail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [register, { isLoading }] = useRegisterUserMutation();
 
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await register({ name, mail, password }).unwrap();
+    const res = await register({
+      name,
+      phoneNumber,
+      email,
+      password,
+      confirmPassword,
+    }).unwrap();
     dispatch(setUserInfoOnLoginOrRegister({ ...res }));
+    setRegisterModal(false);
   };
   return (
     <Container>
@@ -32,11 +41,19 @@ const RegisterPage = () => {
               ></Form.Control>
             </Form.Group>
             <Form.Group>
+              <Form.Label>PhoneNumber:</Form.Label>
+              <Form.Control
+                type="text"
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={phoneNumber}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group>
               <Form.Label>Email:</Form.Label>
               <Form.Control
                 type="email"
-                onChange={(e) => setMail(e.target.value)}
-                value={mail}
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
               ></Form.Control>
             </Form.Group>
             <Form.Group>
@@ -45,6 +62,14 @@ const RegisterPage = () => {
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>confirmPassword:</Form.Label>
+              <Form.Control
+                type="confirmPassword"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={confirmPassword}
               ></Form.Control>
             </Form.Group>
             <Button type="submit" disabled={isLoading} className="my-2">

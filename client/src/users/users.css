@@ -14,3 +14,14 @@
   flex-direction: column;
   justify-content: space-around;
 }
+#loginModal {
+  /* pointer-events: none; */
+}
+/* 
+#loginModal-content {
+  pointer-events: auto; 
+}
+
+#loginModal-backdrop {
+  pointer-events: none;
+} */

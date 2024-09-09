@@ -1,0 +1,47 @@
+#addRestaurant {
+  flex-basis: 200px;
+}
+#offcanvas {
+  position: relative;
+}
+#accordion {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0%;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+#iconNav {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-right: 35px;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+}
+#icon {
+  width: 30px;
+  height: 30px;
+}
+#icon {
+  width: 30px;
+  height: 30px;
+}
+#sidebar-nav {
+  /* position: fixed; */
+  /* top: 0; */
+  /* left: 0; */
+  /* width: 200px;  */
+  /* height: 100%; */
+  /* background-color: #f8f9fa; */
+  /* z-index: 1051; */
+  /* pointer-events: auto;  */
+}
+/* #sidebar .nav-link {
+  z-index: 1052; 
+} */
