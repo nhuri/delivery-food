@@ -3,7 +3,6 @@ const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
 
 // Route to create a new restaurant
-router.post('/', restaurantController.createRestaurant);
 
 // Route to get all restaurants
 router.get('/', restaurantController.getRestaurants);
@@ -16,5 +15,7 @@ router.patch('/:id', restaurantController.updateRestaurant);
 
 // Route to delete a restaurant by ID
 router.delete('/:id', restaurantController.deleteRestaurant);
+
+router.post('/', restaurantController.createRestaurant);
 
 module.exports = router;

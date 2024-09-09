@@ -1,5 +1,6 @@
 const User = require('../models/userModel'); // Adjust the path as needed
 const asyncHandler = require('express-async-handler');
+const Restaurant = require('../models/restaurantModel')
 
 // Create a new user
 exports.createUser = asyncHandler(async (req, res) => {
@@ -43,3 +44,36 @@ exports.deleteUserById = asyncHandler(async (req, res) => {
         res.status(404).json({ message: 'User not found' });
     }
 });
+
+
+exports.getNearbyRestaurants = async (req, res, next) => {
+    const { userLatitude, userLongitude } = req.body;
+  
+    if (!userLatitude || !userLongitude) {
+      return res.status(400).json({ msg: 'User location (latitude and longitude) is required' });
+    }
+  
+    try {
+      // Find restaurants sorted by distance from user
+      const restaurants = await Restaurant.find({
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [userLongitude, userLatitude] // [longitude, latitude]
+            },
+            // $maxDistance: 50000 // Optional: limit results to 50km radius
+          }
+        }
+      });
+  
+      res.status(200).json({
+        status: 'success',
+        results: restaurants.length,
+        data: restaurants
+      });
+    } catch (error) {
+      console.error(error);
+      return next(new AppError(500, 'Error fetching restaurants'));
+    }
+  };

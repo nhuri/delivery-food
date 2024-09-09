@@ -28,10 +28,16 @@ const userSchema = new mongoose.Schema({
       message: "Passwords do not match",
     },
   },
+  address:{
+    type: String} ,
   role: {
     type: String,
     enum: ["user", "premium"],
     default: "user",
+  },
+  location: { // Add location field
+    latitude: { type: Number },
+    longitude: { type: Number }
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
