@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController'); // Adjust the path as needed
 const authController = require('../controllers/authController'); // Adjust the path as needed
+const restaurantController = require('../controllers/restaurantController');
 
 // Define routes and attach controller functions
 router.post('/register', authController.registerUser);
@@ -13,5 +14,7 @@ router.patch('/:id', userController.updateUserById);
 router.delete('/:id', userController.deleteUserById);
 router.post('/forgotPassword', authController.forgotPassword);
 router.post('/resetPassword/:plainResetToken', authController.resetPassword);
+router.post('/getNearbyRestaurants', userController.getNearbyRestaurants);
+
 
 module.exports = router;

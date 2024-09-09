@@ -2,6 +2,7 @@ const Restaurant = require('../models/restaurantModel');
 const asyncHandler = require('express-async-handler');
 require('dotenv').config();
 const axios = require('axios');
+const geocoder = require('../utils/geocoder'); // Import the geocoder
 
 const { Client } = require("@googlemaps/google-maps-services-js");
 const client = new Client({});
@@ -9,46 +10,38 @@ const client = new Client({});
 // Use environment variable for API key
 const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-const geocodeAddress = async (address) => {
-    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
-    try {
-        const response = await axios.get(geocodeUrl);
-        if (response.data.status === 'OK') {
-            const { lat, lng } = response.data.results[0].geometry.location;
-            return { latitude: lat, longitude: lng };
-        } else {
-            throw new Error(`Geocoding failed with status: ${response.data.status}`);
-        }
-    } catch (error) {
-        console.error('Error geocoding address:', error.message);
-        throw new Error('Error geocoding address');
+
+exports.createRestaurant = async (req, res) => {
+  const { name, logo, address, menu, statistics } = req.body;
+
+  try {
+    // Geocode the address using Google API
+    const geoData = await geocoder.geocode(address);
+
+    if (!geoData.length) {
+      return res.status(400).json({ msg: 'Unable to geocode address.' });
     }
+
+    const { latitude, longitude } = geoData[0];
+
+    // Create and save the new restaurant with geocoded location
+    const newRestaurant = await Restaurant.create({
+      name,
+      logo,
+      address,
+      location: { latitude, longitude },
+      menu,
+      statistics
+    });
+
+    res.status(201).json(newRestaurant);
+  } catch (error) {
+    res.status(500).json({ msg: 'Error creating restaurant', error: error.message });
+  }
 };
 
-// Create a new restaurant
-exports.createRestaurant = asyncHandler(async (req, res) => {
-    const { name, logo, address, menu, statistics } = req.body;
 
-    try {
-        // Geocode the address
-        const location = await geocodeAddress(address);
-
-        // Create and save new restaurant
-        const newRestaurant = await Restaurant.create({
-            name,
-            logo,
-            address,
-            location, // Use the geocoded location here
-            menu,
-            statistics
-        });
-
-        res.status(201).json(newRestaurant);
-    } catch (error) {
-        res.status(500).json({ msg: 'Error creating restaurant', error: error.message });
-    }
-});
 
 // Get all restaurants
 exports.getRestaurants = asyncHandler(async (req, res) => {

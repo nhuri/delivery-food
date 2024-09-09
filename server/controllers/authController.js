@@ -5,19 +5,51 @@ const jwt = require('jsonwebtoken')
 const {promisify} = require('util')
 const asyncHandler = require('express-async-handler')
 const sendSMS = require('../utils/smsConfig')
+const geocoder = require('../utils/geocoder')
 
 
-exports.registerUser = asyncHandler(async(req, res ,next)=>{
-    const {email, name, password, confirmPassword, phoneNumber} = req.body;
-    if (!email ||!password||!confirmPassword || !name) return next(new AppError(403, 'Missing details'))
-        const newUser = await User.create({email, name, password, confirmPassword, phoneNumber})
-     res.status(201).json({
-        status:'success', 
-        newUser
-     })
-    
-    
-})
+exports.registerUser = asyncHandler(async (req, res, next) => {
+  const { email, name, password, confirmPassword, phoneNumber, address } = req.body;
+
+  // Check if required fields are provided
+  if (!email || !password || !confirmPassword || !name || !address) {
+    return next(new AppError(403, 'Missing details'));
+  }
+
+  try {
+    // Geocode the address using Google Maps API
+    const geoData = await geocoder.geocode(address);
+
+    // Check if geocoding returned data
+    if (!geoData.length) {
+      console.error('Geocode response:', geoData); // Log geocode response for debugging
+      return next(new AppError(400, 'Unable to geocode address. Please check the address and try again.'));
+    }
+
+    const { latitude, longitude } = geoData[0];
+
+    // Create the new user with geocoded location
+    const newUser = await User.create({
+      email,
+      name,
+      password,
+      confirmPassword,
+      address,
+      phoneNumber,
+      location: { latitude, longitude }, // Add location to user document
+    });
+
+    res.status(201).json({
+      status: 'success',
+      newUser,
+    });
+  } catch (error) {
+    console.error('Error during user registration:', error); // Log error details for debugging
+    return next(new AppError(500, 'Error creating user: ' + error.message));
+  }
+});
+
+
 exports.loginUser = asyncHandler(async(req, res, next)=>{
     const {email, password} = req.body
     if (!email || !password) return next(new AppError(403, 'Missing login details'))
