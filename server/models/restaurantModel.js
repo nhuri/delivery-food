@@ -10,6 +10,7 @@ const restaurantSchema = new mongoose.Schema({
     },
     menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem' }],
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' }
+    
 });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
