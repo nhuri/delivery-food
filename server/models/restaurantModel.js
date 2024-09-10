@@ -9,8 +9,12 @@ const restaurantSchema = new mongoose.Schema({
         longitude: { type: Number }
     },
     menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],
-    statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' }
-    
+    statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' },
+    foodCategory: {
+        type: String,
+        enum: ["Italian", "Chinese", "Fast Food", "Mexican", "Indian", "French", "Japanese", "Vegetarian"],
+        default: "Italian"
+    }
 });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
