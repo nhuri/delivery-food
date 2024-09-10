@@ -2,6 +2,13 @@ import { apiSlice } from "./apiSlice";
 import { MENU_URL } from "./urlConstrains";
 const menuApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getMenuByRestaurantId: builder.query({
+      query: (restaurantId) => ({
+        url: `${MENU_URL}/${restaurantId}`,
+      }),
+      keepUnusedDataFor: 5,
+      provideTags: ["Menu"],
+    }),
     getMenuItems: builder.query({
       query: () => ({
         url: MENU_URL,
@@ -13,7 +20,7 @@ const menuApiSlice = apiSlice.injectEndpoints({
         url: `${MENU_URL}/${menuId}`,
       }),
       keepUnusedDataFor: 5,
-      provideTags: ["Task"],
+      provideTags: ["Menu"],
     }),
     createMenuItem: builder.mutation({
       query: (data) => ({
@@ -30,7 +37,7 @@ const menuApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     deleteMenuItem: builder.mutation({
-      query: ({ menutId }) => ({
+      query: ({ menuId }) => ({
         url: `${MENU_URL}/${menuId}`,
         method: "DELETE",
       }),
@@ -38,6 +45,7 @@ const menuApiSlice = apiSlice.injectEndpoints({
   }),
 });
 export const {
+  useGetMenuByRestaurantIdQuery,
   useGetMenuItemsQuery,
   useGetMenuItemByIdQuery,
   useCreateMenuItemMutation,

@@ -1,19 +1,23 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { useGetMenuItemsQuery } from "../slices/menuApiSlice";
 import MenuItem from "./menuItem";
 const MenuList = () => {
+  const queryParams = new URLSearchParams(location.search);
+
   const navigateB = useNavigate();
   const handleBack = () => {
     navigateB(-1); // חוזר לדף הקודם
   };
-  const { data } = useGetMenuItemsQuery();
+  const id = queryParams.get("id");
+  const { data } = useGetMenuByRestaurantIdQuery({ id });
+  const dishes = data.items;
   return (
     <div>
       <Button onClick={handleBack}>Back</Button>
       <div className="row">
-        {data?.map((menuItem) => (
+        {dishes?.map((menuItem) => (
           <MenuItem
             key={menuItem._id}
             id={menuItem._id}

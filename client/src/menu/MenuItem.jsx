@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 const MenuItem = ({ id, name, description, price, category, image }) => {
   return (
     <Card>
-      {/* <Card.Img variant="top" src={image} /> */}
+      <Card.Img variant="top" src={image} />
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         <Card.Text>{description}</Card.Text>
