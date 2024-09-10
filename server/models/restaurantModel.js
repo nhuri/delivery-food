@@ -8,7 +8,7 @@ const restaurantSchema = new mongoose.Schema({
         latitude: { type: Number },
         longitude: { type: Number }
     },
-    menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem' }],
+    menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' }
     
 });

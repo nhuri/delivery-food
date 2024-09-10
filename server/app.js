@@ -8,6 +8,7 @@ const AppError = require('./utils/AppError')
 const globalErrorHandler = require('./utils/errorHandler')
 const userRoutes = require('./routes/user.Routes');
 const OrdersRoutes = require('./routes/order.Routes');
+const menuRoutes = require('./routes/menu.Routes')
 const path = require('path');  // Add this line
 const app = express()
 const menuItemRoutes = require('./routes/menuItem.Routes');
@@ -26,6 +27,7 @@ app.use(cookieParser())
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', OrdersRoutes);
+app.use('/api/menu', menuRoutes);
 
 
 app.use(express.static("uploads")); // Serve static files from the uploads folder
