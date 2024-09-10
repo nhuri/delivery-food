@@ -3,7 +3,7 @@ const NodeGeocoder = require('node-geocoder');
 // Options for Google Geocoding
 const options = {
   provider: 'google',
-  apiKey: 'AIzaSyCjKInqEFfmZUula4J3LJ4V6Lhm_GjK7l0', // Replace with your Google API key
+  apiKey: process.env.GOOGLE_MAPS_API_KEY, // Replace with your Google API key
   formatter: null // 'gpx', 'string', etc. 
 };
 
