@@ -18,7 +18,7 @@ const SingleRestaurant = () => {
   const statistics = queryParams.get("statistics");
   const navigate = useNavigate();
   const handleMenuPage = () => {
-    navigate("/MenuPage");
+    navigate(`/MenuList?$id=${id}`);
   };
 
   return (

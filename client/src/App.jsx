@@ -12,8 +12,8 @@ import Login from "./users/Login";
 import RegisterPage from "./users/RegisterPage";
 import ForgotPasswordPage from "./users/ForgotPasswordPage";
 import SingleRestaurant from "./restaurant/SingleRestaurant";
-import MenuPage from "./menu/MenuList";
 import foodDeliveryImage from "../images/foodDeliveryImages.jpeg";
+import MenuList from "./menu/MenuList";
 function App() {
   return (
     <Router>
@@ -48,7 +48,7 @@ function App() {
                 element={<ForgotPasswordPage />}
               />
               <Route path="/SingleRestaurant" element={<SingleRestaurant />} />
-              <Route path="/MenuPage" element={<MenuPage />} />
+              <Route path="/MenuList" element={<MenuList />} />
             </Routes>
           </div>
         </div>
