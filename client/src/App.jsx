@@ -11,13 +11,17 @@ import Contact from "./pages/Contact";
 import Login from "./users/Login";
 import RegisterPage from "./users/RegisterPage";
 import ForgotPasswordPage from "./users/ForgotPasswordPage";
-
+import SingleRestaurant from "./restaurant/SingleRestaurant";
+import MenuPage from "./menu/MenuPage";
+import foodDeliveryImage from "../images/foodDeliveryImages.jpeg";
 function App() {
   return (
     <Router>
       <div className="d-flex flex-column">
         <div id="header">
           <div id="title">
+            <img id="titleImg" src={foodDeliveryImage} alt="headerImage" />
+
             <h1>Food delivery</h1>
           </div>
 
@@ -26,7 +30,10 @@ function App() {
         <div className="d-flex flex-row">
           <Sidebar />
 
-          <div className="content-container p-4">
+          <div
+            style={{ width: "100%", height: "80vh" }}
+            className="content-container"
+          >
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Home" element={<Home />} />
@@ -40,6 +47,8 @@ function App() {
                 path="/ForgotPasswordPage"
                 element={<ForgotPasswordPage />}
               />
+              <Route path="/SingleRestaurant" element={<SingleRestaurant />} />
+              <Route path="/MenuPage" element={<MenuPage />} />
             </Routes>
           </div>
         </div>

@@ -14,6 +14,7 @@ const EditRestaurant = ({ id, setEditMode }) => {
   const { refetch } = useGetRestaurantQuery();
 
   const handleEditRestaurant = async (e) => {
+    e.stopPropagation();
     e.preventDefault();
     const restaurantId = id;
     const response = await editRestaurant({
@@ -32,26 +33,50 @@ const EditRestaurant = ({ id, setEditMode }) => {
     <div className="editRestaurant">
       <h4>Edit the restaurant</h4>
       <input
-        onChange={(e) => setInputName(e.target.value)}
+        onChange={(e) => {
+          e.stopPropagation(); // הימנע מהפצת האירוע
+          setInputName(e.target.value);
+        }}
+        onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע בלחיצה על ה-input
         type="text"
         placeholder="Enter the name"
       />
+
       <input
-        onChange={(e) => setInputLogo(e.target.value)}
+        onChange={(e) => {
+          e.stopPropagation();
+          setInputLogo(e.target.value);
+        }}
+        onClick={(e) => e.stopPropagation()}
         type="text"
         placeholder="Enter the logo link"
       />
       <input
-        onChange={(e) => setInputAdress(e.target.value)}
+        onChange={(e) => {
+          e.stopPropagation();
+          setInputAdress(e.target.value);
+        }}
+        onClick={(e) => e.stopPropagation()}
         type="text"
         placeholder="Enter the adress"
       />
       <input
-        onChange={(e) => setInputStatistics(e.target.value)}
+        onChange={(e) => {
+          e.stopPropagation();
+          setInputStatistics(e.target.value);
+        }}
+        onClick={(e) => e.stopPropagation()}
         type="text"
         placeholder="Enter the statistics"
       />
-      <Button onClick={handleEditRestaurant}>Edit Restaurant</Button>
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+          handleEditRestaurant(e);
+        }}
+      >
+        Edit Restaurant
+      </Button>
     </div>
   );
 };
