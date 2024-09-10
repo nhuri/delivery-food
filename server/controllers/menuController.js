@@ -1,214 +1,271 @@
-const Menu = require('../models/menuModel');
-const MenuItem = require('../models/menuItemModel');
-const asyncHandler = require('express-async-handler');
-const sharp = require('sharp');
-const path = require('path');
-const fs = require('fs');
-
+const Menu = require("../models/menuModel");
+const MenuItem = require("../models/menuItemModel");
+const Restaurant = require("../models/restaurantModel");
+const asyncHandler = require("express-async-handler");
+const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
+const mongoose = require("mongoose");
 // Utility function for image upload and processing
 const processImageUpload = async (file, type) => {
-    const filename = `${type}-${Date.now()}.jpeg`;
-    const imagePath = path.join(__dirname, `../uploads/${filename}`);
+  const filename = `${type}-${Date.now()}.jpeg`;
+  const imagePath = path.join(__dirname, `../uploads/${filename}`);
 
-    await sharp(file.buffer)
-        .resize(300, 300)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(imagePath);
+  await sharp(file.buffer)
+    .resize(300, 300)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(imagePath);
 
-    return `/uploads/${filename}`;
+  return `/uploads/${filename}`;
 };
 
-// Create a new Menu with image upload
+// Create a new menu
 const createMenu = asyncHandler(async (req, res) => {
-    const { name, description, restaurant } = req.body;
+  const { name, description, restaurant } = req.body;
 
-    if (!name || !restaurant) {
-        return res.status(400).json({ message: 'Name and restaurant are required' });
-    }
+  if (!name || !restaurant) {
+    return res
+      .status(400)
+      .json({ message: "Name and restaurant are required" });
+  }
 
-    let imagePath;
-    if (req.file) {
-        imagePath = await processImageUpload(req.file, 'menu');
-    }
+  let imagePath;
+  if (req.file) {
+    imagePath = await processImageUpload(req.file, "menu");
+  }
 
-    const newMenu = new Menu({
-        name,
-        description,
-        restaurant,
-        image: imagePath || null
-    });
+  // Create and save the new menu
+  const newMenu = new Menu({
+    name,
+    description,
+    restaurant,
+    image: imagePath || null,
+  });
 
-    const savedMenu = await newMenu.save();
-    res.status(201).json(savedMenu);
+  const savedMenu = await newMenu.save();
+
+  // Update the restaurant with the new menu ID
+  await Restaurant.findByIdAndUpdate(
+    restaurant,
+    { $push: { menu: savedMenu._id } },
+    { new: true }
+  );
+
+  // Respond with the saved menu
+  res.status(201).json(savedMenu);
 });
 
-// Get all Menus
+// Get all menus
 const getMenus = asyncHandler(async (req, res) => {
-    const menus = await Menu.find().populate('items');
-    res.json(menus);
+  const menus = await Menu.find().populate("items");
+  res.json(menus);
 });
 
-// Get a single Menu by ID
+// Get menus by restaurantId
 const getMenuById = asyncHandler(async (req, res) => {
-    const menu = await Menu.findById(req.params.id).populate('items');
+  const { restaurantId } = req.params; // Get restaurantId from URL params
 
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
-    }
+  // Validate restaurantId format
+  if (!mongoose.isValidObjectId(restaurantId)) {
+    return res.status(400).json({ message: "Invalid restaurant ID format" });
+  }
 
-    res.json(menu);
+  // Find the restaurant to ensure it exists
+  const restaurant = await Restaurant.findById(restaurantId);
+  if (!restaurant) {
+    return res.status(404).json({ message: "Restaurant not found" });
+  }
+
+  // Find menus associated with the restaurant
+  const menus = await Menu.find({ _id: { $in: restaurant.menu } }).populate(
+    "items"
+  );
+
+  if (menus.length === 0) {
+    return res
+      .status(404)
+      .json({ message: "No menus found for this restaurant" });
+  }
+
+  res.json(menus);
 });
 
-// Update a Menu by ID with optional image upload
+// Update a menu by ID with optional image upload
 const updateMenu = asyncHandler(async (req, res) => {
-    const { name, description } = req.body;
-    const menu = await Menu.findById(req.params.id);
+  const { name, description } = req.body;
+  const menu = await Menu.findById(req.params.id);
 
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
+
+  let imagePath;
+  if (req.file) {
+    imagePath = await processImageUpload(req.file, "menu");
+
+    // Delete the old image if it exists
+    if (menu.image) {
+      const oldImagePath = path.join(
+        __dirname,
+        `../uploads/${path.basename(menu.image)}`
+      );
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
     }
 
-    let imagePath;
-    if (req.file) {
-        imagePath = await processImageUpload(req.file, 'menu');
+    menu.image = imagePath;
+  }
 
-        // Delete the old image if it exists
-        if (menu.image && fs.existsSync(path.join(__dirname, `../uploads/${path.basename(menu.image)}`))) {
-            fs.unlinkSync(path.join(__dirname, `../uploads/${path.basename(menu.image)}`));
-        }
+  menu.name = name || menu.name;
+  menu.description = description || menu.description;
 
-        menu.image = imagePath;
-    }
-
-    menu.name = name || menu.name;
-    menu.description = description || menu.description;
-
-    const updatedMenu = await menu.save();
-    res.json(updatedMenu);
+  const updatedMenu = await menu.save();
+  res.json(updatedMenu);
 });
 
-// Add an Item to a Menu with image upload
+// Add an item to a menu with optional image upload
 const addItemToMenu = asyncHandler(async (req, res) => {
-    const { menuId } = req.params;
-    const { name, description, price, category } = req.body;
+  const { menuId } = req.params;
+  const { name, description, price, category } = req.body;
 
-    const menu = await Menu.findById(menuId);
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
-    }
+  const menu = await Menu.findById(menuId);
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
 
-    let imagePath;
-    if (req.file) {
-        imagePath = await processImageUpload(req.file, 'menuItem');
-    }
+  let imagePath;
+  if (req.file) {
+    imagePath = await processImageUpload(req.file, "menuItem");
+  }
 
-    // Create a new MenuItem
-    const newMenuItem = new MenuItem({
-        name,
-        description,
-        price,
-        category,
-        image: imagePath || null
-    });
+  // Create and save the new menu item
+  const newMenuItem = new MenuItem({
+    name,
+    description,
+    price,
+    category,
+    image: imagePath || null,
+  });
 
-    const savedMenuItem = await newMenuItem.save();
+  const savedMenuItem = await newMenuItem.save();
 
-    // Add the MenuItem to the Menu
-    menu.items.push(savedMenuItem._id);
-    await menu.save();
+  // Add the menu item to the menu
+  menu.items.push(savedMenuItem._id);
+  await menu.save();
 
-    res.status(201).json(savedMenuItem);
+  res.status(201).json(savedMenuItem);
 });
 
-// Remove an Item from a Menu
+// Remove an item from a menu
 const removeItemFromMenu = asyncHandler(async (req, res) => {
-    const { menuId, itemId } = req.params;
+  const { menuId, itemId } = req.params;
 
-    const menu = await Menu.findById(menuId);
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
+  const menu = await Menu.findById(menuId);
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
+
+  const menuItem = await MenuItem.findById(itemId);
+  if (menuItem) {
+    // Delete the image of the menu item if it exists
+    if (menuItem.image) {
+      const imagePath = path.join(
+        __dirname,
+        `../uploads/${path.basename(menuItem.image)}`
+      );
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
 
-    menu.items = menu.items.filter(item => item.toString() !== itemId);
+    // Remove the menu item from the menu
+    menu.items = menu.items.filter((item) => item.toString() !== itemId);
     await menu.save();
 
-    const menuItem = await MenuItem.findById(itemId);
-    if (menuItem) {
-        // Delete the MenuItem and its image if it exists
-        if (menuItem.image && fs.existsSync(path.join(__dirname, `../uploads/${path.basename(menuItem.image)}`))) {
-            fs.unlinkSync(path.join(__dirname, `../uploads/${path.basename(menuItem.image)}`));
-        }
-        await menuItem.deleteOne();
-    }
+    await menuItem.deleteOne();
+  }
 
-    res.json({ message: 'Item removed from menu' });
+  res.json({ message: "Item removed from menu" });
 });
 
-// Update a MenuItem in a Menu with image upload
+// Update a menu item in a menu with optional image upload
 const updateMenuItemInMenu = asyncHandler(async (req, res) => {
-    const { menuId, itemId } = req.params;
-    const { name, description, price, category } = req.body;
+  const { menuId, itemId } = req.params;
+  const { name, description, price, category } = req.body;
 
-    const menu = await Menu.findById(menuId);
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
+  const menu = await Menu.findById(menuId);
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
+
+  const menuItem = await MenuItem.findById(itemId);
+  if (!menuItem) {
+    return res.status(404).json({ message: "Menu item not found" });
+  }
+
+  let imagePath;
+  if (req.file) {
+    imagePath = await processImageUpload(req.file, "menuItem");
+
+    // Delete the old image if it exists
+    if (menuItem.image) {
+      const oldImagePath = path.join(
+        __dirname,
+        `../uploads/${path.basename(menuItem.image)}`
+      );
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
     }
 
-    const menuItem = await MenuItem.findById(itemId);
-    if (!menuItem) {
-        return res.status(404).json({ message: 'Menu item not found' });
-    }
+    menuItem.image = imagePath;
+  }
 
-    let imagePath;
-    if (req.file) {
-        imagePath = await processImageUpload(req.file, 'menuItem');
+  menuItem.name = name || menuItem.name;
+  menuItem.description = description || menuItem.description;
+  menuItem.price = price || menuItem.price;
+  menuItem.category = category || menuItem.category;
 
-        // Delete the old image if it exists
-        if (menuItem.image && fs.existsSync(path.join(__dirname, `../uploads/${path.basename(menuItem.image)}`))) {
-            fs.unlinkSync(path.join(__dirname, `../uploads/${path.basename(menuItem.image)}`));
-        }
-
-        menuItem.image = imagePath;
-    }
-
-    menuItem.name = name || menuItem.name;
-    menuItem.description = description || menuItem.description;
-    menuItem.price = price || menuItem.price;
-    menuItem.category = category || menuItem.category;
-
-    const updatedMenuItem = await menuItem.save();
-    res.json(updatedMenuItem);
+  const updatedMenuItem = await menuItem.save();
+  res.json(updatedMenuItem);
 });
 
-// Delete a Menu by ID with image removal
+// Delete a menu by ID with image removal
 const deleteMenu = asyncHandler(async (req, res) => {
-    const menu = await Menu.findById(req.params.id);
+  const menu = await Menu.findById(req.params.id);
 
-    if (!menu) {
-        return res.status(404).json({ message: 'Menu not found' });
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
+
+  // Delete all menu items associated with this menu
+  await MenuItem.deleteMany({ _id: { $in: menu.items } });
+
+  // Delete the menu's image if it exists
+  if (menu.image) {
+    const imagePath = path.join(
+      __dirname,
+      `../uploads/${path.basename(menu.image)}`
+    );
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
     }
+  }
 
-    // Delete all menu items associated with this menu
-    await MenuItem.deleteMany({ _id: { $in: menu.items } });
+  await menu.deleteOne();
 
-    // Delete the image if it exists
-    if (menu.image && fs.existsSync(path.join(__dirname, `../uploads/${path.basename(menu.image)}`))) {
-        fs.unlinkSync(path.join(__dirname, `../uploads/${path.basename(menu.image)}`));
-    }
-
-    await menu.deleteOne();
-
-    res.json({ message: 'Menu removed' });
+  res.json({ message: "Menu removed" });
 });
 
 module.exports = {
-    createMenu,
-    getMenus,
-    getMenuById,
-    updateMenu,
-    addItemToMenu,
-    removeItemFromMenu,
-    updateMenuItemInMenu,
-    deleteMenu
+  createMenu,
+  getMenus,
+  getMenuById,
+  updateMenu,
+  addItemToMenu,
+  removeItemFromMenu,
+  updateMenuItemInMenu,
+  deleteMenu,
 };
