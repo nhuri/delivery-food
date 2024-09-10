@@ -12,7 +12,7 @@ import Login from "./users/Login";
 import RegisterPage from "./users/RegisterPage";
 import ForgotPasswordPage from "./users/ForgotPasswordPage";
 import SingleRestaurant from "./restaurant/SingleRestaurant";
-import MenuPage from "./menu/MenuPage";
+import MenuPage from "./menu/MenuList";
 import foodDeliveryImage from "../images/foodDeliveryImages.jpeg";
 function App() {
   return (

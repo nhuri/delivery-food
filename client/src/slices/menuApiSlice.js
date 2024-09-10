@@ -38,9 +38,9 @@ const menuApiSlice = apiSlice.injectEndpoints({
   }),
 });
 export const {
-  useGetMenuQuery,
-  useMenuGetByIdQuery,
-  useAddMenuMutation,
-  useEditMenuMutation,
-  useDeleteMenuMutation,
+  useGetMenuItemsQuery,
+  useGetMenuItemByIdQuery,
+  useCreateMenuItemMutation,
+  useUpdateMenuItemMutation,
+  useDeleteMenuItemMutation,
 } = menuApiSlice;
