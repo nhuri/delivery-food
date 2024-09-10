@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -28,16 +28,15 @@ const userSchema = new mongoose.Schema({
       message: "Passwords do not match",
     },
   },
-  address:{
-    type: String} ,
+  address: { type: String },
   role: {
     type: String,
     enum: ["user", "premium"],
     default: "user",
   },
-  location: { // Add location field
-    latitude: { type: Number },
-    longitude: { type: Number }
+  location: {
+    type: { type: String, default: 'Point' },
+    coordinates: { type: [Number], index: '2dsphere' }
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
@@ -58,28 +57,12 @@ userSchema.methods.checkPassword = async function (inputPassword, hashedPassword
 };
 
 // Create Password Reset Token
-// userSchema.methods.createPasswordResetToken = function () {
-//   const resetToken = crypto.randomBytes(32).toString("hex");
-//   this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-//   this.passwordResetExpires = Date.now() + 5 * 60 * 1000; // Token valid for 5 minutes
-//   return resetToken;
-// };
-
-
 userSchema.methods.createPasswordResetToken = function () {
-  // Generate a 6-digit numeric token
   const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
-  
-  // Hash the token and set expiration
-  this.passwordResetToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   this.passwordResetExpires = Date.now() + 5 * 60 * 1000;
-  
   return resetToken;
 };
-
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

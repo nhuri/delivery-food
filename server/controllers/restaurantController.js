@@ -11,36 +11,34 @@ const client = new Client({});
 const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 
-
 exports.createRestaurant = async (req, res) => {
-  const { name, logo, address, menu, statistics } = req.body;
-
-  try {
-    // Geocode the address using Google API
-    const geoData = await geocoder.geocode(address);
-
-    if (!geoData.length) {
-      return res.status(400).json({ msg: 'Unable to geocode address.' });
+    const { name, logo, address, menu, statistics } = req.body;
+  
+    try {
+      // Geocode the address using Google API
+      const geoData = await geocoder.geocode(address);
+  
+      if (!geoData.length) {
+        return res.status(400).json({ msg: 'Unable to geocode address.' });
+      }
+  
+      const { latitude, longitude } = geoData[0];
+  
+      // Create and save the new restaurant with geocoded location
+      const newRestaurant = await Restaurant.create({
+        name,
+        logo,
+        address,
+        location: { type: 'Point', coordinates: [longitude, latitude] },
+        menu,
+        statistics
+      });
+  
+      res.status(201).json(newRestaurant);
+    } catch (error) {
+      res.status(500).json({ msg: 'Error creating restaurant', error: error.message });
     }
-
-    const { latitude, longitude } = geoData[0];
-
-    // Create and save the new restaurant with geocoded location
-    const newRestaurant = await Restaurant.create({
-      name,
-      logo,
-      address,
-      location: { latitude, longitude },
-      menu,
-      statistics
-    });
-
-    res.status(201).json(newRestaurant);
-  } catch (error) {
-    res.status(500).json({ msg: 'Error creating restaurant', error: error.message });
-  }
-};
-
+  };
 
 
 // Get all restaurants
