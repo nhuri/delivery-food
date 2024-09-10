@@ -63,7 +63,7 @@ const getMenus = asyncHandler(async (req, res) => {
 });
 
 // Get menus by restaurantId
-const getMenuById = asyncHandler(async (req, res) => {
+const getMenuByRestaurantId = asyncHandler(async (req, res) => {
   const { restaurantId } = req.params; // Get restaurantId from URL params
 
   // Validate restaurantId format
@@ -262,7 +262,7 @@ const deleteMenu = asyncHandler(async (req, res) => {
 module.exports = {
   createMenu,
   getMenus,
-  getMenuById,
+  getMenuByRestaurantId,
   updateMenu,
   addItemToMenu,
   removeItemFromMenu,

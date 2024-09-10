@@ -5,7 +5,7 @@ const path = require("path");
 const {
   createMenu,
   getMenus,
-  getMenuById,
+  getMenuByRestaurantId,
   updateMenu,
   addItemToMenu,
   removeItemFromMenu,
@@ -24,7 +24,7 @@ router.post("/", upload.single("image"), createMenu);
 router.get("/", getMenus);
 
 // Get a single Menu by ID
-router.get("/:restaurantId", getMenuById);
+router.get("/:restaurantId", getMenuByRestaurantId);
 
 // Update a Menu by ID
 router.put("/:id", upload.single("image"), updateMenu);
