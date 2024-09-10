@@ -1,53 +1,72 @@
-const mongoose = require('mongoose');
-const MenuItem = require('./menuItemModel'); // Import MenuItem model
+const mongoose = require("mongoose");
+const MenuItem = require("./menuItemModel"); // Import MenuItem model
 
-const orderSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema(
+  {
     customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
     },
     restaurant: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Restaurant',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
     },
-    items: [{
+    items: [
+      {
         menuItem: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'MenuItem', // Ensure you use the correct reference here
-            required: true
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "MenuItem",
+          required: true,
         },
         quantity: {
-            type: Number,
-            required: true
+          type: Number,
+          required: true,
         },
         customization: {
-            type: String
-        }
-    }],
+          type: String,
+        },
+      },
+    ],
     totalAmount: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     deliveryTime: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     status: {
-        type: String,
-        enum: ['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered'],
-        default: 'Pending'
+      type: String,
+      enum: [
+        "Pending",
+        "Confirmed",
+        "Preparing",
+        "Out for Delivery",
+        "Delivered",
+      ],
+      default: "Pending",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Paid", "Failed"],
+      default: "Pending",
+    },
+    transactionId: {
+      type: String,
     },
     deliveryPerson: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'DeliveryPerson'
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DeliveryPerson",
     },
     communication: {
-        type: String
-    }
-}, { timestamps: true });
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;
