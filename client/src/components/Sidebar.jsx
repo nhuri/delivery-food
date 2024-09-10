@@ -6,7 +6,7 @@ import "./components.css";
 const Sidebar = () => {
   let source;
   return (
-    <Navbar bg="light" expand="lg" className="flex-column vh-100 p-3">
+    <Navbar bg="light" expand="lg" className="flex-column vh-75 p-3">
       <Container fluid className="d-flex flex-column align-items-start">
         <Navbar.Brand href="/" className="mb-4"></Navbar.Brand>
 

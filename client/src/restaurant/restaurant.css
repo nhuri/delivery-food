@@ -17,3 +17,95 @@
   margin-left: 2px;
   margin-bottom: 2px;
 }
+/* restaurant.css */
+
+/* לוודא שה-body לוקח את כל הגובה */
+/* body,
+html */
+#singleRestaurant {
+  margin: 0px;
+  padding: 0;
+  height: 80vh;
+}
+
+.restaurant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90%;
+  padding: 40px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.restaurant-logo {
+  width: 60%;
+  max-width: 800px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.restaurant-info {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+  height: 80vh;
+}
+.restaurant-info div {
+  height: 68%;
+}
+
+.restaurant-name {
+  font-size: 2rem;
+  /* margin-bottom: 10px; */
+  color: #333;
+  padding: 10px;
+  background: linear-gradient(135deg, rgb(72, 82, 235), rgb(145, 200, 231));
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* margin: 20px; */
+  /* margin-top: 5px; */
+}
+
+.restaurant-address,
+.restaurant-statistics {
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* מציג את הטקסט בעמודה */
+  justify-content: space-around;
+  margin: 16px;
+  padding: 16px;
+  font-size: 1.25rem; /* גודל טקסט גדול יותר, אך לא כותרת */
+  font-family: "Arial", sans-serif; /* גופן קריא ונעים */
+  color: #333; /* צבע טקסט כהה ונעים לקריאה */
+  line-height: 1.6;
+}
+
+.restaurant-statistics p {
+  word-wrap: break-word; /* מאפשר לטקסט להתפצל לשורות חדשות */
+  overflow-wrap: break-word; /* מונע גלישה החוצה */
+  white-space: normal;
+}
+
+.restaurant-menu,
+.restaurant-statistics {
+  margin-top: 20px;
+}
+
+.restaurant-menu h3,
+.restaurant-statistics h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.restaurant-menu p,
+.restaurant-statistics p {
+  color: #666;
+}

@@ -1,10 +1,11 @@
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+#root {
+  width: 100vw;
+  height: 100vh;
+  /* margin: 0 auto; */
+  /* padding: 2rem; */
+  /* text-align: center; */
 }
-
+/* 
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -46,16 +47,36 @@
   flex-direction: row;
 }
 #header {
+  height: 17vh;
   display: flex;
-
   align-items: center;
   justify-content: center;
   justify-items: center;
   justify-content: space-between;
+  padding: 40px;
+  background: linear-gradient(135deg, rgb(72, 82, 235), rgb(145, 200, 231));
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+  margin-top: 5px;
 }
 #title {
   width: 60vw;
   display: flex;
   flex-direction: row;
   justify-content: right;
+  text-align: center;
+}
+#titleImg {
+  width: 130px;
+  margin-right: 180px;
+}
+#title h1 {
+  font-size: 3rem;
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  letter-spacing: 2px;
+  margin-top: 20px;
 }
