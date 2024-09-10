@@ -14,7 +14,7 @@ router.patch('/:id', userController.updateUserById);
 router.delete('/:id', userController.deleteUserById);
 router.post('/forgotPassword', authController.forgotPassword);
 router.post('/resetPassword/:plainResetToken', authController.resetPassword);
-router.post('/getNearbyRestaurants', userController.getNearbyRestaurants);
+router.get('/restaurants/nearby/:userID', userController.getNearbyRestaurants);
 
 
 module.exports = router;

@@ -5,8 +5,8 @@ const restaurantSchema = new mongoose.Schema({
     logo: { type: String }, // URL or path to logo image
     address: { type: String, required: true },
     location: {
-        latitude: { type: Number },
-        longitude: { type: Number }
+        type: { type: String, default: 'Point' },
+        coordinates: { type: [Number], index: '2dsphere' }
     },
     menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' },

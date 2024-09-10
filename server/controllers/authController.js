@@ -13,17 +13,15 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 
   // Check if required fields are provided
   if (!email || !password || !confirmPassword || !name || !address) {
-    return next(new AppError(403, 'Missing details'));
+    return res.status(403).json({ msg: 'Missing details' });
   }
 
   try {
     // Geocode the address using Google Maps API
     const geoData = await geocoder.geocode(address);
 
-    // Check if geocoding returned data
     if (!geoData.length) {
-      console.error('Geocode response:', geoData); // Log geocode response for debugging
-      return next(new AppError(400, 'Unable to geocode address. Please check the address and try again.'));
+      return res.status(400).json({ msg: 'Unable to geocode address. Please check the address and try again.' });
     }
 
     const { latitude, longitude } = geoData[0];
@@ -36,7 +34,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       confirmPassword,
       address,
       phoneNumber,
-      location: { latitude, longitude }, // Add location to user document
+      location: { type: 'Point', coordinates: [longitude, latitude] }, // Add location to user document
     });
 
     res.status(201).json({
@@ -44,8 +42,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       newUser,
     });
   } catch (error) {
-    console.error('Error during user registration:', error); // Log error details for debugging
-    return next(new AppError(500, 'Error creating user: ' + error.message));
+    res.status(500).json({ msg: 'Error creating user', error: error.message });
   }
 });
 

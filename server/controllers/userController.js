@@ -47,33 +47,48 @@ exports.deleteUserById = asyncHandler(async (req, res) => {
 
 
 exports.getNearbyRestaurants = async (req, res, next) => {
-    const { userLatitude, userLongitude } = req.body;
-  
-    if (!userLatitude || !userLongitude) {
-      return res.status(400).json({ msg: 'User location (latitude and longitude) is required' });
+    const { userID } = req.params; // Fetch userID from URL params
+
+    if (!userID) {
+        return res.status(400).json({ msg: 'User ID is required' });
     }
-  
+
     try {
-      // Find restaurants sorted by distance from user
-      const restaurants = await Restaurant.find({
-        location: {
-          $near: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [userLongitude, userLatitude] // [longitude, latitude]
-            },
-            // $maxDistance: 50000 // Optional: limit results to 50km radius
-          }
+        // Fetch the user by userID
+        const user = await User.findById(userID);
+
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
         }
-      });
-  
-      res.status(200).json({
-        status: 'success',
-        results: restaurants.length,
-        data: restaurants
-      });
+
+        const { location } = user; // Extract the location from the user document
+
+        if (!location || !location.coordinates || location.coordinates.length !== 2) {
+            return res.status(400).json({ msg: 'User location is not set properly' });
+        }
+
+        const [userLongitude, userLatitude] = location.coordinates;
+
+        // Find restaurants sorted by distance from user
+        const restaurants = await Restaurant.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [userLongitude, userLatitude] // [longitude, latitude]
+                    },
+                    // $maxDistance: 50000 // Optional: limit results to 50km radius
+                }
+            }
+        });
+
+        res.status(200).json({
+            status: 'success',
+            results: restaurants.length,
+            data: restaurants
+        });
     } catch (error) {
-      console.error(error);
-      return next(new AppError(500, 'Error fetching restaurants'));
+        console.error(error);
+        return next(new AppError(500, 'Error fetching restaurants'));
     }
-  };
+};
