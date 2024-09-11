@@ -23,6 +23,7 @@ const LoginPage1 = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     await logout().unwrap();
+
     setBool(false);
   };
 

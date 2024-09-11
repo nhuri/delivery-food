@@ -11,9 +11,8 @@ import {
 } from "../slices/userApiSlice";
 import { useDispatch } from "react-redux";
 import { logout, setUserInfoOnLoginOrRegister } from "../slices/authSlice";
-// import Loader from "../components/Loader";
 
-const Login = ({ setLoginModal, loginModal, source }) => {
+const Login = () => {
   const [registerModal, setRegisterModal] = useState(false);
   const handleCloseRegisterModal = () => setRegisterModal(false);
   const handleOpenRegisterModal = () => {
@@ -25,13 +24,13 @@ const Login = ({ setLoginModal, loginModal, source }) => {
   const handleOpenForgotPasswordModal = () => setForgotPasswordModal(true);
   const [forgotPassword, { isLoading1 }] = useForgotPasswordMutation();
 
-  // const [loginModal, setLoginModal] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
 
   const handleCloseLoginModal = () => setLoginModal(false);
   const handleOpenLoginModal = () => setLoginModal(true);
   const [login, { isLoading }] = useLoginUserMutation();
 
-  const [logout] = useLogoutUserMutation();
+  const [logoutBack] = useLogoutUserMutation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,13 +39,15 @@ const Login = ({ setLoginModal, loginModal, source }) => {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    await logout().unwrap();
+    dispatch(logout());
+    await logoutBack().unwrap();
     setBool(false);
   };
 
   const handleVerifyDetails = async (e) => {
     e.preventDefault();
-    logout().unwrap();
+    dispatch(logout());
+    logoutBack().unwrap();
     const response = await login({ email, password }).unwrap();
     dispatch(setUserInfoOnLoginOrRegister({ ...response }));
     if (response.status === "success") {
@@ -93,12 +94,12 @@ const Login = ({ setLoginModal, loginModal, source }) => {
   return (
     <>
       <div id="login">
-        {!bool && !source && (
+        {!bool && (
           <button id="openLoginModal" onClick={handleOpenLoginModal}>
             <img src="images/login.png" alt="sc-icon" />
           </button>
         )}
-        {bool && !source && (
+        {bool && (
           <button id="openLogoutModal" onClick={handleLogout}>
             <img src="images/logout.jpg" alt="sc-icon" />
           </button>
