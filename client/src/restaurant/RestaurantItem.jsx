@@ -115,6 +115,7 @@ const RestaurantItem = ({
   location,
   menu,
   statistics,
+  distanceKM,
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [deleteRestaurant] = useDeleteRestaurantMutation();
@@ -161,6 +162,8 @@ const RestaurantItem = ({
         <Card.Title>{name}</Card.Title>
         <Card.Text>{address}</Card.Text>
         <Card.Text>{statistics}</Card.Text>
+        <Card.Text>{distanceKM}</Card.Text>
+
         <Button
           variant="primary"
           id="btn"

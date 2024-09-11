@@ -25,6 +25,7 @@ const MenuList = () => {
             id={menuItems._id}
             name={menuItems.name}
             description={menuItems.description}
+            image={menuItems.image}
             items={menuItems.items}
           />
         ))}

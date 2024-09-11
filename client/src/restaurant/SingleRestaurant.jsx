@@ -24,9 +24,9 @@ const SingleRestaurant = () => {
   return (
     <>
       <div id="singleRestaurant">
-        {/* <Link to="/">
-          <button>Back To Main</button>
-        </Link> */}
+        <Link to="/">
+          <Button>Back</Button>
+        </Link>
 
         <div className="restaurant-card">
           <div className="restaurant-info">
