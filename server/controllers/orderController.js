@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const { processGooglePayPayment } = require("../utils/googlePay");
 
 // Controller for creating a new order and processing payment
-const createOrder = asyncHandler(async (req, res) => {
+exports.createOrder = asyncHandler(async (req, res) => {
   const {
     customer,
     restaurant,
@@ -49,7 +49,7 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 });
 // Get real-time status of an order
-const getOrderStatus = asyncHandler(async (req, res) => {
+exports.getOrderStatus = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
   const order = await Order.findById(orderId).populate(
     "deliveryPerson restaurant items.menuItem"
@@ -63,7 +63,7 @@ const getOrderStatus = asyncHandler(async (req, res) => {
 });
 
 // Update order status (e.g., Confirmed, Preparing, etc.)
-const updateOrderStatus = asyncHandler(async (req, res) => {
+exports.updateOrderStatus = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
   const { status } = req.body;
   const updatedOrder = await Order.findByIdAndUpdate(
@@ -79,7 +79,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   res.status(200).json(updatedOrder);
 });
 
-const communicate = asyncHandler(async (req, res) => {
+exports.communicate = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
   const { message } = req.body;
 
@@ -101,9 +101,4 @@ const communicate = asyncHandler(async (req, res) => {
   res.status(200).json(order);
 });
 
-module.exports = {
-  createOrder,
-  getOrderStatus,
-  updateOrderStatus,
-  communicate,
-};
+

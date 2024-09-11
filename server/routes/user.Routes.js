@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController'); // Adjust the path as needed
 const authController = require('../controllers/authController'); // Adjust the path as needed
-const restaurantController = require('../controllers/restaurantController');
+
 
 // Define routes and attach controller functions
 router.post('/register', authController.registerUser);

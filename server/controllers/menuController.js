@@ -21,7 +21,7 @@ const processImageUpload = async (file, type) => {
 };
 
 // Create a new menu
-const createMenu = asyncHandler(async (req, res) => {
+exports.createMenu = asyncHandler(async (req, res) => {
   const { name, description, restaurant } = req.body;
 
   if (!name || !restaurant) {
@@ -57,13 +57,13 @@ const createMenu = asyncHandler(async (req, res) => {
 });
 
 // Get all menus
-const getMenus = asyncHandler(async (req, res) => {
+exports.getMenus = asyncHandler(async (req, res) => {
   const menus = await Menu.find().populate("items");
   res.json(menus);
 });
 
 // Get menus by restaurantId
-const getMenuByRestaurantId = asyncHandler(async (req, res) => {
+exports.getMenuByRestaurantId = asyncHandler(async (req, res) => {
   const { restaurantId } = req.params; // Get restaurantId from URL params
 
   // Validate restaurantId format
@@ -92,7 +92,7 @@ const getMenuByRestaurantId = asyncHandler(async (req, res) => {
 });
 
 // Update a menu by ID with optional image upload
-const updateMenu = asyncHandler(async (req, res) => {
+exports.updateMenu = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const menu = await Menu.findById(req.params.id);
 
@@ -126,7 +126,7 @@ const updateMenu = asyncHandler(async (req, res) => {
 });
 
 // Add an item to a menu with optional image upload
-const addItemToMenu = asyncHandler(async (req, res) => {
+exports.addItemToMenu = asyncHandler(async (req, res) => {
   const { menuId } = req.params;
   const { name, description, price, category } = req.body;
 
@@ -159,7 +159,7 @@ const addItemToMenu = asyncHandler(async (req, res) => {
 });
 
 // Remove an item from a menu
-const removeItemFromMenu = asyncHandler(async (req, res) => {
+exports.removeItemFromMenu = asyncHandler(async (req, res) => {
   const { menuId, itemId } = req.params;
 
   const menu = await Menu.findById(menuId);
@@ -191,7 +191,7 @@ const removeItemFromMenu = asyncHandler(async (req, res) => {
 });
 
 // Update a menu item in a menu with optional image upload
-const updateMenuItemInMenu = asyncHandler(async (req, res) => {
+exports.updateMenuItemInMenu = asyncHandler(async (req, res) => {
   const { menuId, itemId } = req.params;
   const { name, description, price, category } = req.body;
 
@@ -233,7 +233,7 @@ const updateMenuItemInMenu = asyncHandler(async (req, res) => {
 });
 
 // Delete a menu by ID with image removal
-const deleteMenu = asyncHandler(async (req, res) => {
+exports.deleteMenu = asyncHandler(async (req, res) => {
   const menu = await Menu.findById(req.params.id);
 
   if (!menu) {
@@ -259,13 +259,3 @@ const deleteMenu = asyncHandler(async (req, res) => {
   res.json({ message: "Menu removed" });
 });
 
-module.exports = {
-  createMenu,
-  getMenus,
-  getMenuByRestaurantId,
-  updateMenu,
-  addItemToMenu,
-  removeItemFromMenu,
-  updateMenuItemInMenu,
-  deleteMenu,
-};
