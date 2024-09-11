@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Create a new MenuItem with image upload
-const createMenuItem = asyncHandler(async (req, res) => {
+exports.createMenuItem = asyncHandler(async (req, res) => {
     const { name, description, price, category } = req.body;
 
     if (!name || !price) {
@@ -37,13 +37,13 @@ const createMenuItem = asyncHandler(async (req, res) => {
 });
 
 // Get all MenuItems
-const getMenuItems = asyncHandler(async (req, res) => {
+exports.getMenuItems = asyncHandler(async (req, res) => {
     const menuItems = await MenuItem.find();
     res.json(menuItems);
 });
 
 // Get a single MenuItem by ID
-const getMenuItemById = asyncHandler(async (req, res) => {
+exports.getMenuItemById = asyncHandler(async (req, res) => {
     const menuItem = await MenuItem.findById(req.params.id);
 
     if (!menuItem) {
@@ -54,7 +54,7 @@ const getMenuItemById = asyncHandler(async (req, res) => {
 });
 
 // Update a MenuItem by ID with optional image upload
-const updateMenuItem = asyncHandler(async (req, res) => {
+exports.updateMenuItem = asyncHandler(async (req, res) => {
     const { name, description, price, category } = req.body;
     const menuItem = await MenuItem.findById(req.params.id);
 
@@ -90,7 +90,7 @@ const updateMenuItem = asyncHandler(async (req, res) => {
     res.json(updatedMenuItem);
 });
  // Delete menuItemById
-const deleteMenuItem = asyncHandler(async (req, res) => {
+ exports.deleteMenuItem = asyncHandler(async (req, res) => {
     const menuItem = await MenuItem.findById(req.params.id);
 
     if (!menuItem) {
@@ -109,10 +109,4 @@ const deleteMenuItem = asyncHandler(async (req, res) => {
 });
 
 
-module.exports = {
-    createMenuItem,
-    getMenuItems,
-    getMenuItemById,
-    updateMenuItem,
-    deleteMenuItem
-};
+
