@@ -13,11 +13,28 @@ const menuItemSchema = new mongoose.Schema({
     required: true,
   },
   category: {
-    type: String, // e.g., Appetizers, Mains, etc.
+    type: String,
+    enum: [
+      "Italian",
+      "Chinese",
+      "Fast Food",
+      "Mexican",
+      "Indian",
+      "French",
+      "Japanese",
+      "Vegetarian",
+    ],
+    required: true,
   },
   image: {
     type: String, // Store the file path for the uploaded image
   },
+  extras: [
+    {
+      name: { type: String, required: true }, // e.g., "Extra Cheese", "Fries", "Ketchup"
+      price: { type: Number }, // Price for the extra item
+    },
+  ],
   discount: {
     percentage: { type: Number, default: 0 }, // Discount percentage
     category: { type: String }, // Discount category

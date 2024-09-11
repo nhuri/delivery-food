@@ -128,7 +128,7 @@ exports.updateMenu = asyncHandler(async (req, res) => {
 // Add an item to a menu with optional image upload
 exports.addItemToMenu = asyncHandler(async (req, res) => {
   const { menuId } = req.params;
-  const { name, description, price, category } = req.body;
+  const { name, description, price, category, extras } = req.body;
 
   const menu = await Menu.findById(menuId);
   if (!menu) {
@@ -145,6 +145,7 @@ exports.addItemToMenu = asyncHandler(async (req, res) => {
     name,
     description,
     price,
+    extras,
     category,
     image: imagePath || null,
   });
@@ -193,7 +194,7 @@ exports.removeItemFromMenu = asyncHandler(async (req, res) => {
 // Update a menu item in a menu with optional image upload
 exports.updateMenuItemInMenu = asyncHandler(async (req, res) => {
   const { menuId, itemId } = req.params;
-  const { name, description, price, category } = req.body;
+  const { name, description, price, category, extras } = req.body;
 
   const menu = await Menu.findById(menuId);
   if (!menu) {
@@ -227,12 +228,10 @@ exports.updateMenuItemInMenu = asyncHandler(async (req, res) => {
   menuItem.description = description || menuItem.description;
   menuItem.price = price || menuItem.price;
   menuItem.category = category || menuItem.category;
-
+  menuItem.extras = extras || menuItem.extras;
   const updatedMenuItem = await menuItem.save();
   res.json(updatedMenuItem);
 });
-
-
 
 // Delete a menu by ID with image removal and update associated restaurants
 exports.deleteMenu = asyncHandler(async (req, res) => {
@@ -252,7 +251,10 @@ exports.deleteMenu = asyncHandler(async (req, res) => {
 
   // Delete the menu's image if it exists
   if (menu.image) {
-    const imagePath = path.join(__dirname, `../uploads/${path.basename(menu.image)}`);
+    const imagePath = path.join(
+      __dirname,
+      `../uploads/${path.basename(menu.image)}`
+    );
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
     }
