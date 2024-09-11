@@ -13,6 +13,9 @@ const menuSchema = new mongoose.Schema({
     description: {
         type: String
     },
+    image: {
+        type: String, // Field to store image path or URL
+    },
     items: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'MenuItem' 
