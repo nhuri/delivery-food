@@ -232,30 +232,40 @@ exports.updateMenuItemInMenu = asyncHandler(async (req, res) => {
   res.json(updatedMenuItem);
 });
 
-// Delete a menu by ID with image removal
+
+
+// Delete a menu by ID with image removal and update associated restaurants
 exports.deleteMenu = asyncHandler(async (req, res) => {
-  const menu = await Menu.findById(req.params.id);
+  const { id } = req.params;
+
+  // Find the menu by ID
+  const menu = await Menu.findById(id);
 
   if (!menu) {
     return res.status(404).json({ message: "Menu not found" });
   }
 
   // Delete all menu items associated with this menu
-  await MenuItem.deleteMany({ _id: { $in: menu.items } });
+  if (menu.items.length > 0) {
+    await MenuItem.deleteMany({ _id: { $in: menu.items } });
+  }
 
   // Delete the menu's image if it exists
   if (menu.image) {
-    const imagePath = path.join(
-      __dirname,
-      `../uploads/${path.basename(menu.image)}`
-    );
+    const imagePath = path.join(__dirname, `../uploads/${path.basename(menu.image)}`);
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
     }
   }
 
+  // Update all restaurants to remove the reference to the deleted menu
+  await Restaurant.updateMany(
+    { menu: id }, // Find restaurants where the menu is referenced
+    { $pull: { menu: id } } // Remove the menu from the array
+  );
+
+  // Delete the menu
   await menu.deleteOne();
 
   res.json({ message: "Menu removed" });
 });
-

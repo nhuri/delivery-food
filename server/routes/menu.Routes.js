@@ -34,6 +34,6 @@ router.put(
 );
 
 // Delete a Menu by ID
-router.delete("/:id", menuController.deleteMenu);
+router.delete("/delete/:id", menuController.deleteMenu);
 
 module.exports = router;
