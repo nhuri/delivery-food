@@ -17,13 +17,20 @@ const userApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
       provideTags: ["User"],
     }),
-    isAuth: builder.query({
-      query: () => ({
-        url: `${USER_URL}/isAuth`,
+    getNearbyRestaurants: builder.query({
+      query: (userID) => ({
+        url: `users/restaurants/nearby/${userID}`,
       }),
       keepUnusedDataFor: 5,
-      withCredentials: true,
+      provideTags: ["User"],
     }),
+    // isAuth: builder.query({
+    //   query: () => ({
+    //     url: `${USER_URL}/isAuth`,
+    //   }),
+    //   keepUnusedDataFor: 5,
+    //   withCredentials: true,
+    // }),
 
     registerUser: builder.mutation({
       query: (data) => ({
@@ -58,6 +65,7 @@ const userApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAllUsersQuery,
   useGetUserByIdQuery,
+  useGetNearbyRestaurantsQuery,
   useIsAuthQuery,
   useRegisterUserMutation,
   useLoginUserMutation,
