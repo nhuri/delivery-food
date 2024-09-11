@@ -7,19 +7,18 @@ import { useGetNearbyRestaurantsQuery } from "../slices/userApiSlice";
 
 const RestaurantList = ({ searchValue }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
+
   const userID = userInfo?.user._id;
 
   // Fetch all restaurants
   const { data: allRestaurants, isLoading: isLoadingRestaurants } =
     useGetRestaurantQuery();
-  console.log(allRestaurants);
 
   // Fetch nearby restaurants based on user ID
   const { data: nearestRestaurantsToUser, isLoading: isLoadingNearby } =
     useGetNearbyRestaurantsQuery(userID, {
       skip: !userID, // Skip query if userID is not available
     });
-  console.log(nearestRestaurantsToUser);
 
   // Filter restaurants based on search input
   const filteredRestaurants = allRestaurants?.filter(
@@ -30,16 +29,10 @@ const RestaurantList = ({ searchValue }) => {
 
   // Determine which list to display: nearby or filtered
   let restaurantList = filteredRestaurants;
-  // userID && nearestRestaurantsToUser?.length > 0
-  //   ? nearestRestaurantsToUser
-  //   : filteredRestaurants;
-  if (userID) restaurantList = nearestRestaurantsToUser.data;
 
-  useEffect(() => {
-    if (restaurantList) {
-      console.log(restaurantList); // Debugging purposes
-    }
-  }, [restaurantList]);
+  if (userID) restaurantList = nearestRestaurantsToUser?.data;
+
+  useEffect(() => {}, [restaurantList]);
 
   if (isLoadingRestaurants || (userID && isLoadingNearby)) {
     return <p>Loading...</p>; // Show a loading state while data is being fetched
@@ -58,6 +51,7 @@ const RestaurantList = ({ searchValue }) => {
             location={restaurant.location}
             menu={restaurant.menu}
             statistics={restaurant.statistics}
+            distanceKM={restaurant.distanceInKM}
           />
         ))
       ) : (

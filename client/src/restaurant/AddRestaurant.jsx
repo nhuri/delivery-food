@@ -77,7 +77,7 @@ const AddRestaurant = ({ setActiveKey }) => {
           placeholder="logo"
           onChange={(e) => setInputLogo(e.target.value)}
         />
-  
+
       </InputGroup> */}
       {/* ////////////////////////////// */}
       <div>
