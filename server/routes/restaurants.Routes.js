@@ -1,5 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
+const storage = multer.memoryStorage(); // Temporarily store files in memory
+const upload = multer({ storage });
 const restaurantController = require("../controllers/restaurantController");
 const menuItemController = require("../controllers/menuItemController");
 // Route to create a new restaurant
@@ -16,7 +20,7 @@ router.patch("/:id", restaurantController.updateRestaurant);
 // Route to delete a restaurant by ID
 router.delete("/:id", restaurantController.deleteRestaurant);
 
-router.post("/", restaurantController.createRestaurant);
+router.post("/", upload.single('logo'), restaurantController.createRestaurant);
 
 // Route for applying a discount to a specific menu item
 router.post("/:id/discount", menuItemController.applyDiscountToMenuItem);

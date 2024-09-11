@@ -3,19 +3,35 @@ const asyncHandler = require('express-async-handler');
 require('dotenv').config();
 const axios = require('axios');
 const geocoder = require('../utils/geocoder'); // Import the geocoder
-
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 const { Client } = require("@googlemaps/google-maps-services-js");
 const client = new Client({});
 
 // Use environment variable for API key
 const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
+// Utility function for image upload and processing
+const processImageUpload = async (file, type) => {
+  const filename = `${type}-${Date.now()}.jpeg`;
+  const imagePath = path.join(__dirname, `../uploads/${filename}`);
 
-exports.createRestaurant = async (req, res) => {
-    const { name, logo, address, menu, statistics } = req.body;
+  await sharp(file.buffer)
+    .resize(300, 300)  // Resize as needed
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(imagePath);
+
+  return `/uploads/${filename}`;
+};
+
+
+exports.createRestaurant = asyncHandler(async (req, res) => {
+    const { name, address, menu, statistics, foodCategory } = req.body;
   
     try {
-      // Geocode the address using Google API
+      // Geocode the address using Google API or another service
       const geoData = await geocoder.geocode(address);
   
       if (!geoData.length) {
@@ -24,22 +40,30 @@ exports.createRestaurant = async (req, res) => {
   
       const { latitude, longitude } = geoData[0];
   
-      // Create and save the new restaurant with geocoded location
-      const newRestaurant = await Restaurant.create({
+      // Handle image upload if a logo file is provided
+      let logoPath = null;
+      if (req.file) {
+        logoPath = await processImageUpload(req.file, 'restaurant');
+      }
+  
+      // Create and save the new restaurant with geocoded location and logo
+      const newRestaurant = new Restaurant({
         name,
-        logo,
+        logo: logoPath,
         address,
         location: { type: 'Point', coordinates: [longitude, latitude] },
         menu,
-        statistics
+        statistics,
+        foodCategory
       });
   
-      res.status(201).json(newRestaurant);
+      const savedRestaurant = await newRestaurant.save();
+  
+      res.status(201).json(savedRestaurant);
     } catch (error) {
       res.status(500).json({ msg: 'Error creating restaurant', error: error.message });
     }
-  };
-
+  });
 
 // Get all restaurants
 exports.getRestaurants = asyncHandler(async (req, res) => {
