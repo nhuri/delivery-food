@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const menuItemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -18,6 +17,18 @@ const menuItemSchema = new mongoose.Schema({
   image: {
     type: String, // Store the file path for the uploaded image
   },
+  ingredients: [
+    {
+      name: { type: String }, // Default ingredient name
+      removable: { type: Boolean, default: true }, // If the user can remove this ingredient
+    },
+  ],
+  extras: [
+    {
+      name: { type: String, required: true }, // Name of the extra
+      price: { type: Number, required: true }, // Additional price for this extra
+    },
+  ],
   discount: {
     percentage: { type: Number, default: 0 }, // Discount percentage
     category: { type: String }, // Discount category

@@ -100,5 +100,3 @@ exports.communicate = asyncHandler(async (req, res) => {
 
   res.status(200).json(order);
 });
-
-
