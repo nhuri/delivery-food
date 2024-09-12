@@ -8,6 +8,7 @@ import {
   useGetRestaurantQuery,
 } from "../slices/restaurantApiSlice";
 import "./restaurant.css";
+import { useGetReviewsQuery } from "../slices/reviewApiSlice";
 
 const RestaurantItem = ({
   id,
@@ -48,6 +49,15 @@ const RestaurantItem = ({
   if (JSON.stringify(logo).slice(1, 9) === "/uploads") {
     urlImage = `http://localhost:8000/${logo.substring(9)}`;
   } else urlImage = logo;
+
+  const reviewTarget = id;
+
+  // const { data: getReviewsRestaurant } = useGetReviewsQuery(
+  //   "restaurant",
+  //   reviewTarget,
+  //   { skip: !reviewTarget }
+  // );
+  // console.log(getReviewsRestaurant);
 
   return (
     <Card
