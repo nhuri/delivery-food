@@ -90,9 +90,7 @@ const Login = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log(bool);
-  }, [bool]);
+  useEffect(() => {}, [bool]);
 
   return (
     <>
