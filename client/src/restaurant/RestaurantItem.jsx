@@ -50,26 +50,23 @@ const RestaurantItem = ({
     urlImage = `http://localhost:8000/${logo.substring(9)}`;
   } else urlImage = logo;
 
-  const reviewTarget = "restaurant";
-  const reviewType = "66e015982473f95203473fd0";
+  const reviewTarget = id;
 
-  // const { data: getReviewsRestaurant } = useGetReviewsQuery(
-  //   reviewType,
-  //   reviewTarget,
-  //   { skip: !reviewTarget }
-  // );
-  // console.log(getReviewsRestaurant);
-  const {
-    data: getReviewsRestaurant,
-    error,
-    isLoading,
-  } = useGetReviewsQuery(reviewType, reviewTarget, { skip: !reviewTarget });
+  const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
+    skip: !reviewTarget,
+  });
+  console.log(getReviewsRestaurant);
+  // const {
+  //   data: getReviewsRestaurant,
+  //   error,
+  //   isLoading,
+  // } = useGetReviewsQuery(reviewType, reviewTarget, { skip: !reviewTarget });
 
   // הוסף טיפול בשגיאות או בהמתנה
-  if (isLoading) return <p>טוען...</p>;
-  if (error) return <p>שגיאה: {error.message}</p>;
+  // if (isLoading) return <p>טוען...</p>;
+  // if (error) return <p>שגיאה: {error.message}</p>;
 
-  console.log(getReviewsRestaurant);
+  // console.log(getReviewsRestaurant);
 
   return (
     <Card
