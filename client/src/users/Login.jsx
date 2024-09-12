@@ -9,7 +9,7 @@ import {
   useLoginUserMutation,
   useLogoutUserMutation,
 } from "../slices/userApiSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, setUserInfoOnLoginOrRegister } from "../slices/authSlice";
 
 const Login = () => {
@@ -70,26 +70,29 @@ const Login = () => {
       );
     }
   };
-  const [bool, setBool] = useState(true);
-  //   const { data } = useIsAuthQuery();
-  //   useEffect(() => {
-  //     if (data) {
-  //       setBool(data.isAuth);
-  //     }
-  //   }, [data]);
-  //   useEffect(() => {
-  //     bool;
-  //   }, [bool]);
+  const userInfo = useSelector((state) => state.auth.userInfo);
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setBool(data.isAuth);
-  //   }
-  // }, [data]);
+  const data = userInfo ? true : false;
+  const [bool, setBool] = useState(data);
 
-  // useEffect(() => {
-  //   console.log(bool);
-  // }, [bool]);
+  useEffect(() => {
+    if (data) {
+      setBool(data);
+    }
+  }, [data]);
+  useEffect(() => {
+    bool;
+  }, [bool]);
+
+  useEffect(() => {
+    if (data) {
+      setBool(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    console.log(bool);
+  }, [bool]);
 
   return (
     <>

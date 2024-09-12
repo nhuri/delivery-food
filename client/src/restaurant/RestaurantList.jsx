@@ -20,17 +20,17 @@ const RestaurantList = ({ searchValue }) => {
       skip: !userID, // Skip query if userID is not available
     });
 
+  // Determine which list to display: nearby or filtered
+  let restaurantList = allRestaurants;
+
+  if (userID) restaurantList = nearestRestaurantsToUser?.data;
+
   // Filter restaurants based on search input
-  const filteredRestaurants = allRestaurants?.filter(
+  const filteredRestaurants = restaurantList?.filter(
     (restaurant) =>
       restaurant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
       restaurant.address?.toLowerCase().includes(searchValue.toLowerCase())
   );
-
-  // Determine which list to display: nearby or filtered
-  let restaurantList = filteredRestaurants;
-
-  if (userID) restaurantList = nearestRestaurantsToUser?.data;
 
   useEffect(() => {}, [restaurantList]);
 
@@ -40,8 +40,8 @@ const RestaurantList = ({ searchValue }) => {
 
   return (
     <div className="row">
-      {restaurantList?.length > 0 ? (
-        restaurantList.map((restaurant) => (
+      {filteredRestaurants?.length > 0 ? (
+        filteredRestaurants.map((restaurant) => (
           <RestaurantItem
             key={restaurant._id}
             id={restaurant._id}

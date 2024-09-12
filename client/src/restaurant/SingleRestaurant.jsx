@@ -20,6 +20,11 @@ const SingleRestaurant = () => {
   const handleMenuPage = () => {
     navigate(`/MenuList?id=${id}`);
   };
+  let urlImage;
+
+  if (JSON.stringify(logo).slice(1, 9) === "/uploads") {
+    urlImage = `http://localhost:8000/${logo.substring(9)}`;
+  } else urlImage = logo;
 
   return (
     <>
@@ -37,7 +42,7 @@ const SingleRestaurant = () => {
                 <Button onClick={handleMenuPage}>menu</Button>
               </div>
 
-              <img src={logo} alt={name} className="restaurant-logo" />
+              <img src={urlImage} alt={name} className="restaurant-logo" />
 
               <div className="restaurant-statistics">
                 <p className="restaurant-location">{locationParam}</p>
