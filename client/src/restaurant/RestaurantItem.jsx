@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -32,6 +32,37 @@ const RestaurantItem = ({
     const response = await deleteRestaurant({ restaurantId }).unwrap();
     refetch();
   };
+  const reviewTarget = id;
+  const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
+    skip: !reviewTarget,
+  });
+  // const reviewsArr = getReviewsRestaurant?.data?.reviews?.length > 0;
+  const [reviewsArr, setReviewsArr] = useState([]);
+
+  useEffect(() => {
+    if (getReviewsRestaurant?.data?.reviews) {
+      const reviews = getReviewsRestaurant.data.reviews;
+
+      // השמה ל-reviewsArr תעשה רק אם אורך המערך גדול מ-0
+      if (reviews.length > 0) {
+        setReviewsArr(reviews);
+      }
+    }
+  }, [getReviewsRestaurant]);
+  let reviewsArray;
+  if (reviewsArr.length > 0) {
+    reviewsArray = reviewsArr;
+  }
+
+  const ratingArr = reviewsArr?.map((review) => review.rating);
+  const average = (arr) => {
+    if (arr?.length === 0) return 0; // התמודדות עם מערך ריק
+    const sum = arr?.reduce((acc, num) => acc + num, 0);
+    return sum / arr?.length;
+  };
+  let averageRating = average(ratingArr);
+  if (!averageRating)
+    averageRating = "This Restaurant without rate yet, be the first";
 
   const handleCardClick = () => {
     navigate(
@@ -41,32 +72,19 @@ const RestaurantItem = ({
         address
       )}&location=${encodeURIComponent(location)}&menu=${encodeURIComponent(
         menu
-      )}&statistics=${encodeURIComponent(statistics)}`
+      )}&statistics=${encodeURIComponent(
+        statistics
+      )}&averageRating=${encodeURIComponent(
+        averageRating
+      )}&reviewsArr=${encodeURIComponent(JSON.stringify(reviewsArr))}`
     );
   };
+
   let urlImage;
 
   if (JSON.stringify(logo).slice(1, 9) === "/uploads") {
     urlImage = `http://localhost:8000/${logo.substring(9)}`;
   } else urlImage = logo;
-
-  const reviewTarget = id;
-
-  const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
-    skip: !reviewTarget,
-  });
-  console.log(getReviewsRestaurant);
-  // const {
-  //   data: getReviewsRestaurant,
-  //   error,
-  //   isLoading,
-  // } = useGetReviewsQuery(reviewType, reviewTarget, { skip: !reviewTarget });
-
-  // הוסף טיפול בשגיאות או בהמתנה
-  // if (isLoading) return <p>טוען...</p>;
-  // if (error) return <p>שגיאה: {error.message}</p>;
-
-  // console.log(getReviewsRestaurant);
 
   return (
     <Card
@@ -87,8 +105,8 @@ const RestaurantItem = ({
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         <Card.Text>{address}</Card.Text>
-        <Card.Text>{statistics}</Card.Text>
-        <Card.Text>{distanceKM}</Card.Text>
+        <Card.Text>distance from you: {distanceKM}</Card.Text>
+        <Card.Text>rating: {averageRating}</Card.Text>
 
         <Button
           variant="primary"
