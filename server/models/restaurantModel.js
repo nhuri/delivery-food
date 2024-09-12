@@ -14,7 +14,19 @@ const restaurantSchema = new mongoose.Schema({
         type: String,
         enum: ["Italian", "Chinese", "Fast Food", "Mexican", "Indian", "French", "Japanese", "Vegetarian"],
         default: "Italian"
-    }
+    },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] // Added reviews field
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Virtual field for reviews
+restaurantSchema.virtual('reviewsList', {
+    ref: 'Review', // The model to use
+    localField: 'reviews', // Find reviews where `reviews` is equal to `_id`
+    foreignField: '_id', // This is the field in the `Review` model
+    justOne: false // Set to false because we want an array of reviews
 });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);

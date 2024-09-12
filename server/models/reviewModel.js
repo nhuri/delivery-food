@@ -1,20 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const reviewSchema = new mongoose.Schema({
-  // Specify the type of the review (restaurant or menu item)
-  reviewType: {
-    type: String,
-    enum: ["restaurant", "menuItem"],
-    required: [true, "Review type is required"],
+const reviewSchema = new Schema({
+  restaurant: {
+    type: Schema.ObjectId,
+    ref: "Restaurant",
+    required: function() { return !this.menuItem; }, // Required if menuItem is not provided
+    message: "The feedback must belong to a Restaurant"
   },
-  // Reference to either restaurant or menu item based on reviewType
-  reviewTarget: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, "Review target is required"],
-    refPath: "reviewType",
+  menuItem: {
+    type: Schema.ObjectId,
+    ref: "MenuItem",
+    required: function() { return !this.restaurant; }, // Required if restaurant is not provided
+    message: "The feedback must belong to a menuItem"
   },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: [true, "The feedback must belong to a user"],
   },
