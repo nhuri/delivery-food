@@ -14,6 +14,8 @@ import ForgotPasswordPage from "./users/ForgotPasswordPage";
 import SingleRestaurant from "./restaurant/SingleRestaurant";
 import foodDeliveryImage from "../images/foodDeliveryImages.jpeg";
 import MenuList from "./menu/MenuList";
+import ReviewsPage from "./reviews/reviewsPage";
+
 function App() {
   return (
     <Router>
@@ -49,6 +51,7 @@ function App() {
               />
               <Route path="/SingleRestaurant" element={<SingleRestaurant />} />
               <Route path="/MenuList" element={<MenuList />} />
+              <Route path="/ReviewsPage" element={<ReviewsPage />} />
             </Routes>
           </div>
         </div>

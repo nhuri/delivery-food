@@ -16,9 +16,22 @@ const SingleRestaurant = () => {
   const locationParam = queryParams.get("location");
   const menu = queryParams.get("menu");
   const statistics = queryParams.get("statistics");
+  const averageRating = queryParams.get("averageRating");
+  const reviewsArrString = queryParams.get("reviewsArr");
+  // המרת המערך מתוך ה-URL חזרה למערך (אם הוא אכן היה במצב JSON)
+  let reviewsArr = [];
+  try {
+    reviewsArr = JSON.parse(reviewsArrString || "[]");
+  } catch (error) {
+    console.error("Error parsing reviews array:", error);
+  }
+
   const navigate = useNavigate();
   const handleMenuPage = () => {
     navigate(`/MenuList?id=${id}`);
+  };
+  const handleReviewsPage = () => {
+    navigate(`/ReviewsPage?reviewsArrString=${reviewsArrString}`);
   };
   let urlImage;
 
@@ -46,8 +59,9 @@ const SingleRestaurant = () => {
 
               <div className="restaurant-statistics">
                 <p className="restaurant-location">{locationParam}</p>
-                <h3>Statistics:</h3>
-                <p>{statistics}</p>
+                <h3>Average Rating:</h3>
+                <p>{averageRating}</p>
+                <Button onClick={handleReviewsPage}>look at the reviews</Button>
               </div>
             </div>
           </div>
