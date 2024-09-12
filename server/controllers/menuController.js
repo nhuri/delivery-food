@@ -125,39 +125,6 @@ exports.updateMenu = asyncHandler(async (req, res) => {
   res.json(updatedMenu);
 });
 
-// Add an item to a menu with optional image upload
-exports.addItemToMenu = asyncHandler(async (req, res) => {
-  const { menuId } = req.params;
-  const { name, description, price, category } = req.body;
-
-  const menu = await Menu.findById(menuId);
-  if (!menu) {
-    return res.status(404).json({ message: "Menu not found" });
-  }
-
-  let imagePath;
-  if (req.file) {
-    imagePath = await processImageUpload(req.file, "menuItem");
-  }
-
-  // Create and save the new menu item
-  const newMenuItem = new MenuItem({
-    name,
-    description,
-    price,
-    category,
-    image: imagePath || null,
-  });
-
-  const savedMenuItem = await newMenuItem.save();
-
-  // Add the menu item to the menu
-  menu.items.push(savedMenuItem._id);
-  await menu.save();
-
-  res.status(201).json(savedMenuItem);
-});
-
 // Remove an item from a menu
 exports.removeItemFromMenu = asyncHandler(async (req, res) => {
   const { menuId, itemId } = req.params;
@@ -232,8 +199,6 @@ exports.updateMenuItemInMenu = asyncHandler(async (req, res) => {
   res.json(updatedMenuItem);
 });
 
-
-
 // Delete a menu by ID with image removal and update associated restaurants
 exports.deleteMenu = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -252,7 +217,10 @@ exports.deleteMenu = asyncHandler(async (req, res) => {
 
   // Delete the menu's image if it exists
   if (menu.image) {
-    const imagePath = path.join(__dirname, `../uploads/${path.basename(menu.image)}`);
+    const imagePath = path.join(
+      __dirname,
+      `../uploads/${path.basename(menu.image)}`
+    );
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
     }
@@ -268,4 +236,89 @@ exports.deleteMenu = asyncHandler(async (req, res) => {
   await menu.deleteOne();
 
   res.json({ message: "Menu removed" });
+});
+exports.addItemToMenu = asyncHandler(async (req, res) => {
+  const { menuId } = req.params;
+
+  // Extract fields from req.body
+  const {
+    name,
+    description,
+    price,
+    category,
+    ingredients,
+    extras,
+    discount,
+    bundle,
+  } = req.body;
+
+  // Ensure price and discount percentage are converted to numbers
+  const parsedPrice = parseFloat(price);
+  const parsedDiscountPercentage =
+    discount && discount.percentage ? parseFloat(discount.percentage) : 0;
+
+  // Parse ingredients
+  const parsedIngredients =
+    ingredients && Array.isArray(ingredients)
+      ? ingredients.map((item) => ({ name: item.name }))
+      : [];
+
+  // Parse extras
+  const parsedExtras =
+    extras && Array.isArray(extras)
+      ? extras.map((item) => ({
+          name: item.name,
+          price: parseFloat(item.price),
+        }))
+      : [];
+
+  // Parse discount
+  const parsedDiscount = discount
+    ? {
+        percentage: parsedDiscountPercentage,
+        category: discount.category || null,
+      }
+    : { percentage: 0, category: null };
+
+  // Parse bundle (assuming it's provided as a flat structure in the request)
+  const parsedBundle = bundle
+    ? {
+        items: Array.isArray(bundle.items) ? bundle.items : [],
+        bundlePrice: bundle.bundlePrice ? parseFloat(bundle.bundlePrice) : null,
+        category: bundle.category || null,
+      }
+    : { items: [], bundlePrice: null, category: null };
+
+  // Find the menu by ID
+  const menu = await Menu.findById(menuId);
+  if (!menu) {
+    return res.status(404).json({ message: "Menu not found" });
+  }
+
+  let imagePath;
+  if (req.file) {
+    // Process the uploaded image
+    imagePath = await processImageUpload(req.file, "menuItem");
+  }
+
+  // Create the new menu item
+  const newMenuItem = new MenuItem({
+    name,
+    description,
+    price: parsedPrice,
+    category,
+    image: imagePath || null,
+    ingredients: parsedIngredients,
+    extras: parsedExtras,
+    discount: parsedDiscount,
+    bundle: parsedBundle,
+  });
+
+  const savedMenuItem = await newMenuItem.save();
+
+  // Add the menu item to the menu's items list
+  menu.items.push(savedMenuItem._id);
+  await menu.save();
+
+  res.status(201).json(savedMenuItem);
 });
