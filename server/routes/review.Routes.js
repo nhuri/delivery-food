@@ -3,9 +3,11 @@ const router = express.Router();
 const reviewController = require("../controllers/reviewController");
 
 // Create a review
-router.post("/reviews", reviewController.createReview);
+router.post("/reviewsForRestaurant", reviewController.createReviewForRestaurant);
+router.post("/reviewsForMenuItem", reviewController.createReviewForMenuItem);
 
 // Get reviews by type and target
-router.get("/reviews/:reviewType/:reviewTarget", reviewController.getReviews);
+router.get("/reviewsForRestaurant/:reviewTarget", reviewController.getReviewsForRestaurant);
+router.get("/reviewsForMenuItem/:reviewTarget", reviewController.getReviewsForMenuItem);
 
 module.exports = router;

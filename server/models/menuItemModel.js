@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const menuItemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -38,6 +39,7 @@ const menuItemSchema = new mongoose.Schema({
     bundlePrice: { type: Number }, // Bundle price for all items
     category: { type: String }, // Bundle category
   },
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] // Added reviews field
 });
 
 const MenuItem = mongoose.model("MenuItem", menuItemSchema);
