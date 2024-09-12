@@ -14,6 +14,7 @@ import { BiDrink } from "react-icons/bi";
 import { IoFishSharp } from "react-icons/io5";
 import { IoFastFood } from "react-icons/io5";
 import RestaurantList from "../restaurant/RestaurantList";
+import { FcSearch } from "react-icons/fc";
 function NavbarHome() {
   const [activeKey, setActiveKey] = useState();
   const [searchValue, setSearchValue] = useState("");
@@ -21,6 +22,13 @@ function NavbarHome() {
     setSearchValue(e.target.value);
   };
   const handleSearchRestaurant = () => {};
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleFilter = (category) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <>
       {["sm"].map((expand) => (
@@ -50,30 +58,66 @@ function NavbarHome() {
                   </Nav>
                 </div>
                 <Nav id="iconNav" className="d-flex flex-column">
-                  <IoFastFood id="icon" />
-                  All
+                  <div
+                    className={`icon-container ${
+                      selectedCategory === "All" ? "selected" : ""
+                    }`}
+                    onClick={() => handleFilter("All")}
+                  >
+                    <IoFastFood id="icon" />
+                    <div>All</div>
+                  </div>
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
-                  <IoFastFood id="icon" />
-                  burger
+                  <div
+                    className={`icon-container ${
+                      selectedCategory === "Burger" ? "selected" : ""
+                    }`}
+                    onClick={() => handleFilter("Burger")}
+                  >
+                    <IoFastFood id="icon" />
+                    <div>Burger</div>
+                  </div>
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
-                  <IoPizza id="icon" />
-                  pizza
+                  <div
+                    className={`icon-container ${
+                      selectedCategory === "Pizza" ? "selected" : ""
+                    }`}
+                    onClick={() => handleFilter("Pizza")}
+                  >
+                    <IoPizza id="icon" />
+                    <div>Pizza</div>
+                  </div>
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
-                  <IoFishSharp id="icon" />
-                  fish
+                  <div
+                    className={`icon-container ${
+                      selectedCategory === "Italian" ? "selected" : ""
+                    }`}
+                    onClick={() => handleFilter("Italian")}
+                  >
+                    <IoFishSharp id="icon" />
+                    <div>Italian</div>
+                  </div>
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
-                  <BiDrink id="icon" />
-                  beverages
+                  <div
+                    className={`icon-container ${
+                      selectedCategory === "Drink" ? "selected" : ""
+                    }`}
+                    onClick={() => handleFilter("Drink")}
+                  >
+                    <BiDrink id="icon" />
+                    <div>Drink</div>
+                  </div>
                 </Nav>
-                <Form className="d-flex ms-auto">
+                <Form className="search-form d-flex ms-auto">
                   <Form.Control
+                    id="search-input"
                     onChange={handleInputSearch}
                     type="search"
-                    placeholder="Search"
+                    placeholder="Search by name or category"
                     className="me-2"
                     aria-label="Search"
                     value={searchValue}
@@ -81,8 +125,9 @@ function NavbarHome() {
                   <Button
                     onClick={handleSearchRestaurant}
                     variant="outline-success"
+                    className="search-button"
                   >
-                    Search
+                    Search <FcSearch className="search-icon" />
                   </Button>
                 </Form>
               </Offcanvas.Body>
@@ -90,7 +135,10 @@ function NavbarHome() {
           </Container>
         </Navbar>
       ))}
-      <RestaurantList searchValue={searchValue} />
+      <RestaurantList
+        searchValue={searchValue}
+        selectedCategory={selectedCategory}
+      />
     </>
   );
 }

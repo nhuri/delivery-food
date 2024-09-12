@@ -5,7 +5,7 @@ import { useGetRestaurantQuery } from "../slices/restaurantApiSlice";
 import { useSelector } from "react-redux";
 import { useGetNearbyRestaurantsQuery } from "../slices/userApiSlice";
 
-const RestaurantList = ({ searchValue }) => {
+const RestaurantList = ({ searchValue, selectedCategory }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   const userID = userInfo?.user._id;
@@ -26,10 +26,16 @@ const RestaurantList = ({ searchValue }) => {
   if (userID) restaurantList = nearestRestaurantsToUser?.data;
 
   // Filter restaurants based on search input
+  if (selectedCategory === "All") selectedCategory = "";
   const filteredRestaurants = restaurantList?.filter(
     (restaurant) =>
-      restaurant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      restaurant.address?.toLowerCase().includes(searchValue.toLowerCase())
+      (restaurant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        restaurant.foodCategory
+          ?.toLowerCase()
+          .includes(searchValue.toLowerCase())) &&
+      restaurant.foodCategory
+        ?.toLowerCase()
+        .includes(selectedCategory.toLowerCase())
   );
 
   useEffect(() => {}, [restaurantList]);

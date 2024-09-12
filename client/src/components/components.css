@@ -24,14 +24,35 @@
   align-content: center;
   align-items: center;
 }
-#icon {
-  width: 30px;
-  height: 30px;
+/* General styles for the icon-container */
+.icon-container {
+  cursor: pointer;
+  min-width: 45px;
+  /* padding: 10px; */
+  /* margin: 5px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Adds space between icon and text */
 }
-#icon {
-  width: 30px;
-  height: 30px;
+
+/* Style for the selected icon-container */
+.icon-container.selected {
+  background-color: #d3f9d8; /* Background color when selected */
+  border-radius: 4px;
+  font-weight: bold;
 }
+
+/* Styles for icon and text */
+#icon {
+  font-size: 24px; /* Adjust size of the icon */
+}
+
+.icon-container div {
+  margin: 0;
+  font-size: 16px; /* Adjust size of the text */
+}
+
 #sidebar-nav {
   /* position: fixed; */
   /* top: 0; */
@@ -45,3 +66,24 @@
 /* #sidebar .nav-link {
   z-index: 1052; 
 } */
+/* Custom styles for the search input and button */
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adds space between the input and the button */
+}
+
+#search-input {
+  flex: 1;
+  width: 239px;
+}
+
+.search-button {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Adds space between the button text and icon */
+}
+
+.search-icon {
+  font-size: 1.2rem; /* Adjust the size of the icon */
+}
