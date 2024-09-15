@@ -86,34 +86,25 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   ///cookie or res.json()
 });
 
-exports.protect = asyncHandler(async (req, res, next) => {
-  ///1 extract token from : a req.headers or b from cookies
-  //a
-  //console.log(req.cookies);
-  if (!req.cookies || !req.cookies.jwt)
-    return next(new AppError(403, "Please login!"));
-  const token = req.cookies.jwt;
+exports.protect = async (req, res, next) => {
+  let token;
 
-  //console.log(token);
-  ///2 verify token and extract payload data id
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded.exp);
-  console.log(Date.now());
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  if (!decoded || !decoded.exp >= Date.now() / 1000) {
-    return next(new AppError(403, "Please login"));
+      req.user = await User.findById(decoded.id).select('-password');
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Not authorized to access this route' });
+    }
   }
-  ///3 find user by id
-  const user = await User.findById(decoded.id);
-  if (!user) return next(new AppError(403, "Please login user"));
-  ///4 upload user to req object
-  // if(user.passwordChangedAt > decoded.iat)
-  // return next(new AppError(403, "please login user"));
-  req.user = user;
 
-  /// go to the next function
-  next();
-});
+  if (!token) {
+    return res.status(401).json({ message: 'Not authorized, no token' });
+  }
+};
 
 exports.restrictByPremium = (req, res, next) => {
   if (req.user.role != "premium")

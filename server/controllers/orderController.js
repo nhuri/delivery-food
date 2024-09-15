@@ -1,7 +1,7 @@
 const Order = require("../models/orderModel");
 const asyncHandler = require("express-async-handler");
 const { processGooglePayPayment } = require("../utils/googlePay");
-
+const  Statistics  = require("../models/statisticsModel");
 // Controller for creating a new order and processing payment
 exports.createOrder = asyncHandler(async (req, res) => {
   const {
@@ -40,6 +40,21 @@ exports.createOrder = asyncHandler(async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
+
+    // Step 3: Update statistics
+    const stats = await Statistics.findOne({
+      restaurant: savedOrder.restaurant,
+    });
+    if (stats) {
+      stats.orders += 1;
+      await stats.save();
+    } else {
+      await Statistics.create({
+        restaurant: savedOrder.restaurant,
+        orders: 1,
+      });
+    }
+
     res.status(201).json(savedOrder);
   } catch (error) {
     return res.status(500).json({
@@ -48,24 +63,26 @@ exports.createOrder = asyncHandler(async (req, res) => {
     });
   }
 });
-// Get real-time status of an order
-exports.getOrderStatus = asyncHandler(async (req, res) => {
-  const orderId = req.params.id;
-  const order = await Order.findById(orderId).populate(
-    "deliveryPerson restaurant items.menuItem"
+
+// Get order history for a user
+exports.getOrderHistory = asyncHandler(async (req, res) => {
+  const userId = req.user._id; // Assuming user ID is available in req.user
+  const orders = await Order.find({ customer: userId }).populate(
+    "items.menuItem"
   );
 
-  if (!order) {
-    return res.status(404).json({ message: "Order not found" });
+  if (orders.length === 0) {
+    return res.status(404).json({ message: "No orders found for this user" });
   }
 
-  res.status(200).json(order);
+  res.status(200).json(orders);
 });
 
-// Update order status (e.g., Confirmed, Preparing, etc.)
+// Update order status
 exports.updateOrderStatus = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
   const { status } = req.body;
+
   const updatedOrder = await Order.findByIdAndUpdate(
     orderId,
     { status },
@@ -76,9 +93,26 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Order not found" });
   }
 
+  // If the order status is updated to "Paid", update statistics
+  if (status === "Paid") {
+    const stats = await Statistics.findOne({
+      restaurant: updatedOrder.restaurant,
+    });
+    if (stats) {
+      stats.orders += 1;
+      await stats.save();
+    } else {
+      await Statistics.create({
+        restaurant: updatedOrder.restaurant,
+        orders: 1,
+      });
+    }
+  }
+
   res.status(200).json(updatedOrder);
 });
 
+// Update order communication
 exports.communicate = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
   const { message } = req.body;

@@ -13,6 +13,7 @@ const path = require("path"); // Add this line
 const app = express();
 const menuItemRoutes = require("./routes/menuItem.Routes");
 const reviewRoutes = require("./routes/review.Routes");
+const statisticsRoutes = require("./routes/statistics.Routes");
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -28,12 +29,12 @@ app.use("/api/restaurants", restaurantRouter);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", OrdersRoutes);
 app.use("/api/menu", menuRoutes);
-
+app.use("/api/statistics", statisticsRoutes);
 app.use(express.static("uploads")); // Serve static files from the uploads folder
 
 app.use("/api/menuitems", menuItemRoutes); // Use the menu item routes
 
-app.use("/api", reviewRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(404, "The requested route is not exist"));

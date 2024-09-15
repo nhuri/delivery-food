@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const MenuItem = require("./menuItemModel"); // Import MenuItem model
 
 const orderSchema = new mongoose.Schema(
   {
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
+      ref: "User",
       required: true,
     },
     restaurant: {
@@ -45,6 +44,7 @@ const orderSchema = new mongoose.Schema(
         "Preparing",
         "Out for Delivery",
         "Delivered",
+        "Cancelled",
       ],
       default: "Pending",
     },
@@ -63,9 +63,21 @@ const orderSchema = new mongoose.Schema(
     communication: {
       type: String,
     },
+    isViewed: {
+      type: Boolean,
+      default: false, // Marks if the user has viewed the order history
+    },
   },
   { timestamps: true }
 );
+
+// Virtual to populate order history for a user
+orderSchema.virtual("orderHistory", {
+  ref: "Order",
+  localField: "_id",
+  foreignField: "customer",
+  justOne: false,
+});
 
 const Order = mongoose.model("Order", orderSchema);
 
