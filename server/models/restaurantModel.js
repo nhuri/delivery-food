@@ -12,7 +12,7 @@ const restaurantSchema = new mongoose.Schema({
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'Statistics' },
     foodCategory: {
         type: String,
-        enum: ["Italian", "Chinese", "Fast Food", "Mexican", "Indian", "French", "Japanese", "Vegetarian"],
+        enum: ["Italian", "Chinese", "Fast Food", "Mexican", "Indian", "French", "Japanese", "Vegetarian","Pizza"],
         default: "Italian"
     },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] // Added reviews field

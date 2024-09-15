@@ -22,6 +22,7 @@ const RestaurantList = ({ searchValue, selectedCategory }) => {
 
   // Determine which list to display: nearby or filtered
   let restaurantList = allRestaurants;
+  
 
   if (userID) restaurantList = nearestRestaurantsToUser?.data;
 

@@ -8,7 +8,6 @@ import Review from "./pages/Review";
 import LoginPage1 from "./pages/LoginPage1";
 import Payment from "./pages/Payment";
 import Contact from "./pages/Contact";
-import Login from "./users/Login";
 import RegisterPage from "./users/RegisterPage";
 import ForgotPasswordPage from "./users/ForgotPasswordPage";
 import SingleRestaurant from "./restaurant/SingleRestaurant";
@@ -20,18 +19,8 @@ function App() {
   return (
     <Router>
       <div className="d-flex flex-column">
-        <div id="header">
-          <div id="title">
-            <img id="titleImg" src={foodDeliveryImage} alt="headerImage" />
-
-            <h1>Food delivery</h1>
-          </div>
-
-          <Login />
-        </div>
+        <Sidebar />
         <div className="d-flex flex-row">
-          <Sidebar />
-
           <div
             style={{ width: "100%", height: "80vh" }}
             className="content-container"
