@@ -9,7 +9,7 @@ const RegisterPage = ({ setRegisterModal }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [adress, setAdress] = useState("");
+  const [address, setAdress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [register, { isLoading }] = useRegisterUserMutation();
@@ -22,7 +22,7 @@ const RegisterPage = ({ setRegisterModal }) => {
       name,
       phoneNumber,
       email,
-      adress,
+      address,
       password,
       confirmPassword,
     }).unwrap();
@@ -59,11 +59,11 @@ const RegisterPage = ({ setRegisterModal }) => {
               ></Form.Control>
             </Form.Group>
             <Form.Group>
-              <Form.Label>Adress:</Form.Label>
+              <Form.Label>address:</Form.Label>
               <Form.Control
                 type="adress"
                 onChange={(e) => setAdress(e.target.value)}
-                value={adress}
+                value={address}
               ></Form.Control>
             </Form.Group>
             <Form.Group>

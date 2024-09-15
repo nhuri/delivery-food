@@ -8,7 +8,7 @@ import { useGetNearbyRestaurantsQuery } from "../slices/userApiSlice";
 const RestaurantList = ({ searchValue, selectedCategory }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
-  const userID = userInfo?.user._id;
+  const userID = userInfo?.user?._id;
 
   // Fetch all restaurants
   const { data: allRestaurants, isLoading: isLoadingRestaurants } =
