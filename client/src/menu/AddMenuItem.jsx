@@ -54,40 +54,39 @@ const AddMenuItem = ({ setAddMode ,id}) => {
     e.preventDefault();
   };
 
- const handleAddMenuItem = async (e) => {
-   e.preventDefault();
-   console.log(id);
+const handleAddMenuItem = async (e) => {
+  e.preventDefault();
+  console.log(id);
 
-   try {
-     const formData = new FormData();
-     formData.append("name", inputName);
-     formData.append("description", inputDescription);
-     formData.append("price", inputPrice);
-     formData.append("category", inputCategory);
+  try {
+    const formData = new FormData();
+    formData.append("name", inputName);
+    formData.append("description", inputDescription);
+    formData.append("price", inputPrice);
+    formData.append("category", inputCategory);
 
-     if (imageFile) {
-       formData.append("image", imageFile);
-     }
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
-     // Log formData to check if it's populated correctly
-     for (let [key, value] of formData.entries()) {
-       console.log(`${key}: ${value}`);
-     }
+    // Log formData to check if it's populated correctly
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
-     const menuId = id ?? "test";
+    const menuId = id ?? "test";
 
-     // Call the mutation hook to create a menu item
-     const response = await createMenuItem({formData} ,menuId ).unwrap();
-     console.log("Menu item created:", response);
+    // Call the mutation hook to create a menu item
+    const response = await createMenuItem({ formData, menuId }).unwrap();
+    console.log("Menu item created:", response);
 
-     // Reset form and refetch items
-     setAddMode(null);
-     refetch();
-   } catch (error) {
-     console.error("Error creating menu item:", error);
-   }
- };
-
+    // Reset form and refetch items
+    setAddMode(null);
+    refetch();
+  } catch (error) {
+    console.error("Error creating menu item:", error);
+  }
+};
 
   return (
     <Form onSubmit={handleAddMenuItem}>
