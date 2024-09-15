@@ -14,6 +14,7 @@ const MenuList = () => {
     navigateB(-1); // חוזר לדף הקודם
   };
   const { data } = useGetMenuByRestaurantIdQuery(id);
+  
 
   return (
     <div>

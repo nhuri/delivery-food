@@ -1,13 +1,13 @@
 import { apiSlice } from "./apiSlice";
 import { MENUITEMS_URL } from "./urlConstrains";
-import { MENU_URL } from "./urlConstrains";
+import { MENU_URL, ITEMS_URL } from "./urlConstrains";
 const menuApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMenuByRestaurantId: builder.query({
       query: (restaurantId) => ({
         url: `${MENU_URL}/${restaurantId}`,
       }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 5, 
       provideTags: ["Menu"],
     }),
     getMenuItems: builder.query({
@@ -15,6 +15,7 @@ const menuApiSlice = apiSlice.injectEndpoints({
         url: MENUITEMS_URL,
       }),
       keepUnusedDataFor: 5,
+      providesTags: ["Menu"],
     }),
     getMenuItemById: builder.query({
       query: (menuId) => ({
@@ -24,11 +25,12 @@ const menuApiSlice = apiSlice.injectEndpoints({
       provideTags: ["Menu"],
     }),
     createMenuItem: builder.mutation({
-      query: (data) => ({
-        url: `${MENUITEMS_URL}`,
+      query: ({formData,menuId}) => ({
+        url: `${MENU_URL}/${menuId}/items`,
         method: "POST",
-        body: data,
+        body: formData,
       }),
+      invalidatesTags: ["Menu"], // Invalidate 'Menu' tag to refetch menu items
     }),
     updateMenuItem: builder.mutation({
       query: ({ menuId, data }) => ({

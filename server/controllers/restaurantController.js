@@ -85,7 +85,7 @@ exports.getRestaurantById = asyncHandler(async (req, res) => {
 // Update a restaurant by ID
 exports.updateRestaurant = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, logo, address, menu, statistics } = req.body;
+    const { name, logo, address, menu, statistics ,foodCategory} = req.body;
 
     const restaurant = await Restaurant.findById(id);
     if (!restaurant) {
@@ -119,6 +119,7 @@ exports.updateRestaurant = asyncHandler(async (req, res) => {
     restaurant.name = name || restaurant.name;
     restaurant.logo = logo || restaurant.logo;
     restaurant.address = address || restaurant.address;
+    restaurant.foodCategory = foodCategory || restaurant.foodCategory
     restaurant.location = location;
     restaurant.menu = menu || restaurant.menu;
     restaurant.statistics = statistics || restaurant.statistics;

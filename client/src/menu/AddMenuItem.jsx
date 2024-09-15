@@ -1,133 +1,3 @@
-// import Form from "react-bootstrap/Form";
-// import InputGroup from "react-bootstrap/InputGroup";
-// import React, { useState } from "react";
-// import Button from "react-bootstrap/Button";
-// import {
-//   useCreateMenuItemMutation,
-//   useGetMenuItemsQuery,
-// } from "../slices/menuApiSlice";
-
-// const AddMenuItem = ({ setActiveKey }) => {
-//   const [image, setImage] = useState(null);
-
-//   const handleFileChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setImage(reader.result);
-//         setInputLogo(reader.result);
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
-
-//   const handleDrop = (e) => {
-//     e.preventDefault();
-//     const file = e.dataTransfer.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setImage(reader.result);
-//         setInputLogo(reader.result);
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
-
-//   const handleDragOver = (e) => {
-//     e.preventDefault();
-//   };
-
-//   const [inputName, setInputName] = useState("");
-//   const [inputLogo, setInputLogo] = useState("");
-//   const [inputDescription, setInputDescription] = useState("");
-//   const [inputPrice, setInputPrice] = useState("");
-//   const [addMenuItem] = useCreateMenuItemMutation();
-//   const { refetch } = useGetMenuItemsQuery();
-
-//   const handleAddMenuItem = async (e) => {
-//     e.preventDefault();
-//     const response = await addMenuItem({
-//       name: inputName,
-//       logo: inputLogo,
-//       description: inputDescription,
-//       price: inputPrice,
-//     }).unwrap();
-//     setActiveKey(null);
-//     refetch();
-//   };
-//   return (
-//     <>
-//       <h4>Add menuItem</h4>
-//       <InputGroup size="sm" className="mb-3">
-//         <Form.Control
-//           placeholder="name"
-//           onChange={(e) => setInputName(e.target.value)}
-//         />
-//       </InputGroup>
-//       <div>
-//         <InputGroup size="sm" className="mb-3">
-//           <Form.Control
-//             type="text"
-//             placeholder="Enter image URL or drag and drop an image"
-//             value={inputLogo}
-//             onChange={(e) => setInputLogo(e.target.value)}
-//           />
-//         </InputGroup>
-//         <div
-//           onDrop={handleDrop}
-//           onDragOver={handleDragOver}
-//           style={{
-//             border: "2px dashed #ccc",
-//             borderRadius: "4px",
-//             padding: "20px",
-//             textAlign: "center",
-//             marginBottom: "20px",
-//           }}
-//         >
-//           Enter image URL or Drag & Drop your image here or click to select
-//           <input
-//             type="file"
-//             accept="image/*"
-//             onChange={handleFileChange}
-//             style={{ display: "none" }}
-//             id="fileInput"
-//           />
-//           <label
-//             htmlFor="fileInput"
-//             style={{ display: "block", cursor: "pointer" }}
-//           >
-//             <Button variant="primary">Choose Image</Button>
-//           </label>
-//         </div>
-//         {image && (
-//           <img
-//             src={image}
-//             alt="Preview"
-//             style={{ width: "100%", maxWidth: "400px" }}
-//           />
-//         )}
-//       </div>
-//       <InputGroup size="sm" className="mb-3">
-//         <Form.Control
-//           placeholder="Description"
-//           onChange={(e) => setInputDescription(e.target.value)}
-//         />
-//       </InputGroup>
-//       <InputGroup size="sm" className="mb-3">
-//         <Form.Control
-//           placeholder="price"
-//           onChange={(e) => setInputPrice(e.target.value)}
-//         />
-//       </InputGroup>
-//       <Button onClick={handleAddMenuItem}>Add MenuItem</Button>
-//     </>
-//   );
-// };
-
-// export default AddMenuItem;
-
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import React, { useState } from "react";
@@ -137,22 +7,36 @@ import {
   useGetMenuItemsQuery,
 } from "../slices/menuApiSlice";
 
-const AddMenuItem = ({ setAddMode }) => {
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePath, setImagePath] = useState("");
+const AddMenuItem = ({ setAddMode ,id}) => {
+  // console.log(id);
+  
+  const [imageFile, setImageFile] = useState(null); // Hold the selected file
+  const [imagePreview, setImagePreview] = useState(""); // For image preview
 
+  // Input states for the form fields
+  const [inputName, setInputName] = useState("");
+  const [inputDescription, setInputDescription] = useState("");
+  const [inputPrice, setInputPrice] = useState("");
+  const [inputCategory, setInputCategory] = useState("");
+
+  // Mutation and refetch from RTK Query API slice
+  const [createMenuItem] = useCreateMenuItemMutation();
+  const { refetch } = useGetMenuItemsQuery();
+
+  // Handle file change for manual file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePath(reader.result);
+        setImagePreview(reader.result); // Set preview URL
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Handle drag-and-drop file upload
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -160,7 +44,7 @@ const AddMenuItem = ({ setAddMode }) => {
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePath(reader.result);
+        setImagePreview(reader.result); // Set preview URL
       };
       reader.readAsDataURL(file);
     }
@@ -170,143 +54,112 @@ const AddMenuItem = ({ setAddMode }) => {
     e.preventDefault();
   };
 
-  const [inputName, setInputName] = useState("");
-  const [inputDescription, setInputDescription] = useState("");
-  const [inputPrice, setInputPrice] = useState("");
-  const [inputCategory, setInputCategory] = useState("");
-  const [addMenuItem] = useCreateMenuItemMutation();
-  const { refetch } = useGetMenuItemsQuery();
+ const handleAddMenuItem = async (e) => {
+   e.preventDefault();
+   console.log(id);
 
-  //   const uploadImage = async (file) => {
-  //     const formData = new FormData();
-  //     formData.append("image", file);
+   try {
+     const formData = new FormData();
+     formData.append("name", inputName);
+     formData.append("description", inputDescription);
+     formData.append("price", inputPrice);
+     formData.append("category", inputCategory);
 
-  //     const response = await fetch("http://localhost:8000", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
+     if (imageFile) {
+       formData.append("image", imageFile);
+     }
 
-  //     if (!response.ok) {
-  //       throw new Error("העלאת התמונה נכשלה");
-  //     }
+     // Log formData to check if it's populated correctly
+     for (let [key, value] of formData.entries()) {
+       console.log(`${key}: ${value}`);
+     }
 
-  //     const result = await response.json();
-  //     return result.filePath;
-  //   };
-  const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append("image", file);
+     const menuId = id ?? "test";
 
-    const response = await fetch("/uploads", {
-      // השתמש בנתיב יחסי
-      method: "POST",
-      body: formData,
-    });
+     // Call the mutation hook to create a menu item
+     const response = await createMenuItem({formData} ,menuId ).unwrap();
+     console.log("Menu item created:", response);
 
-    if (!response.ok) {
-      throw new Error("העלאת התמונה נכשלה");
-    }
+     // Reset form and refetch items
+     setAddMode(null);
+     refetch();
+   } catch (error) {
+     console.error("Error creating menu item:", error);
+   }
+ };
 
-    const result = await response.json();
-    return result.filePath;
-  };
-
-  const handleAddMenuItem = async (e) => {
-    e.preventDefault();
-    let uploadedImagePath = "";
-
-    if (imageFile) {
-      try {
-        uploadedImagePath = await uploadImage(imageFile);
-      } catch (error) {
-        alert("העלאת התמונה נכשלה");
-        return;
-      }
-    }
-
-    const response = await addMenuItem({
-      name: inputName,
-      logo: uploadedImagePath || imagePath,
-      description: inputDescription,
-      price: inputPrice,
-      category: inputCategory,
-    }).unwrap();
-    setAddMode(null);
-    refetch();
-  };
 
   return (
-    <>
+    <Form onSubmit={handleAddMenuItem}>
       <h4>Add Menu Item</h4>
       <InputGroup size="sm" className="mb-3">
         <Form.Control
-          placeholder="name"
+          placeholder="Name"
+          value={inputName}
           onChange={(e) => setInputName(e.target.value)}
+          required
         />
       </InputGroup>
-      <div>
-        <InputGroup size="sm" className="mb-3">
-          <Form.Control
-            type="text"
-            placeholder="Enter image URL or drag and drop an image"
-            value={imagePath}
-            onChange={(e) => setImagePath(e.target.value)}
-          />
-        </InputGroup>
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          style={{
-            border: "2px dashed #ccc",
-            borderRadius: "4px",
-            padding: "20px",
-            textAlign: "center",
-            marginBottom: "20px",
-          }}
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        style={{
+          border: "2px dashed #ccc",
+          borderRadius: "4px",
+          padding: "20px",
+          textAlign: "center",
+          marginBottom: "20px",
+        }}
+      >
+        Drag & Drop your image here or click to select
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+          id="fileInput"
+        />
+        <label
+          htmlFor="fileInput"
+          style={{ display: "block", cursor: "pointer" }}
         >
-          Drag & Drop your image here or click to select
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-            id="fileInput"
-          />
-          <label
-            htmlFor="fileInput"
-            style={{ display: "block", cursor: "pointer" }}
-          >
-            <Button variant="primary">Choose Image</Button>
-          </label>
-        </div>
-        {imagePath && (
-          <img
-            src={imagePath}
-            alt="Preview"
-            style={{ width: "100%", maxWidth: "400px" }}
-          />
-        )}
+          <Button variant="primary">Choose Image</Button>
+        </label>
       </div>
+      {imagePreview && (
+        <img
+          src={imagePreview}
+          alt="Preview"
+          style={{ width: "100%", maxWidth: "400px" }}
+        />
+      )}
       <InputGroup size="sm" className="mb-3">
         <Form.Control
           placeholder="Description"
+          value={inputDescription}
           onChange={(e) => setInputDescription(e.target.value)}
+          required
         />
       </InputGroup>
       <InputGroup size="sm" className="mb-3">
         <Form.Control
           placeholder="Price"
+          type="number"
+          value={inputPrice}
           onChange={(e) => setInputPrice(e.target.value)}
+          required
         />
       </InputGroup>
       <InputGroup size="sm" className="mb-3">
         <Form.Control
           placeholder="Category"
+          value={inputCategory}
           onChange={(e) => setInputCategory(e.target.value)}
+          required
         />
       </InputGroup>
-      <Button onClick={handleAddMenuItem}>Add Menu Item</Button>
-    </>
+      <Button type="submit">Add Menu Item</Button>
+    </Form>
   );
 };
 
