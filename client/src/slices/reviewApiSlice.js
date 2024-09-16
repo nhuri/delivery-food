@@ -7,7 +7,7 @@ const reviewApiSlice = apiSlice.injectEndpoints({
         url: `${REVIEWS_FOR_RESTAURANT_URL}/${reviewTarget}`,
       }),
       keepUnusedDataFor: 5,
-      provideTags: ["reviews"],
+      provideTags: ["Reviews"],
     }),
     // getReviewById: builder.query({
     //   query: (reviewId) => ({
@@ -44,4 +44,5 @@ export const {
   useCreateReviewMutation,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
+  
 } = reviewApiSlice;

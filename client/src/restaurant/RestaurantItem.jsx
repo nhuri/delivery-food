@@ -36,6 +36,7 @@ const RestaurantItem = ({
   const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
     skip: !reviewTarget,
   });
+  console.log(getReviewsRestaurant);
   // const reviewsArr = getReviewsRestaurant?.data?.reviews?.length > 0;
   const [reviewsArr, setReviewsArr] = useState([]);
 
@@ -76,7 +77,8 @@ const RestaurantItem = ({
         statistics
       )}&averageRating=${encodeURIComponent(
         averageRating
-      )}&reviewsArr=${encodeURIComponent(JSON.stringify(reviewsArr))}`
+      )}&reviewsArr=${encodeURIComponent(JSON.stringify(reviewsArr))}
+       &distanceKM=${encodeURIComponent(distanceKM)}`
     );
   };
 
@@ -115,13 +117,13 @@ const RestaurantItem = ({
         >
           Menu
         </Button>
-        <Button
+        {/* <Button
           id="btn"
           onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע
         >
           {name} Website
           <Link to="https://florentina.co.il/" />
-        </Button>
+        </Button> */}
         <Button
           id="btn"
           onClick={(e) => {
