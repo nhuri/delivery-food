@@ -15,9 +15,10 @@ const SingleRestaurant = () => {
   const address = queryParams.get("address");
   const locationParam = queryParams.get("location");
   const menu = queryParams.get("menu");
-  const statistics = queryParams.get("statistics");
   const averageRating = queryParams.get("averageRating");
   const reviewsArrString = queryParams.get("reviewsArr");
+  const distanceKM = queryParams.get("distanceKM"); 
+console.log(distanceKM);
   // המרת המערך מתוך ה-URL חזרה למערך (אם הוא אכן היה במצב JSON)
   let reviewsArr = [];
   try {
@@ -56,9 +57,9 @@ const SingleRestaurant = () => {
               </div>
 
               <img src={urlImage} alt={name} className="restaurant-logo" />
-
+          
               <div className="restaurant-statistics">
-                <p className="restaurant-location">{locationParam}</p>
+                <p className="restaurant-location">{distanceKM}</p>
                 <h3>Average Rating:</h3>
                 <p>{averageRating}</p>
                 <Button onClick={handleReviewsPage}>look at the reviews</Button>
