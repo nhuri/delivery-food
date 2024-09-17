@@ -8,12 +8,15 @@ const sendSMS = require("../utils/smsConfig");
 const geocoder = require("../utils/geocoder");
 
 exports.registerUser = asyncHandler(async (req, res, next) => {
-  const { email, name, password, confirmPassword, phoneNumber, address } =
-    req.body;
+  const { email, name, password, confirmPassword, phoneNumber, address } = req.body;
 
   // Check if required fields are provided
   if (!email || !password || !confirmPassword || !name || !address) {
-    return res.status(403).json({ msg: "Missing details" });
+    return res.status(400).json({ msg: "Missing details" });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ msg: "Passwords do not match" });
   }
 
   try {
@@ -21,11 +24,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     const geoData = await geocoder.geocode(address);
 
     if (!geoData.length) {
-      return res
-        .status(400)
-        .json({
-          msg: "Unable to geocode address. Please check the address and try again.",
-        });
+      return res.status(400).json({ msg: "Unable to geocode address" });
     }
 
     const { latitude, longitude } = geoData[0];
@@ -35,38 +34,31 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       email,
       name,
       password,
-      confirmPassword,
+      confirmPassword, // Note: `confirmPassword` is used for validation only
       address,
       phoneNumber,
-      location: { type: "Point", coordinates: [longitude, latitude] }, // Add location to user document
+      location: { type: "Point", coordinates: [longitude, latitude] },
     });
 
-    res.status(201).json({
-      status: "success",
-      newUser,
-    });
+    res.status(201).json({ status: "success", newUser });
   } catch (error) {
     res.status(500).json({ msg: "Error creating user", error: error.message });
   }
 });
 
+
 exports.loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
     return next(new AppError(403, "Missing login details"));
-  ///find user by its email
+
   const user = await User.findOne({ email }).select("+password");
   if (!user)
-    return next(
-      new AppError(
-        404,
-        "The user not exist please check your email or register"
-      )
-    );
-  ///check the password
+    return next(new AppError(404, "The user does not exist"));
+
   if (!(await user.checkPassword(password, user.password)))
-    return next(new AppError(403, "Email or password is incorrect"));
-  /// generate token
+    return next(new AppError(403, "Incorrect email or password"));
+
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -77,35 +69,37 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     secure: true,
     sameSite: "none",
   });
-  ///send it to a client
+
   res.status(200).json({
     status: "success",
     token,
     user,
   });
-  ///cookie or res.json()
 });
 
 exports.protect = async (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      req.user = await User.findById(decoded.id).select('-password');
-      next();
-    } catch (error) {
-      return res.status(401).json({ message: 'Not authorized to access this route' });
-    }
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
+
+  console.log("Token:", token); // Debug log
 
   if (!token) {
     return res.status(401).json({ message: 'Not authorized, no token' });
   }
-};
 
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Not authorized to access this route' });
+  }
+};
 exports.restrictByPremium = (req, res, next) => {
   if (req.user.role != "premium")
     return next(new AppError(403, "This rescource is not alowed"));

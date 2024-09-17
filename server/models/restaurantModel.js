@@ -16,6 +16,7 @@ const restaurantSchema = new mongoose.Schema({
         default: "Italian"
     },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] // Added reviews field
+    ,orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }

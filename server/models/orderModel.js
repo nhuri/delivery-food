@@ -1,84 +1,75 @@
 const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema(
-  {
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    restaurant: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Restaurant",
-      required: true,
-    },
-    items: [
-      {
-        menuItem: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "MenuItem",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        customization: {
-          type: String,
-        },
-      },
-    ],
-    totalAmount: {
-      type: Number,
-      required: true,
-    },
-    deliveryTime: {
-      type: Date,
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: [
-        "Pending",
-        "Confirmed",
-        "Preparing",
-        "Out for Delivery",
-        "Delivered",
-        "Cancelled",
-      ],
-      default: "Pending",
-    },
-    paymentStatus: {
-      type: String,
-      enum: ["Pending", "Paid", "Failed"],
-      default: "Pending",
-    },
-    transactionId: {
-      type: String,
-    },
-    deliveryPerson: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "DeliveryPerson",
-    },
-    communication: {
-      type: String,
-    },
-    isViewed: {
-      type: Boolean,
-      default: false, // Marks if the user has viewed the order history
-    },
+const orderSchema = new mongoose.Schema({
+  customer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true }
-);
+  restaurant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Restaurant",
+    required: true,
+  },
+  items: [
+    {
+      menuItem: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MenuItem",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+        default: 1,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+      extras: [
+        {
+          name: {
+            type: String,
+            required: true,
+          },
+          price: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+    }
+  ],
+  totalAmount: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  deliveryTime: {
+    type: Date,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Completed", "Cancelled"],
+    default: "Pending",
+  },
+  paymentStatus: {
+    type: String,
+    enum: ["Pending", "Paid"],
+    default: "Pending",
+  },
+  transactionId: {
+    type: String,
+  },
+  deliveryPerson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  communication: {
+    type: String,
+  },
+}, { timestamps: true });
 
-// Virtual to populate order history for a user
-orderSchema.virtual("orderHistory", {
-  ref: "Order",
-  localField: "_id",
-  foreignField: "customer",
-  justOne: false,
-});
-
-const Order = mongoose.model("Order", orderSchema);
-
-module.exports = Order;
+module.exports = mongoose.model("Order", orderSchema);
