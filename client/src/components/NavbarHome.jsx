@@ -15,20 +15,23 @@ import { IoFishSharp } from "react-icons/io5";
 import { IoFastFood } from "react-icons/io5";
 import RestaurantList from "../restaurant/RestaurantList";
 import { FcSearch } from "react-icons/fc";
+import Modal from "react-bootstrap/Modal"; //added
 function NavbarHome() {
-  const [activeKey, setActiveKey] = useState();
+  // const [activeKey, setActiveKey] = useState(); //removed
+  const [showModal, setShowModal] = useState(false); // Added 
   const [searchValue, setSearchValue] = useState("");
   const handleInputSearch = (e) => {
     setSearchValue(e.target.value);
   };
   const handleSearchRestaurant = () => {};
-
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const handleFilter = (category) => {
     setSelectedCategory(category);
   };
-
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+  
   return (
     <>
       {["sm"].map((expand) => (
@@ -47,14 +50,7 @@ function NavbarHome() {
               <Offcanvas.Body>
                 <div id="addRestaurant">
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                    <Accordion id="accordion" activeKey={activeKey}>
-                      <Accordion.Item eventKey="0">
-                        <Accordion.Header>Add restaurant</Accordion.Header>
-                        <Accordion.Body>
-                          <AddRestaurant setActiveKey={setActiveKey} />
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    </Accordion>
+                  <Button onClick={handleShowModal}>Add restaurant</Button>
                   </Nav>
                 </div>
                 <Nav id="iconNav" className="d-flex flex-column">
@@ -135,6 +131,15 @@ function NavbarHome() {
           </Container>
         </Navbar>
       ))}
+         <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Restaurant</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AddRestaurant setShowModal={setShowModal} />
+        </Modal.Body>
+      </Modal>
+
       <RestaurantList
         searchValue={searchValue}
         selectedCategory={selectedCategory}
