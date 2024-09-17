@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { type } = require('os');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -27,6 +28,10 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Passwords do not match!',
     },
+  },
+  phoneNumber: {
+  type: String,
+  required: true
   },
   location: {
     type: { type: String },
