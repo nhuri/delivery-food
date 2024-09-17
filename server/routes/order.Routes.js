@@ -2,15 +2,14 @@ const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/orderController");
 const authController = require("../controllers/authController");
-// Create a new order (with Google Pay integration)
+
+// Create a new order
 router.post("/createOrder", orderController.createOrder);
 
-// Update order status
-router.patch("/:id/status", orderController.updateOrderStatus);
+// Add MenuItem(s) to an existing order
+router.post("/:orderId/addItemToOrder",  orderController.addItemToOrder);
 
-// Communicate with delivery/restaurant
-router.post("/:id/communicate", orderController.communicate);
-
-router.get("/history", authController.protect, orderController.getOrderHistory);
+// Finalize an order
+router.post("/:orderId/finalizeOrder",  orderController.finalizeOrder);
 
 module.exports = router;

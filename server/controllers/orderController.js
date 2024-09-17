@@ -1,136 +1,130 @@
 const Order = require("../models/orderModel");
-const asyncHandler = require("express-async-handler");
+const MenuItem = require("../models/menuItemModel");
+const Restaurant = require("../models/restaurantModel");
+const User = require("../models/userModel");
 const { processGooglePayPayment } = require("../utils/googlePay");
-const  Statistics  = require("../models/statisticsModel");
-// Controller for creating a new order and processing payment
+const asyncHandler = require("express-async-handler");
+const mongoose = require("mongoose");
+const Statistics = require("../models/statisticsModel");
+// 1. Create a new order
 exports.createOrder = asyncHandler(async (req, res) => {
-  const {
+  const { customer, restaurant, deliveryTime, communication } = req.body;
+
+  const newOrder = new Order({
     customer,
     restaurant,
-    items,
-    totalAmount,
     deliveryTime,
     communication,
-    paymentData,
-  } = req.body;
+    items: [],
+    totalAmount: 0,
+    paymentStatus: "Pending",
+  });
 
-  // Step 1: Process Google Pay payment
-  try {
-    const paymentResult = await processGooglePayPayment(
-      paymentData,
-      totalAmount
-    );
-
-    if (!paymentResult.success) {
-      return res
-        .status(400)
-        .json({ message: "Payment failed", error: paymentResult.error });
-    }
-
-    // Step 2: If payment is successful, create the order
-    const newOrder = new Order({
-      customer,
-      restaurant,
-      items,
-      totalAmount,
-      deliveryTime,
-      communication,
-      paymentStatus: "Paid", // Update the order's payment status
-      transactionId: paymentResult.transactionId, // Save transaction details for records
-    });
-
-    const savedOrder = await newOrder.save();
-
-    // Step 3: Update statistics
-    const stats = await Statistics.findOne({
-      restaurant: savedOrder.restaurant,
-    });
-    if (stats) {
-      stats.orders += 1;
-      await stats.save();
-    } else {
-      await Statistics.create({
-        restaurant: savedOrder.restaurant,
-        orders: 1,
-      });
-    }
-
-    res.status(201).json(savedOrder);
-  } catch (error) {
-    return res.status(500).json({
-      message: "Server error during payment processing",
-      error: error.message,
-    });
-  }
+  const savedOrder = await newOrder.save();
+  res.status(201).json({ status: "success", order: savedOrder });
 });
 
-// Get order history for a user
-exports.getOrderHistory = asyncHandler(async (req, res) => {
-  const userId = req.user._id; // Assuming user ID is available in req.user
-  const orders = await Order.find({ customer: userId }).populate(
-    "items.menuItem"
-  );
+exports.addItemToOrder = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { menuItemId } = req.body;
 
-  if (orders.length === 0) {
-    return res.status(404).json({ message: "No orders found for this user" });
-  }
-
-  res.status(200).json(orders);
-});
-
-// Update order status
-exports.updateOrderStatus = asyncHandler(async (req, res) => {
-  const orderId = req.params.id;
-  const { status } = req.body;
-
-  const updatedOrder = await Order.findByIdAndUpdate(
-    orderId,
-    { status },
-    { new: true }
-  );
-
-  if (!updatedOrder) {
-    return res.status(404).json({ message: "Order not found" });
-  }
-
-  // If the order status is updated to "Paid", update statistics
-  if (status === "Paid") {
-    const stats = await Statistics.findOne({
-      restaurant: updatedOrder.restaurant,
-    });
-    if (stats) {
-      stats.orders += 1;
-      await stats.save();
-    } else {
-      await Statistics.create({
-        restaurant: updatedOrder.restaurant,
-        orders: 1,
-      });
-    }
-  }
-
-  res.status(200).json(updatedOrder);
-});
-
-// Update order communication
-exports.communicate = asyncHandler(async (req, res) => {
-  const orderId = req.params.id;
-  const { message } = req.body;
-
-  // Check if message is provided
-  if (!message) {
-    return res.status(400).json({ message: "Message is required" });
-  }
-
-  const order = await Order.findByIdAndUpdate(
-    orderId,
-    { communication: message },
-    { new: true, runValidators: true }
-  );
-
+  // Find the order
+  const order = await Order.findById(orderId);
   if (!order) {
     return res.status(404).json({ message: "Order not found" });
   }
 
-  res.status(200).json(order);
+  // Find the menu item
+  const menuItem = await MenuItem.findById(menuItemId);
+  if (!menuItem) {
+    return res.status(404).json({ message: "MenuItem not found" });
+  }
+
+  // Extract extras from menuItem
+  const extras = menuItem.extras || [];
+
+  // Add item to the order
+  const orderItem = {
+    menuItem: menuItem._id,
+    quantity: 1, // Default quantity
+    price: menuItem.price, // Price without extras
+    extras: extras.map(extra => ({
+      name: extra.name,
+      price: extra.price,
+    })),
+  };
+
+  order.items.push(orderItem);
+
+  // Recalculate the total amount
+  order.totalAmount += orderItem.price;
+
+  await order.save();
+
+  // Respond with only the desired details
+  res.status(200).json({
+    menuItemId: menuItem._id,
+    quantity: orderItem.quantity,
+    price: orderItem.price,
+    extras: orderItem.extras,
+  });
+});
+exports.finalizeOrder = asyncHandler(async (req, res, next) => {
+  const { paymentData } = req.body;  // Assuming paymentData contains necessary info
+
+  // Validate input
+  if (!paymentData || !paymentData.paymentToken || !paymentData.amount) {
+    return next(new AppError(400, 'Invalid payment data.'));
+  }
+
+  // Find the order
+  const order = await Order.findById(req.params.orderId);
+  if (!order) {
+    return next(new AppError(404, 'Order not found.'));
+  }
+
+  // Process payment
+  try {
+    const paymentResult = await processGooglePayPayment(paymentData, order.totalAmount);
+    if (!paymentResult.success) {
+      return next(new AppError(500, 'Payment processing failed.'));
+    }
+
+    // Update order status
+    order.paymentStatus = 'Paid';
+    order.transactionId = paymentResult.transactionId;
+    order.status = 'Completed';  // Or update to your desired status
+    await order.save();
+
+    // // Optional: Update related entities ////// needs works
+    // const customer = await User.findById(order.customer);
+    // if (customer) {
+    //   if (!customer.orders) {
+    //     customer.orders = [];
+    //   }
+    //   customer.orders.push(order._id);
+    //   await customer.save();
+    // }
+
+    const restaurant = await Restaurant.findById(order.restaurant);
+    if (restaurant) {
+      if (!restaurant.orders) {
+        restaurant.orders = [];
+      }
+      restaurant.orders.push(order._id);
+      await restaurant.save();
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Order finalized successfully.',
+      order
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'fail',
+      message: 'Payment processing error',
+      error: error.message
+    });
+  }
 });

@@ -14,6 +14,7 @@ const app = express();
 const menuItemRoutes = require("./routes/menuItem.Routes");
 const reviewRoutes = require("./routes/review.Routes");
 const statisticsRoutes = require("./routes/statistics.Routes");
+const authController = require("./controllers/authController");
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -27,11 +28,11 @@ app.use(cookieParser());
 
 app.use("/api/restaurants", restaurantRouter);
 app.use("/api/users", userRoutes);
-app.use("/api/orders", OrdersRoutes);
+
 app.use("/api/menu", menuRoutes);
 app.use("/api/statistics", statisticsRoutes);
 app.use(express.static("uploads")); // Serve static files from the uploads folder
-
+app.use("/api/orders", authController.protect, OrdersRoutes);
 app.use("/api/menuitems", menuItemRoutes); // Use the menu item routes
 
 app.use("/api/reviews", reviewRoutes);
