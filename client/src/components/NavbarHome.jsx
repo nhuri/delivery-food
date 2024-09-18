@@ -15,7 +15,8 @@ import { IoFishSharp } from "react-icons/io5";
 import { IoFastFood } from "react-icons/io5";
 import RestaurantList from "../restaurant/RestaurantList";
 import { FcSearch } from "react-icons/fc";
-import Modal from "react-bootstrap/Modal"; //added
+import Modal from "react-bootstrap/Modal";
+
 function NavbarHome() {
   // const [activeKey, setActiveKey] = useState(); //removed
   const [showModal, setShowModal] = useState(false); // Added 
@@ -23,7 +24,7 @@ function NavbarHome() {
   const handleInputSearch = (e) => {
     setSearchValue(e.target.value);
   };
-  const handleSearchRestaurant = () => {};
+  const handleSearchRestaurant = () => { };
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const handleFilter = (category) => {
@@ -31,7 +32,7 @@ function NavbarHome() {
   };
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-  
+
   return (
     <>
       {["sm"].map((expand) => (
@@ -50,14 +51,36 @@ function NavbarHome() {
               <Offcanvas.Body>
                 <div id="addRestaurant">
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                  <Button onClick={handleShowModal}>Add restaurant</Button>
+                    {/* <Button onClick={handleShowModal}>Add restaurant</Button> */}
+                    <Button id="red-btn"
+                      onClick={handleShowModal}
+                      style={{
+                        backgroundColor: '#FF5252',
+                        color: '#f8f9fa',
+                        fontWeight: 'bold',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '9999px',
+                        border: '1px solid #FF5252',
+                        transition: 'all 0.3s ease-in-out',
+                        marginTop: 5,
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor ='#f8f9fa';
+                        e.target.style.color =  '#FF5252';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = '#FF5252';
+                        e.target.style.color = '#f8f9fa';
+                      }}
+                    >
+                      Add Restaurant
+                    </Button>
                   </Nav>
                 </div>
                 <Nav id="iconNav" className="d-flex flex-column">
                   <div
-                    className={`icon-container ${
-                      selectedCategory === "All" ? "selected" : ""
-                    }`}
+                    className={`icon-container ${selectedCategory === "All" ? "selected" : ""
+                      }`}
                     onClick={() => handleFilter("All")}
                   >
                     <IoFastFood id="icon" />
@@ -66,9 +89,8 @@ function NavbarHome() {
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
                   <div
-                    className={`icon-container ${
-                      selectedCategory === "Burger" ? "selected" : ""
-                    }`}
+                    className={`icon-container ${selectedCategory === "Burger" ? "selected" : ""
+                      }`}
                     onClick={() => handleFilter("Burger")}
                   >
                     <IoFastFood id="icon" />
@@ -77,9 +99,8 @@ function NavbarHome() {
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
                   <div
-                    className={`icon-container ${
-                      selectedCategory === "Pizza" ? "selected" : ""
-                    }`}
+                    className={`icon-container ${selectedCategory === "Pizza" ? "selected" : ""
+                      }`}
                     onClick={() => handleFilter("Pizza")}
                   >
                     <IoPizza id="icon" />
@@ -88,9 +109,8 @@ function NavbarHome() {
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
                   <div
-                    className={`icon-container ${
-                      selectedCategory === "Italian" ? "selected" : ""
-                    }`}
+                    className={`icon-container ${selectedCategory === "Italian" ? "selected" : ""
+                      }`}
                     onClick={() => handleFilter("Italian")}
                   >
                     <IoFishSharp id="icon" />
@@ -99,9 +119,8 @@ function NavbarHome() {
                 </Nav>
                 <Nav id="iconNav" className="d-flex flex-column">
                   <div
-                    className={`icon-container ${
-                      selectedCategory === "Drink" ? "selected" : ""
-                    }`}
+                    className={`icon-container ${selectedCategory === "Drink" ? "selected" : ""
+                      }`}
                     onClick={() => handleFilter("Drink")}
                   >
                     <BiDrink id="icon" />
@@ -131,7 +150,7 @@ function NavbarHome() {
           </Container>
         </Navbar>
       ))}
-         <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Add Restaurant</Modal.Title>
         </Modal.Header>

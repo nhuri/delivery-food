@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import EditRestaurant from "./EditRestaurant";
+import EditRestaurant from "../restaurant/EditRestaurant";
 import {
   useDeleteRestaurantMutation,
   useGetRestaurantQuery,
 } from "../slices/restaurantApiSlice";
-import "./restaurant.css";
+import "../restaurant/restaurant.css";
 import { useGetReviewsQuery } from "../slices/reviewApiSlice";
-import Colors from "../utils/Colors"
 
-const RestaurantItem = ({
+export default RestaurantCard = ({
   id,
   name,
   logo,
@@ -20,7 +19,8 @@ const RestaurantItem = ({
   menu,
   statistics,
   distanceKM,
-}) => {
+}) =>  {
+  {
   const [editMode, setEditMode] = useState(false);
   const [deleteRestaurant] = useDeleteRestaurantMutation();
   const { refetch } = useGetRestaurantQuery();
@@ -90,79 +90,26 @@ const RestaurantItem = ({
   } else urlImage = logo;
 
   return (
-    <Card
-      style={{
-        width: "18rem",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        cursor: "pointer", // מציין שהכרטיס ניתן ללחיצה
-        transform: hover ? "scale(1.02)" : "scale(1)", // מגדיל את הכרטיס כאשר העכבר עובר עליו
-        boxShadow: hover
-          ? "0 4px 8px rgba(0, 0, 0, 0.2)"
-          : "0 2px 4px rgba(0, 0, 0, 0.1)", // מוסיף צל כאשר העכבר עובר עליו
-        border: "1px solid #FF5252",
-      }}
-      onClick={handleCardClick}
-      onMouseEnter={() => setHover(true)} // הגדרת מצב hover
-      onMouseLeave={() => setHover(false)} // הגדרת מצב hover
-    >
-      <Card.Img variant="top" src={urlImage} />
-      <Card.Body>
-        <Card.Title style={{
-          color: "#FF5252",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginBottom: "15px"
-        }}>{name}</Card.Title>
-        <Card.Text style={{ fontWeight: "bold", fontSize: "1.1em" }}>{address}</Card.Text>
-        <Card.Text> <span style={{ fontWeight: "bold" }}>Distance:</span> {distanceKM}</Card.Text>
-        <Card.Text> <span style={{ fontWeight: "bold" }}>Rating:</span> {averageRating}</Card.Text>
-
-        <Button
-          variant="primary"
-          id="btn"
-          onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע
-          style={{
-            backgroundColor: '#FF5252',
-            color: '#f8f9fa',
-            fontWeight: 'bold',
-            padding: '0.5rem 1rem',
-            borderRadius: '9999px',
-            border: '1px solid #FF5252',
-            transition: 'all 0.3s ease-in-out',
-            marginTop: 5,
-          }}
-        >
-          More
-        </Button>
-        {/* <Button
-          id="btn"
-          onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע
-        >
-          {name} Website
-          <Link to="https://florentina.co.il/" />
-        </Button> */}
-        {/* <Button
-          id="btn"
-          onClick={(e) => {
-            e.stopPropagation(); // הימנע מהפצת האירוע
-            handleDeleteRestaurant(e);
-          }}
-        >
-          Delete Restaurant
-        </Button> */}
-        {/* <Button
-          id="btn"
-          onClick={(e) => {
-            e.stopPropagation(); // הימנע מהפצת האירוע
-            setEditMode((prev) => !prev);
-          }}
-        >
-          Edit Restaurant
-        </Button> */}
-      </Card.Body>
-      {editMode && <EditRestaurant id={id} setEditMode={setEditMode} />}
+    <Card sx={{ maxWidth: 345 }}>
+      <CardMedia
+        sx={{ height: 140 }}
+        image="/static/images/cards/contemplative-reptile.jpg"
+        title="green iguana"
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+        {name}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          Lizards are a widespread group of squamate reptiles, with over 6,000
+          species, ranging across all continents except Antarctica
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button size="small">Share</Button>
+        <Button size="small">Learn More</Button>
+      </CardActions>
     </Card>
   );
-};
+  }}
 
-export default RestaurantItem;

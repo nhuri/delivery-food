@@ -1,0 +1,25 @@
+.review-card {
+    width: 100%;
+    margin-bottom: 20px;
+    height: 100%;  /* This ensures all cards in a row have the same height */
+  }
+  
+  .review-card .card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* This prevents content from overflowing */
+  }
+  
+  .review-content {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  
+  .review-text, .review-comment {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;  /* Ensures text doesn't overflow horizontally */
+  }

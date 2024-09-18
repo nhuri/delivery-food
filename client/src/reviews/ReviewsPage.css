@@ -1,0 +1,25 @@
+/* .reviews-container {
+
+} */
+
+.card-body {
+    padding: 1rem;
+}
+
+.row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+.col {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.board {
+    width: calc(100% - 20px);
+    /* Full width minus 20px (10px on each side) */
+    margin: 20px auto;
+    /* 20px top and bottom, auto left and right for centering */
+    max-width: 1400px;
+    /* Optional: set a max-width if you don't want it to stretch too wide on large screens */
+}

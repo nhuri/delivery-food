@@ -1,20 +1,67 @@
+:root {
+  --main-red: #FF5252;
+  --sec-red: #FF8A80;
+  --white: #f8f9fa;
+  --black: #000000;
+  --orange: #e8643a;
+  --green: #1dde1d;
+  --button_green: #d3f9d8;
+  /* --navbarColor: #f8f9fa; */
+}
+
+
+/*
+Sidebar component csss*/
+.sidebar-vibrant {
+  background-color: var(--main-red);
+  padding: 10px ;
+  margin-bottom: var(--sec-red);
+}
+
+.sidebar-vibrant .navbar-brand {
+  /* color: #5cef13; */
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-vibrant .nav-link {
+  color: var(--white) !important;
+  font-weight: 500;
+  margin: 0 10px;
+  padding: 10px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-vibrant .nav-link:hover,
+.sidebar-vibrant .nav-link:focus {
+  background-color: var(--sec-red) !important;
+  color: var(--white) !important;
+  transform: translateY(-2px);
+}
+
+.sidebar-vibrant .nav-link.active {
+  background-color: var(--white) !important;
+  color: var(--main-red) !important;
+}
+
+/* -- */
 #addRestaurant {
   flex-basis: 200px;
 }
+
 #offcanvas {
+  background-color: transparent;
+  /* border: 1px solid #FF5252;  */
+  /* box-shadow: 0 2px 4px var(--sec-red);  */
   position: relative;
 }
-#accordion {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0%;
-  bottom: 0;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
+
+
+
 #iconNav {
   display: flex;
   flex-direction: column;
@@ -24,6 +71,7 @@
   align-content: center;
   align-items: center;
 }
+
 /* General styles for the icon-container */
 .icon-container {
   cursor: pointer;
@@ -33,36 +81,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px; /* Adds space between icon and text */
+  gap: 10px;
+  /* Adds space between icon and text */
 }
 
 /* Style for the selected icon-container */
 .icon-container.selected {
-  background-color: #d3f9d8; /* Background color when selected */
+  background-color: var(--button_green);
+  /* Background color when selected */
   border-radius: 4px;
   font-weight: bold;
 }
 
 /* Styles for icon and text */
 #icon {
-  font-size: 24px; /* Adjust size of the icon */
+  font-size: 24px;
+  /* Adjust size of the icon */
 }
 
 .icon-container div {
   margin: 0;
-  font-size: 16px; /* Adjust size of the text */
+  font-size: 16px;
+  /* Adjust size of the text */
 }
 
-#sidebar-nav {
-  /* position: fixed; */
-  /* top: 0; */
-  /* left: 0; */
-  /* width: 200px;  */
-  /* height: 100%; */
-  /* background-color: #f8f9fa; */
-  /* z-index: 1051; */
-  /* pointer-events: auto;  */
-}
+/* #sidebar-nav { */
+/* position: fixed; */
+/* top: 0; */
+/* left: 0; */
+/* width: 200px;  */
+/* height: 100%; */
+/* background-color: #f8f9fa; */
+/* z-index: 1051; */
+/* pointer-events: auto;  */
+/* } */
 /* #sidebar .nav-link {
   z-index: 1052; 
 } */
@@ -70,20 +122,39 @@
 .search-form {
   display: flex;
   align-items: center;
-  gap: 10px; /* Adds space between the input and the button */
+  gap: 10px;
+  /* Adds space between the input and the button */
 }
 
 #search-input {
   flex: 1;
   width: 239px;
 }
-
+#search-input:focus {
+  border-color: #FF5252 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 82, 82, 0.25) !important; 
+}
 .search-button {
   display: flex;
   align-items: center;
-  gap: 5px; /* Adds space between the button text and icon */
+  gap: 5px;
+  color: var(--white) !important ;
+  background-color: var(--main-red) !important ;
+  border-color: var(--main-red) !important;
+  /* Adds space between the button text and icon */
 }
-
+.search-button:hover, .search-button:focus {
+  background-color: var(--sec-red) !important; /* Use secondary red on hover */
+  border-color: var(--sec-red) !important;
+  color: var(--white) !important;
+}
+.search-button:active {
+  background-color: var(--main-red) !important;
+  border-color: var(--main-red) !important;
+  transform: translateY(1px); /* Slight push effect */
+}
 .search-icon {
-  font-size: 1.2rem; /* Adjust the size of the icon */
+  font-size: 1.2rem;
+  color: var(--white) !important;
+  /* Adjust the size of the icon */
 }
