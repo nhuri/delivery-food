@@ -5,6 +5,15 @@
   /* padding: 2rem; */
   /* text-align: center; */
 }
+
+
+.main-content-area {
+  background: linear-gradient(to bottom,white, #FF5252 );
+  min-height: calc(100vh-60px); /* This ensures the background covers the full height of the viewport */
+  padding-top: 60px; /* Adjust this value based on your Sidebar height */
+  padding : 20px;
+}
+
 /* 
 .logo {
   height: 6em;
