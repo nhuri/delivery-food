@@ -68,18 +68,7 @@ const RestaurantItem = ({
 
   const handleCardClick = () => {
     navigate(
-      `/SingleRestaurant?id=${id}&name=${encodeURIComponent(
-        name
-      )}&logo=${encodeURIComponent(logo)}&address=${encodeURIComponent(
-        address
-      )}&location=${encodeURIComponent(location)}&menu=${encodeURIComponent(
-        menu
-      )}&statistics=${encodeURIComponent(
-        statistics
-      )}&averageRating=${encodeURIComponent(
-        averageRating
-      )}&reviewsArr=${encodeURIComponent(JSON.stringify(reviewsArr))}
-       &distanceKM=${encodeURIComponent(distanceKM)}`
+      `/SingleRestaurant?id=${id}&name=${encodeURIComponent(name)}&logo=${encodeURIComponent(logo)}&address=${encodeURIComponent(address)}&averageRating=${encodeURIComponent(averageRating)}&distanceKM=${encodeURIComponent(distanceKM)}`
     );
   };
 

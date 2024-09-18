@@ -3,26 +3,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import "./SingleRestaurant.css";
 
-const SingleRestaurant = ({
-  id,
-  name,
-  logo,
-  address,
-  location,
-  menu,
-  statistics,
-  distanceKM,
-}) => {
-  // const location2 = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const id = queryParams.get("id");
-  // const name = queryParams.get("name");
-  // const logo = queryParams.get("logo");
-  // const address = queryParams.get("address");
-  // const averageRating = queryParams.get("averageRating");
-  // const distanceKM = queryParams.get("distanceKM");
-
+const SingleRestaurant = () => {
+  const location = useLocation(); 
   const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  
+  const id = queryParams.get("id");
+  const name = queryParams.get("name");
+  const logo = queryParams.get("logo");
+  const address = queryParams.get("address");
+  const averageRating = queryParams.get("averageRating");
+  const distanceKM = queryParams.get("distanceKM");
+
 
   let urlImage;
   if (logo?.startsWith("/uploads")) {
