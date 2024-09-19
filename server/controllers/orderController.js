@@ -4,7 +4,7 @@ const Restaurant = require("../models/restaurantModel");
 const User = require("../models/userModel");
 // const { processGooglePayPayment } = require("../utils/googlePay");
 const asyncHandler = require("express-async-handler");
-const AppError = require("../utils/appError");
+const AppError = require("../utils/AppError");
 const mockProcessPayment = require("../utils/googlePay");
 // 1. Create a new order
 exports.createOrder = asyncHandler(async (req, res) => {
@@ -27,7 +27,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
 // 2. Add an item to the order
 exports.addItemToOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
-  const { menuItemId, extrasIds = [], removedIngredientsIds = [] } = req.body;
+  const { menuItemId, extrasIds = [], removedIngredientsIds = [], quantity = 1 } = req.body;
 
   // Find the order
   const order = await Order.findById(orderId);
@@ -49,12 +49,14 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
 
   // Calculate the total price for this menu item, including extras
   const extrasTotalPrice = selectedExtras.reduce((acc, extra) => acc + extra.price, 0);
-  const itemTotalPrice = menuItem.price + extrasTotalPrice;
+
+  // Multiply the price by the quantity for both the base price and the extras
+  const itemTotalPrice = (menuItem.price + extrasTotalPrice) * quantity;
 
   // Add item to the order
   const orderItem = {
     menuItem: menuItem._id,
-    quantity: 1, // Default quantity, can be changed dynamically
+    quantity, // Use the quantity passed in the request
     price: itemTotalPrice,
     ingredients: remainingIngredients.map(ingredient => ({ name: ingredient.name })),
     extras: selectedExtras.map(extra => ({ name: extra.name, price: extra.price })),
@@ -62,8 +64,8 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
 
   order.items.push(orderItem);
 
-  // Recalculate total order amount
-  order.totalAmount = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  // Recalculate total order amount including extras
+  order.totalAmount = order.items.reduce((acc, item) => acc + item.price, 0);
 
   await order.save();
 
@@ -76,6 +78,7 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
     totalOrderAmount: order.totalAmount,
   });
 });
+
 
 // 3. Remove extras
 exports.removeExtras = asyncHandler(async (req, res) => {
