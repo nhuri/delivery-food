@@ -37,7 +37,7 @@ const RestaurantItem = ({
   const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
     skip: !reviewTarget,
   });
-  console.log(getReviewsRestaurant);
+  // console.log(getReviewsRestaurant);
   // const reviewsArr = getReviewsRestaurant?.data?.reviews?.length > 0;
   const [reviewsArr, setReviewsArr] = useState([]);
 
@@ -109,7 +109,8 @@ const RestaurantItem = ({
         <Button
           variant="primary"
           id="btn"
-          onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע
+          onClick={(e) => e.stopPropagation()
+      } // הימנע מהפצת האירוע
           style={{
             backgroundColor: '#FF5252',
             color: '#f8f9fa',

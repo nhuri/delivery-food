@@ -69,11 +69,16 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     secure: true,
     sameSite: "none",
   });
-
+  const userInfo = { // non sensitive data only.
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  };
   res.status(200).json({
     status: "success",
     token,
-    user,
+    data: { user: userInfo },
   });
 });
 

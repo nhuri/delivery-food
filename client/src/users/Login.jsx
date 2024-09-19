@@ -11,7 +11,6 @@ import {
 } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, setUserInfoOnLoginOrRegister } from "../slices/authSlice";
-
 const Login = () => {
   const [registerModal, setRegisterModal] = useState(false);
   const handleCloseRegisterModal = () => setRegisterModal(false);
@@ -34,7 +33,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [errors, setErrors] = useState({});  //  state for form validation errors
   const dispatch = useDispatch();
 
   const handleLogout = async (e) => {
@@ -73,6 +72,9 @@ const Login = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   const data = userInfo ? true : false;
+  // console.log(userInfo)
+  // console.log(data)
+
   const [bool, setBool] = useState(data);
 
   useEffect(() => {
@@ -91,7 +93,10 @@ const Login = () => {
   }, [data]);
 
   useEffect(() => {}, [bool]);
-
+  const handleSocialLogin = (provider) => {
+    // This is a placeholder function. You would implement the actual social login logic here.
+    console.log(`Logging in with ${provider}`);
+  };
   return (
     <>
       <div id="login">

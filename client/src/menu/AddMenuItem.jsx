@@ -56,7 +56,7 @@ const AddMenuItem = ({ setAddMode ,id}) => {
 
 const handleAddMenuItem = async (e) => {
   e.preventDefault();
-  console.log(id);
+  // console.log(id);
 
   try {
     const formData = new FormData();
@@ -71,14 +71,14 @@ const handleAddMenuItem = async (e) => {
 
     // Log formData to check if it's populated correctly
     for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+      // console.log(`${key}: ${value}`);
     }
 
     const menuId = id ?? "test";
 
     // Call the mutation hook to create a menu item
     const response = await createMenuItem({ formData, menuId }).unwrap();
-    console.log("Menu item created:", response);
+    // console.log("Menu item created:", response);
 
     // Reset form and refetch items
     setAddMode(null);

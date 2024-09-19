@@ -16,7 +16,8 @@ import { IoFastFood } from "react-icons/io5";
 import RestaurantList from "../restaurant/RestaurantList";
 import { FcSearch } from "react-icons/fc";
 import Modal from "react-bootstrap/Modal";
-
+import RButton from './rButton';
+import { useSelector } from 'react-redux';
 function NavbarHome() {
   // const [activeKey, setActiveKey] = useState(); //removed
   const [showModal, setShowModal] = useState(false); // Added 
@@ -32,6 +33,9 @@ function NavbarHome() {
   };
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const currentUserType = userInfo ? userInfo.role : 'guest';
+  console.log(userInfo)
 
   return (
     <>
@@ -51,8 +55,10 @@ function NavbarHome() {
               <Offcanvas.Body>
                 <div id="addRestaurant">
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                    {/* <Button onClick={handleShowModal}>Add restaurant</Button> */}
-                    <Button id="red-btn"
+                    <RButton onClick={handleShowModal} hoverEffect={true} visibleTo={'all'} currentUserType={currentUserType}>
+                      Add Restaurant
+                    </RButton>
+                    {/* <Button id="red-btn"
                       onClick={handleShowModal}
                       style={{
                         backgroundColor: '#FF5252',
@@ -65,8 +71,8 @@ function NavbarHome() {
                         marginTop: 5,
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.backgroundColor ='#f8f9fa';
-                        e.target.style.color =  '#FF5252';
+                        e.target.style.backgroundColor = '#f8f9fa';
+                        e.target.style.color = '#FF5252';
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.backgroundColor = '#FF5252';
@@ -74,7 +80,7 @@ function NavbarHome() {
                       }}
                     >
                       Add Restaurant
-                    </Button>
+                    </Button> */}
                   </Nav>
                 </div>
                 <Nav id="iconNav" className="d-flex flex-column">

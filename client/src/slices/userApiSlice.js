@@ -31,7 +31,12 @@ const userApiSlice = apiSlice.injectEndpoints({
     //   keepUnusedDataFor: 5,
     //   withCredentials: true,
     // }),
-
+    verifyToken: builder.query({
+      query: () => ({
+        url: `${USER_URL}/verify-token`,
+        method: "GET",
+      }),
+    }),
     registerUser: builder.mutation({
       query: (data) => ({
         url: `${USER_URL}/register`,
@@ -71,4 +76,5 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
   useForgotPasswordMutation,
+  useVerifyTokenQuery,
 } = userApiSlice;
