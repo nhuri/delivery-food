@@ -15,21 +15,26 @@ import SingleRestaurant from "./restaurant/SingleRestaurant";
 import MenuList from "./menu/MenuList";
 import ReviewsPage from "./reviews/reviewsPage";
 import { useVerifyTokenQuery } from "./slices/userApiSlice";
-import { setUserInfoOnLoginOrRegister } from "./slices/authSlice";
+import { setUserInfoOnLoginOrRegister , logout } from "./slices/authSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const { data, isLoading } = useVerifyTokenQuery();
+  const { data: userData, error, isLoading } = useVerifyTokenQuery();
 
   useEffect(() => {
-    if (data && data.user) {
-      dispatch(setUserInfoOnLoginOrRegister(data.user));
+    if (userData && userData.data && userData.data.user) {
+      dispatch(setUserInfoOnLoginOrRegister(userData.data.user));
+    } else if (error) {
+      console.error("Token verification error:", error);
+      dispatch(logout());
     }
-  }, [data, dispatch]);
+  }, [userData, error, dispatch]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+
 
   return (
     <Router>

@@ -35,7 +35,16 @@ const userApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${USER_URL}/verify-token`,
         method: "GET",
+        credentials: 'include',
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          dispatch(logout());
+        }
+      },
     }),
     registerUser: builder.mutation({
       query: (data) => ({

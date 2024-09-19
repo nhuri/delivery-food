@@ -6,5 +6,7 @@ export const ITEMS_URL = "/items"
 export const MENUITEMS_URL = "/menuitems";
 export const REVIEWS_FOR_RESTAURANT_URL = "/reviews";
 export const REVIEWS_FOR_MENUITEM_URL = "/reviewsForMenuItem";
+export const ORDER_URL = "/orders";
+
 
 // export const NEAREST_RESTAURANTS_URL = "/restaurants/nearby";
