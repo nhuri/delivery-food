@@ -17,6 +17,8 @@ import {
   useAddItemToOrderMutation
 } from '../slices/orderSlice'; // Updated imports
 import { setCurrentOrderId } from '../slices/orderSlice';
+import { addToCart } from '../slices/cartSlice'; 
+
 
 const MenuItems = ({ id, name, description, image, items, res_id }) => {
 
@@ -79,12 +81,14 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
         console.log("User needs to log in"); // Added console log for debugging
         return;
       }
+      // console.log(currentOrderId); // Added console log for debugging
+      console.log(userInfo.user); // Added console log for debugging
 
       let orderId = currentOrderId;
       if (!orderId) {
         // Create a new order if one doesn't exist
         const newOrder = await createOrder({
-          customer: userInfo?.data?.user?.id,
+          customer: userInfo?.id,
           restaurant: res_id, // Assuming 'id' here is the restaurant id
           deliveryTime: new Date(), // You might want to let the user choose this
           communication: "" // You might want to add this field to your form
@@ -102,6 +106,13 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
       }).unwrap();
 
       console.log("Item added to order:", result); // Added console log for debugging
+      dispatch(addToCart({
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        // Add any other relevant item details
+      }));
+
       // Show a success message to the user
     } catch (err) {
       // Handle error
