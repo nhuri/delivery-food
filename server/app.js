@@ -38,7 +38,7 @@ app.use("/api/statistics", statisticsRoutes);
 app.use(express.static("uploads")); // Serve static files from the uploads folder
 app.use("/api/orders", authController.protect, OrdersRoutes);
 app.use("/api/menuitems", menuItemRoutes); // Use the menu item routes
-
+// authController.protect,
 app.use("/api/reviews", reviewRoutes);
 
 app.all("*", (req, res, next) => {
