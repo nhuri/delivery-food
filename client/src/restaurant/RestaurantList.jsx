@@ -15,13 +15,13 @@ const RestaurantList = ({ searchValue, selectedCategory }) => {
   // Fetch all restaurants
   const { data: allRestaurants, isLoading: isLoadingRestaurants } =
     useGetRestaurantQuery();
-  console.log(allRestaurants)
+  // console.log(allRestaurants)
   // Fetch nearby restaurants based on user ID
   const { data: nearestRestaurantsToUser, isLoading: isLoadingNearby } =
     useGetNearbyRestaurantsQuery(userID, {
       skip: !userID, // Skip query if userID is not available
     });
-  console.log(nearestRestaurantsToUser)
+  // console.log(nearestRestaurantsToUser)
   // Determine which list to display: nearby or filtered
   let restaurantList = allRestaurants;
 

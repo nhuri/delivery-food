@@ -221,7 +221,7 @@ const EditMenuItem = ({ menuId, setEditMode }) => {
   const [inputDescription, setInputDescription] = useState("");
   const [inputCategory, setInputCategory] = useState("");
   const [editMenuItem] = useUpdateMenuItemMutation();
-  console.log(menuId);
+  // console.log(menuId);
 
   const handleEditMenuItem = async (e) => {
     e.preventDefault();

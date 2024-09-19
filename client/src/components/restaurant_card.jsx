@@ -37,7 +37,7 @@ export default RestaurantCard = ({
   const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
     skip: !reviewTarget,
   });
-  console.log(getReviewsRestaurant);
+  // console.log(getReviewsRestaurant);
   // const reviewsArr = getReviewsRestaurant?.data?.reviews?.length > 0;
   const [reviewsArr, setReviewsArr] = useState([]);
 

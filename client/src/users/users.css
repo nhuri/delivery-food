@@ -3,25 +3,69 @@
   display: flex;
   justify-content: right;
 }
-#openLoginModal img {
-  width: 45px;
-}
-#openLogoutModal img {
-  width: 45px;
-}
-#userLogin {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-#loginModal {
-  /* pointer-events: none; */
-}
-/* 
-#loginModal-content {
-  pointer-events: auto; 
+
+.login-button, .logout-button {
+  background-color: #FF5252;
+  border-color: #FF5252;
+  color: #FFFFFF;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
-#loginModal-backdrop {
-  pointer-events: none;
-} */
+.login-button:hover, .logout-button:hover {
+  background-color: #FF8A80;
+  border-color: #FF8A80;
+}
+
+.modal-content {
+  border-radius: 10px;
+  border: none;
+}
+
+.modal-header {
+  background-color: #FF5252;
+  color: #FFFFFF;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.modal-title {
+  font-weight: bold;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.form-control:focus {
+  border-color: #FF8A80;
+  box-shadow: 0 0 0 0.2rem rgba(255, 82, 82, 0.25);
+}
+
+.btn-primary {
+  background-color: #FF5252;
+  border-color: #FF5252;
+}
+
+.btn-primary:hover {
+  background-color: #FF8A80;
+  border-color: #FF8A80;
+}
+
+.btn-secondary {
+  background-color: #FF8A80;
+  border-color: #FF8A80;
+}
+
+.btn-secondary:hover {
+  background-color: #FF5252;
+  border-color: #FF5252;
+}
+
+.btn-link {
+  color: #FF5252;
+}
+
+.btn-link:hover {
+  color: #FF8A80;
+}

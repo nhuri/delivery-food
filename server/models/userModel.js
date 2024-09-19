@@ -32,12 +32,17 @@ const userSchema = new mongoose.Schema({
       ref: 'Order',
     },
   ],
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'restaurant-owner'],
+    default: 'user',
+  },
   passwordResetToken: String,
   passwordResetExpires: Date,
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -47,12 +52,12 @@ userSchema.pre('save', async function(next) {
 });
 
 // Method to check password
-userSchema.methods.checkPassword = async function(candidatePassword, userPassword) {
+userSchema.methods.checkPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 // Method to create password reset token
-userSchema.methods.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
   this.passwordResetToken = crypto
     .createHash('sha256')
