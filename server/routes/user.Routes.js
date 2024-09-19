@@ -5,8 +5,9 @@ const authController = require('../controllers/authController'); // Adjust the p
 
 
 // Define routes and attach controller functions
+router.get("/verify-token",authController.protect, authController.verifyToken);
 router.post("/register", authController.registerUser);
-router.post("/login", authController.loginUser);
+router.post("/login",  authController.loginUser);
 router.post("/logout", authController.logoutUser);
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);

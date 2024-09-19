@@ -67,7 +67,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     httpOnly: true,
     expires: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     secure: true,
-    sameSite: "none",
+    sameSite: "strict",
   });
   const userInfo = { // non sensitive data only.
     id: user._id,
@@ -84,27 +84,40 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 
 exports.protect = async (req, res, next) => {
   let token;
-
+console.log("We are in protect")
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
 
-  console.log("Token:", token); // Debug log
+  console.log("Token received:", token); // Debug log
 
   if (!token) {
     return res.status(401).json({ message: 'Not authorized, no token' });
   }
 
   try {
+    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    console.log("Decoded token:", decoded); // Debug log
+
+    // Find the user by ID
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    // Attach the user to the request object
+    req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Not authorized to access this route' });
+    console.error("Token verification error:", error); // Error logging
+    return res.status(401).json({ message: 'Not authorized, token failed', error: error.message });
   }
 };
+// Updated protect middleware to use a separate variable for user lookup
+// Added more detailed error response
 exports.restrictByPremium = (req, res, next) => {
   if (req.user.role != "premium")
     return next(new AppError(403, "This rescource is not alowed"));
@@ -117,7 +130,25 @@ exports.restrictByRole = (...alowedRoles) => {
     next();
   };
 };
+exports.verifyToken = asyncHandler(async (req, res) => {
+  // The token should be verified and user attached in the protect middleware
+  if (!req.user) {
+    return res.status(401).json({ status: "fail", message: "User not authenticated or token invalid" });
+  }
 
+  // Return user data if authenticated
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role
+      }
+    }
+  });
+});
 ///1 forgot password :
 //נבדוק את המייל  ונשלח אליו קישור לשינוי סיסמה  הקישור יהיה תקף כ 5 דק
 //sending emails

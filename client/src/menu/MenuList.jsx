@@ -28,6 +28,7 @@ const MenuList = () => {
             description={menuItems.description}
             image={menuItems.image}
             items={menuItems.items}
+            res_id = {id}
           />
         ))}
       </div>

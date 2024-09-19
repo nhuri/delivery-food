@@ -15,6 +15,10 @@ const menuItemRoutes = require("./routes/menuItem.Routes");
 const reviewRoutes = require("./routes/review.Routes");
 const statisticsRoutes = require("./routes/statistics.Routes");
 const authController = require("./controllers/authController");
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.path}`);
+  next();
+});
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));

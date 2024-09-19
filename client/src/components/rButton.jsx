@@ -7,10 +7,11 @@ const RButton = ({
   onClick,
   hoverEffect = true,
   visibleTo = 'all',
+  currentUserType,
   ...props
 }) => {
   // Check if the button should be rendered based on visibleTo prop
-  if (visibleTo !== 'all' && visibleTo !== props.currentUserType) {
+  if (visibleTo !== 'all' && visibleTo !== currentUserType) {
     return null;
   }
   
@@ -24,29 +25,41 @@ const RButton = ({
     transition: 'all 0.3s ease-in-out',
   };
 
-  const hoverStyle = hoverEffect
-    ? {
-      '&:hover': {
+  const [style, setStyle] = React.useState(baseStyle);
+  // Added state for dynamic styling
+
+  const handleMouseEnter = () => {
+    if (hoverEffect) {
+      setStyle({
+        ...baseStyle,
         backgroundColor: '#f8f9fa',
         color: '#FF5252',
         border: '1px solid #FF5252',
-      },
+      });
     }
-    : {};
-    const { currentUserType, ...buttonProps } = props;
+  };
+  // Added handleMouseEnter function
+
+  const handleMouseLeave = () => {
+    if (hoverEffect) {
+      setStyle(baseStyle);
+    }
+  };
+  // Added handleMouseLeave function
+
   return (
     <Button
       onClick={onClick}
-      style={{
-        ...baseStyle,
-        ...hoverStyle,
-      }}
+      style={style}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       {...props}
     >
       {children}
     </Button>
   );
 };
+// Updated Button component to use state for styling and handle hover effects
 
 RButton.propTypes = {
   children: PropTypes.node.isRequired,
@@ -56,28 +69,8 @@ RButton.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string)
   ]),
+  currentUserType: PropTypes.string,
 };
+// Added currentUserType to propTypes
 
 export default RButton;
-
-
-/**
- * 
- * 
- * import RButton from './path/to/rButton';
-
-const ParentComponent = ({ currentUserType }) => {
-  return (
-    <div>
-      {(currentUserType === 'admin' || currentUserType === 'manager') && (
-        <RButton onClick={handleClick} hoverEffect={true}>
-          Admin Action
-        </RButton>
-      )}
-      <RButton onClick={handleClick} hoverEffect={false}>
-        Action for All Users
-      </Button>
-    </div>
-  );
-};
- */

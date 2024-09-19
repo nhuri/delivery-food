@@ -35,7 +35,7 @@ function NavbarHome() {
   const handleCloseModal = () => setShowModal(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const currentUserType = userInfo ? userInfo.role : 'guest';
-  console.log(userInfo)
+  // console.log(userInfo)
 
   return (
     <>
