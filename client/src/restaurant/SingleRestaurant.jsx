@@ -26,7 +26,7 @@ const SingleRestaurant = () => {
     }
   );
   useEffect(() => {}, [getTopThree]);
-  console.log(getTopThree.data.topThree);
+  // console.log(getTopThree.data.topThree);
 
   let urlImage;
   if (logo?.startsWith("/uploads")) {
@@ -108,6 +108,7 @@ const SingleRestaurant = () => {
           {getTopThree?.data.topThree.map((obj) => {
             return (
               <Card
+                key={obj.item._id}
                 style={{
                   width: "18rem",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -135,11 +136,14 @@ const SingleRestaurant = () => {
                     {obj.item.name}
                   </Card.Title>
                   <Card.Text style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+                    price:
                     {obj.item.price}
                   </Card.Text>
                   <Card.Text>
                     {" "}
-                    <span style={{ fontWeight: "bold" }}>Distance:</span>{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      Description:
+                    </span>{" "}
                     {obj.item.description}
                   </Card.Text>
                   <Card.Text>
