@@ -11,6 +11,10 @@ router.post("/reviewsForMenuItem", reviewController.createReviewForMenuItem);
 
 // Get reviews by type and target
 router.get("/:reviewTarget", reviewController.getReviewsForRestaurant);
-router.get("/:reviewTarget", reviewController.getReviewsForMenuItem);
+router.get("/menuItem/:reviewTarget", reviewController.getReviewsForMenuItem);
+router.get(
+  "/menuItemRestaurant/:reviewTarget",
+  reviewController.getTopThreeByRestaurantId
+);
 
 module.exports = router;
