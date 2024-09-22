@@ -1,0 +1,56 @@
+.offcanvas {
+    background-color: #FFFFFF;
+}
+
+.offcanvas-header {
+    background-color: #FF5252;
+    color: #FFFFFF;
+}
+
+.offcanvas-title {
+    color: #FFFFFF;
+}
+
+.btn-close {
+    color: #FFFFFF;
+}
+
+.offcanvas-body {
+    padding: 1rem; /* Adjust padding to match CartItem width */
+}
+
+.continue-shopping-btn {
+    background-color: #FF5252;
+    border-color: #FF5252;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+    width: 100%; /* Ensure button takes full width */
+}
+
+.continue-shopping-btn:hover {
+    background-color: #FF8A80;
+    border-color: #FF8A80;
+}
+
+/* ... (keep the existing animation classes) ... */
+
+.item-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.item-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 500ms, transform 500ms;
+}
+
+.item-exit {
+    opacity: 1;
+}
+
+.item-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 500ms, transform 500ms;
+}

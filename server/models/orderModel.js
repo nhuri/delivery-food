@@ -27,6 +27,12 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      ingredients: [
+        {
+          name: { type: String }, // Default ingredient name
+          removable: { type: Boolean, default: true }, // If the user can remove this ingredient
+        },
+      ],
       extras: [
         {
           name: {
