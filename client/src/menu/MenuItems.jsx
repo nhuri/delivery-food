@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Accordion from "react-bootstrap/Accordion";
 
 import { Card, Button, Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux'; // Added useSelector import
@@ -17,8 +16,8 @@ import {
   useAddItemToOrderMutation
 } from '../slices/orderSlice'; // Updated imports
 import { setCurrentOrderId } from '../slices/orderSlice';
-import { addToCart } from '../slices/cartSlice'; 
-
+import { addToCart } from '../slices/cartSlice';
+import OrderItemModal from '../components/OrderItemModal';
 
 const MenuItems = ({ id, name, description, image, items, res_id }) => {
 
@@ -63,9 +62,11 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const [addItemToOrder] = useAddItemToOrderMutation();
   const currentOrderId = useSelector(state => state.order.currentOrderId); // Changed from state.order to state.auth
   const userInfo = useSelector(state => state.auth.userInfo);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   // console.log("DSADSADASD");
   // console.log(userInfo?.data?.user?.id);
-  console.log(currentOrderId);
+  // console.log(currentOrderId);
 
 
   const handleDeleteMenuItem = async (itemId) => {
@@ -74,52 +75,45 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     refetch();
   };
 
-  const handleOrderMenuItem = async (item) => {
+  const handleOrderMenuItem = (item) => {
+    setSelectedItem(item);
+    setShowOrderModal(true);
+  };
+
+  const handleAddToOrder = async (itemWithSelections) => {
     try {
       if (!userInfo) {
-        // Implement logic to prompt user to log in
-        console.log("User needs to log in"); // Added console log for debugging
+        console.log("User needs to log in");
         return;
       }
-      // console.log(currentOrderId); // Added console log for debugging
-      console.log(userInfo.user); // Added console log for debugging
-
+  
       let orderId = currentOrderId;
+  
       if (!orderId) {
-        // Create a new order if one doesn't exist
         const newOrder = await createOrder({
           customer: userInfo?.id,
-          restaurant: res_id, // Assuming 'id' here is the restaurant id
-          deliveryTime: new Date(), // You might want to let the user choose this
-          communication: "" // You might want to add this field to your form
+          restaurant: res_id,
+          deliveryTime: new Date(),
+          communication: ""
         }).unwrap();
         orderId = newOrder.order._id;
         dispatch(setCurrentOrderId(orderId));
-        console.log("New order made")
       }
-
-      // Add item to the order
+  
       const result = await addItemToOrder({
-        orderId,
-        menuItemId: item._id,
-        // Add other necessary fields like extrasIds, removedIngredientsIds if applicable
+        orderId: orderId,
+        menuItemId: itemWithSelections._id,
+        removedIngredientsIds: itemWithSelections.ingredients?.filter(ing => !itemWithSelections.selectedIngredients.includes(ing.name))
+          .map(ing => ing._id),
+        extrasIds: itemWithSelections.selectedExtras.map(extra => extra._id),
       }).unwrap();
-
-      console.log("Item added to order:", result); // Added console log for debugging
-      dispatch(addToCart({
-        _id: item._id,
-        name: item.name,
-        price: item.price,
-        // Add any other relevant item details
-      }));
-
-      // Show a success message to the user
+  
+      dispatch(addToCart(itemWithSelections));
+  
     } catch (err) {
-      // Handle error
       console.error("Failed to add item to order:", err);
     }
   };
-
 
   const handleReviewsMenuItem = async () => { };
 
@@ -188,6 +182,15 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
           </div>
         ))}
       </div>
+      <OrderItemModal
+        show={showOrderModal}
+        onHide={() => {
+          setShowOrderModal(false);
+          setSelectedItem(null); // Reset selectedItem when closing the modal
+        }}
+        item={selectedItem}
+        onAddToOrder={handleAddToOrder}
+      />
     </Card>
   );
 };

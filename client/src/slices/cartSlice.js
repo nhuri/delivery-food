@@ -27,13 +27,23 @@ const cartSlice = createSlice({
   },
   reducers: {
     addToCart: (state, action) => {
-      const existingItem = state.items.find(item => item._id === action.payload._id);
+      const newItem = action.payload;
+      const existingItem = state.items.find(item => 
+        item._id === newItem._id &&
+        JSON.stringify(item.selectedExtras) === JSON.stringify(newItem.selectedExtras) &&
+        JSON.stringify(item.selectedIngredients) === JSON.stringify(newItem.selectedIngredients)
+      );
+  
       if (existingItem) {
-        // Added: Ensure quantity is a number
-        existingItem.quantity = (existingItem.quantity || 0) + (action.payload.quantity || 1);
+        // Added: Update quantity and price if item exists
+        console.log("existingItem:")
+        console.log(existingItem)
+        existingItem.quantity += 1;
+        // existingItem.price += newItem.price;
       } else {
-        // Added: Ensure new item has a quantity
-        state.items.push({...action.payload, quantity: action.payload.quantity || 1});
+        // Added: Add new item if it doesn't exist
+        console.log("new item")
+        state.items.push({ ...newItem, quantity: 1 });
       }
       saveCartToStorage(state.items);
     },
@@ -44,8 +54,7 @@ const cartSlice = createSlice({
     decreaseQuantity: (state, action) => {
       const item = state.items.find(item => item._id === action.payload);
       if (item) {
-        // Added: Ensure quantity doesn't go below 0
-        item.quantity = Math.max((item.quantity || 0) - 1, 0);
+        item.quantity = Math.max(item.quantity - 1, 0);
         if (item.quantity === 0) {
           state.items = state.items.filter(i => i._id !== action.payload);
         }

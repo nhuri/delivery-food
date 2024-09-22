@@ -1,21 +1,68 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart, decreaseQuantity } from '../slices/cartSlice';
 import './CartItem.css';
+import { useUpdateOrderMutation } from '../slices/orderSlice';
+
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
+  const totalPrice = (item.price * item.quantity).toFixed(2);
+  const currentOrderId = useSelector(state => state.order.currentOrderId);
+  const [updateOrder] = useUpdateOrderMutation();
 
-  const handleIncrease = () => {
+  const handleIncrease = async () => {
     dispatch(addToCart({ ...item, quantity: 1 }));
+    if (currentOrderId) {
+      // console.log("currentOrderId:")
+      // console.log(currentOrderId)
+      // console.log(" item._id:")
+      // console.log( item._id)
+      // console.log(" item.quantity:")
+      // console.log( item.quantity)
+
+      try {
+        await updateOrder({ 
+          orderId: currentOrderId, 
+          menuItemId: item._id, 
+          quantity: item.quantity + 1 
+        });
+      } catch (error) {
+        console.error('Failed to update order:', error);
+      }
+    }
   };
 
-  const handleDecrease = () => {
+  const handleDecrease = async () => {
     if (item.quantity > 1) {
       dispatch(decreaseQuantity(item._id));
+      if (currentOrderId) {
+        try {
+          // Added: Update order in backend
+          await updateOrder({
+            orderId: currentOrderId,
+            menuItemId: item._id,
+            quantity: item.quantity - 1
+          });
+        } catch (error) {
+          console.error('Failed to update order:', error);
+        }
+      }
     } else {
       dispatch(removeFromCart(item._id));
+      if (currentOrderId) {
+        try {
+          // Added: Remove item from order in backend
+          await updateOrder({
+            orderId: currentOrderId,
+            menuItemId: item._id,
+            quantity: 0
+          });
+        } catch (error) {
+          console.error('Failed to update order:', error);
+        }
+      }
     }
   };
 
@@ -26,7 +73,10 @@ const CartItem = ({ item }) => {
           <div>
             <Card.Title>{item.name}</Card.Title>
             <Card.Text>
-              Price: ${item.price}
+              Price: ${item.price} each
+            </Card.Text>
+            <Card.Text>
+              Total: ${totalPrice}
             </Card.Text>
           </div>
           <div className="d-flex align-items-center">

@@ -29,40 +29,32 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
   const { menuItemId, extrasIds = [], removedIngredientsIds = [] } = req.body;
 
-  // Find the order
   const order = await Order.findById(orderId);
   if (!order) return res.status(404).json({ message: "Order not found" });
 
-  // Find the menu item
   const menuItem = await MenuItem.findById(menuItemId);
   if (!menuItem) return res.status(404).json({ message: "MenuItem not found" });
 
-  // Handle removed ingredients
   const remainingIngredients = menuItem.ingredients.filter(
     ingredient => !removedIngredientsIds.includes(ingredient._id.toString())
   );
 
-  // Handle selected extras
   const selectedExtras = menuItem.extras.filter(extra =>
     extrasIds.includes(extra._id.toString())
   );
 
-  // Calculate the total price for this menu item, including extras
   const extrasTotalPrice = selectedExtras.reduce((acc, extra) => acc + extra.price, 0);
   const itemTotalPrice = menuItem.price + extrasTotalPrice;
 
-  // Add item to the order
   const orderItem = {
     menuItem: menuItem._id,
-    quantity: 1, // Default quantity, can be changed dynamically
+    quantity: 1,
     price: itemTotalPrice,
     ingredients: remainingIngredients.map(ingredient => ({ name: ingredient.name })),
     extras: selectedExtras.map(extra => ({ name: extra.name, price: extra.price })),
   };
 
   order.items.push(orderItem);
-
-  // Recalculate total order amount
   order.totalAmount = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   await order.save();
@@ -149,4 +141,81 @@ exports.finalizeOrder = asyncHandler(async (req, res, next) => {
       error: error.message
     });
   }
+});
+
+// 5. update an exsisting order
+exports.updateOrder = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { menuItemId, extrasIds = [], removedIngredientsIds = [] } = req.body;
+  console.log(menuItemId)
+  console.log(extrasIds)
+  console.log(removedIngredientsIds)
+
+  // Find the order
+  const order = await Order.findById(orderId);
+  if (!order) return res.status(404).json({ message: "Order not found" });
+
+  // Find the menu item
+  const menuItem = await MenuItem.findById(menuItemId);
+  if (!menuItem) return res.status(404).json({ message: "MenuItem not found" });
+
+  // Handle removed ingredients
+  const remainingIngredients = menuItem.ingredients.filter(
+    ingredient => !removedIngredientsIds.includes(ingredient._id.toString())
+  );
+
+  // Handle selected extras
+  const selectedExtras = menuItem.extras.filter(extra =>
+    extrasIds.includes(extra._id.toString())
+  );
+
+  // Calculate the total price for this menu item, including extras
+  const extrasTotalPrice = selectedExtras.reduce((acc, extra) => acc + extra.price, 0);
+  const itemTotalPrice = menuItem.price + extrasTotalPrice;
+
+  // Add item to the order
+  const orderItem = {
+    menuItem: menuItem._id,
+    quantity: 1, // Default quantity, can be changed dynamically
+    price: itemTotalPrice,
+    ingredients: remainingIngredients.map(ingredient => ({ name: ingredient.name })),
+    extras: selectedExtras.map(extra => ({ name: extra.name, price: extra.price })),
+  };
+
+  // order.items.push(orderItem);
+ // Check if an identical item already exists in the order
+ const existingItemIndex = order.items.findIndex(item => 
+  item.menuItem.toString() === menuItemId &&
+  JSON.stringify(item.extras.map(e => e._id.toString()).sort()) === JSON.stringify(extrasIds.sort()) &&
+  JSON.stringify(item.ingredients.map(i => i._id.toString()).sort()) === JSON.stringify(remainingIngredients.map(i => i._id.toString()).sort())
+);
+
+if (existingItemIndex !== -1) {
+  // Added: Update quantity and price if item exists
+  order.items[existingItemIndex].quantity += 1;
+  order.items[existingItemIndex].price += itemTotalPrice;
+} else {
+  // Added: Create new item if it doesn't exist
+  const orderItem = {
+    menuItem: menuItem._id,
+    quantity: 1,
+    price: itemTotalPrice,
+    ingredients: remainingIngredients.map(ingredient => ({ name: ingredient.name })),
+    extras: selectedExtras.map(extra => ({ name: extra.name, price: extra.price })),
+  };
+  order.items.push(orderItem);
+}
+  // Recalculate total order amount
+  order.totalAmount = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  await order.save();
+
+  res.status(200).json({
+    menuItemId: menuItem._id,
+    quantity: orderItem.quantity,
+    price: orderItem.price,
+    ingredients: orderItem.ingredients,
+    extras: orderItem.extras,
+    totalOrderAmount: order.totalAmount,
+  });
 });

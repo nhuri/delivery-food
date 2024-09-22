@@ -6,6 +6,8 @@ const authController = require("../controllers/authController");
 // Create a new order
 router.post("/createOrder", orderController.createOrder);
 
+// update the current order
+router.patch("/:orderId/updateItem",orderController.updateOrder);
 // Add MenuItem(s) to an existing order
 router.post("/:orderId/addItemToOrder",  orderController.addItemToOrder);
 
