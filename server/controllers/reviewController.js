@@ -1,6 +1,7 @@
 const Review = require("../models/reviewModel");
 const Restaurant = require("../models/restaurantModel");
 const MenuItem = require("../models/menuItemModel");
+const Menu = require("../models/menuModel");
 const asyncHandler = require("express-async-handler");
 const Statistics = require("../models/statisticsModel");
 
@@ -183,6 +184,78 @@ exports.getReviewsForMenuItem = asyncHandler(async (req, res) => {
       status: "success",
       data: {
         reviews: menuItem.reviews, // Return the reviews from the menu item
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+});
+
+// Get all reviews for a specific menu item
+exports.getTopThreeByRestaurantId = asyncHandler(async (req, res) => {
+  const { reviewTarget } = req.params; //reviewTarget is restaurant id
+
+  if (!reviewTarget) {
+    return res.status(400).json({ message: "Review target is required" });
+  }
+
+  try {
+    //פונקציה שמקבלת מערך של מספרים ומחזירה את הממוצע של המספרים
+    const average = (arr) => {
+      if (arr?.length === 0) return 0; // התמודדות עם מערך ריק
+      const sum = arr?.reduce((acc, num) => acc + num, 0);
+      return sum / arr?.length;
+    };
+
+    const restaurant = await Restaurant.findById(reviewTarget);
+    if (!restaurant) {
+      return res.status(404).json({ message: "restaurant not found" });
+    }
+    const menu = await Menu.findById(restaurant.menu);
+
+    const items = menu.items;
+
+    const averageRatingArr = await Promise.all(
+      items.map(async (item) => {
+        const menuItem = await MenuItem.findById(item._id);
+
+        if (!menuItem || !menuItem.reviews)
+          return { averageRating: 0, item: null }; // טיפול במקרה שאין מנה או חוות דעת
+
+        const reviewsArr = menuItem.reviews;
+
+        const ratingArrOfMenuItem = await Promise.all(
+          reviewsArr.map(async (reviewId) => {
+            const review = await Review.findById(reviewId);
+            return review ? review.rating : 0; // טיפול במקרה שאין חוות דעת
+          })
+        );
+
+        let averageRating = average(
+          ratingArrOfMenuItem.filter((rating) => rating > 0)
+        ); // התעלמות מדירוגים ריקים
+
+        return { averageRating, item: menuItem }; // החזרת המידע על המנה
+      })
+    );
+    console.log(averageRatingArr);
+
+    const getTopThreeNumbers = (arr = []) => {
+      return arr
+        .filter((item) => item.item !== null) // סינון מנות שלא קיימות
+        .sort((a, b) => b.averageRating - a.averageRating) // מיון בסדר יורד
+        .slice(0, 3); // חיתוך לשלוש המנות הטובות ביותר
+    };
+
+    const topThree = getTopThreeNumbers(averageRatingArr);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        topThree, // Return the reviews from the menu item
       },
     });
   } catch (error) {
