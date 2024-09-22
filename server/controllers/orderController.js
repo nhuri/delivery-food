@@ -4,7 +4,7 @@ const Restaurant = require("../models/restaurantModel");
 const User = require("../models/userModel");
 // const { processGooglePayPayment } = require("../utils/googlePay");
 const asyncHandler = require("express-async-handler");
-const AppError = require("../utils/appError");
+const AppError = require("../utils/AppError");
 const mockProcessPayment = require("../utils/googlePay");
 // 1. Create a new order
 exports.createOrder = asyncHandler(async (req, res) => {
@@ -27,7 +27,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
 // 2. Add an item to the order
 exports.addItemToOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
-  const { menuItemId, extrasIds = [], removedIngredientsIds = [] } = req.body;
+  const { menuItemId, extrasIds = [], removedIngredientsIds = [], quantity = 1 } = req.body;
 
   const order = await Order.findById(orderId);
   if (!order) return res.status(404).json({ message: "Order not found" });
@@ -44,11 +44,14 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
   );
 
   const extrasTotalPrice = selectedExtras.reduce((acc, extra) => acc + extra.price, 0);
-  const itemTotalPrice = menuItem.price + extrasTotalPrice;
+
+  // Multiply the price by the quantity for both the base price and the extras
+  const itemTotalPrice = (menuItem.price + extrasTotalPrice) * quantity;
 
   const orderItem = {
     menuItem: menuItem._id,
     quantity: 1,
+
     price: itemTotalPrice,
     ingredients: remainingIngredients.map(ingredient => ({ name: ingredient.name })),
     extras: selectedExtras.map(extra => ({ name: extra.name, price: extra.price })),
@@ -56,6 +59,7 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
 
   order.items.push(orderItem);
   order.totalAmount = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
 
   await order.save();
 
@@ -68,6 +72,7 @@ exports.addItemToOrder = asyncHandler(async (req, res) => {
     totalOrderAmount: order.totalAmount,
   });
 });
+
 
 // 3. Remove extras
 exports.removeExtras = asyncHandler(async (req, res) => {
