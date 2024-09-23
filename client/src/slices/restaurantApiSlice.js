@@ -13,7 +13,14 @@ const restaurantApiSlice = apiSlice.injectEndpoints({
         url: `${RESTAURANT_URL}/${restaurantId}`,
       }),
       keepUnusedDataFor: 5,
-      provideTags: ["Task"],
+      provideTags: ["restaurant"],
+    }),
+    getTopThreeBySales: builder.query({
+      query: (restaurantId) => ({
+        url: `${RESTAURANT_URL}/topThreeBySales/${restaurantId}`,
+      }),
+      keepUnusedDataFor: 5,
+      provideTags: ["restaurant"],
     }),
     addRestaurant: builder.mutation({
       query: (data) => ({
@@ -40,6 +47,7 @@ const restaurantApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetRestaurantQuery,
   useRestaurantGetByIdQuery,
+  useGetTopThreeBySalesQuery,
   useAddRestaurantMutation,
   useEditRestaurantMutation,
   useDeleteRestaurantMutation,
