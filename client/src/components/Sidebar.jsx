@@ -47,7 +47,7 @@ const Sidebar = () => {
         <Navbar.Collapse id="sidebar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/Home" active={location.pathname === "/Home"}>Home</Nav.Link>
-            <Nav.Link as={Link} to="/Order" active={location.pathname === "/Order"}>Order</Nav.Link>
+            <Nav.Link as={Link} to="/Profile" active={location.pathname === "/Profile"}>Profile</Nav.Link>
             <Nav.Link as={Link} to="/Review" active={location.pathname === "/Review"}>Review</Nav.Link>
             <Nav.Link as={Link} to="/Payment" active={location.pathname === "/Payment"}>Payment</Nav.Link>
             <Nav.Link as={Link} to="/Contact" active={location.pathname === "/Contact"}>Contact</Nav.Link>

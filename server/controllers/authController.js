@@ -73,7 +73,9 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     id: user._id,
     name: user.name,
     email: user.email,
-    role: user.role
+    role: user.role,
+    phoneNumber: user.phoneNumber,
+    address: user.address,
   };
   res.status(200).json({
     status: "success",
@@ -144,7 +146,9 @@ exports.verifyToken = asyncHandler(async (req, res) => {
         id: req.user._id,
         name: req.user.name,
         email: req.user.email,
-        role: req.user.role
+        role: req.user.role,
+        phoneNumber: req.user.phoneNumber,
+        address: req.user.address,
       }
     }
   });

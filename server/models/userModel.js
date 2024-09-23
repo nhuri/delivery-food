@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
+  address: {
+    type: String,
+    required: [true, 'Please provide your address'],
+  },
   phoneNumber: {
     type: String,
     required: true,
