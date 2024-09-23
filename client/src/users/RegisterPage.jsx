@@ -77,7 +77,7 @@ const RegisterPage = ({ setRegisterModal }) => {
             <Form.Group>
               <Form.Label>confirmPassword:</Form.Label>
               <Form.Control
-                type="confirmPassword"
+                type="password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 value={confirmPassword}
               ></Form.Control>

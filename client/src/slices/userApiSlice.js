@@ -1,7 +1,7 @@
-// import { isAuth } from "../../../server/controllers/authController";
-// import { isAuth } from "../../../server/controllers/authController";
 import { apiSlice } from "./apiSlice";
 import { USER_URL } from "./urlConstrains";
+import { logout } from "./authSlice";
+
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query({
@@ -35,13 +35,13 @@ const userApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${USER_URL}/verify-token`,
         method: "GET",
-        credentials: 'include',
+        credentials: "include",
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
         } catch (error) {
-          console.error('Token verification failed:', error);
+          console.error("Token verification failed:", error);
           dispatch(logout());
         }
       },

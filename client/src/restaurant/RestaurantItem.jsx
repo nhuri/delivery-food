@@ -100,7 +100,7 @@ const RestaurantItem = ({
       onMouseEnter={() => setHover(true)} // הגדרת מצב hover
       onMouseLeave={() => setHover(false)} // הגדרת מצב hover
     >
-      <Card.Img variant="top" src={urlImage} />
+      {/* <Card.Img variant="top" src={urlImage} /> */}
       <Card.Body>
         <Card.Title
           style={{

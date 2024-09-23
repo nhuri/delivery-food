@@ -6,11 +6,10 @@ import { useSelector } from "react-redux";
 import { useGetNearbyRestaurantsQuery } from "../slices/userApiSlice";
 // import { RestaurantCard } from "../components/restaurant_card"
 
-
 const RestaurantList = ({ searchValue, selectedCategory }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
-  const userID = userInfo?.user?._id;
+  const userID = userInfo?.id;
 
   // Fetch all restaurants
   const { data: allRestaurants, isLoading: isLoadingRestaurants } =
@@ -21,10 +20,9 @@ const RestaurantList = ({ searchValue, selectedCategory }) => {
     useGetNearbyRestaurantsQuery(userID, {
       skip: !userID, // Skip query if userID is not available
     });
-  // console.log(nearestRestaurantsToUser)
+  // console.log(nearestRestaurantsToUser);
   // Determine which list to display: nearby or filtered
   let restaurantList = allRestaurants;
-
 
   if (userID) restaurantList = nearestRestaurantsToUser?.data;
 
@@ -41,15 +39,18 @@ const RestaurantList = ({ searchValue, selectedCategory }) => {
         .includes(selectedCategory.toLowerCase())
   );
 
-  useEffect(() => { }, [restaurantList]);
-
+  useEffect(() => {}, [restaurantList]);
   if (isLoadingRestaurants || (userID && isLoadingNearby)) {
     return <p>Loading...</p>; // Show a loading state while data is being fetched
   }
 
   return (
-    <div className="restaurant-list-container"> {/* Added this container */}
-      <div className="restaurant-grid"> {/* Changed from 'row' to 'restaurant-grid' */}
+    <div className="restaurant-list-container">
+      {" "}
+      {/* Added this container */}
+      <div className="restaurant-grid">
+        {" "}
+        {/* Changed from 'row' to 'restaurant-grid' */}
         {filteredRestaurants?.length > 0 ? (
           filteredRestaurants.map((restaurant) => (
             <RestaurantItem
