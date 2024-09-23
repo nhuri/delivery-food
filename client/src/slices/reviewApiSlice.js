@@ -4,7 +4,7 @@ const reviewApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getReviews: builder.query({
       query: (reviewTarget) => ({
-        url: `/${reviewTarget}`,
+        url: `reviews/${reviewTarget}`,
       }),
       keepUnusedDataFor: 5,
       provideTags: ["Reviews"],
