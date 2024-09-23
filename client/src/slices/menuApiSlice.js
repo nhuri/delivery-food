@@ -1,6 +1,6 @@
 import { apiSlice } from "./apiSlice";
-import { MENUITEMS_URL } from "./urlConstrains";
-import { MENU_URL, ITEMS_URL } from "./urlConstrains";
+import { MENUITEMS_URL, MENU_URL } from "./urlConstrains";
+
 const menuApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMenuByRestaurantId: builder.query({
@@ -31,6 +31,25 @@ const menuApiSlice = apiSlice.injectEndpoints({
         body: formData,
       }),
       invalidatesTags: ["Menu"],
+      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      //   try {
+      //     const { data: newItem } = await queryFulfilled;
+      //     dispatch(
+      //       menuApiSlice.util.updateQueryData(
+      //         "getMenuByRestaurantId",
+      //         arg.menuId,
+      //         (draft) => {
+      //           const menu = draft.find((m) => m._id === arg.menuId);
+      //           if (menu) {
+      //             menu.items.push(newItem);
+      //           }
+      //         }
+      //       )
+      //     );
+      //   } catch {
+      //     // If the mutation fails, we don't need to do anything
+      //   }
+      // },
     }),
     updateMenuItem: builder.mutation({
       query: ({ menuId, data }) => ({
@@ -38,15 +57,18 @@ const menuApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["Menu"],
     }),
     deleteMenuItem: builder.mutation({
       query: ({ menuId }) => ({
         url: `${MENUITEMS_URL}/${menuId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Menu"],
     }),
   }),
 });
+
 export const {
   useGetMenuByRestaurantIdQuery,
   useGetMenuItemsQuery,
