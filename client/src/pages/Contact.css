@@ -1,38 +1,95 @@
+/* Container for the contact form */
 .contact-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px; /* Reduced padding */
+  max-width: 400px; /* Reduced width */
+  margin: 0 auto;
+  background-color: #f1f1f1;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Title Styling */
+.contact-container h1 {
+  font-size: 24px; /* Reduced font size */
+  font-weight: 700;
+  color: #FF5252;
+  text-align: center;
+  margin-bottom: 15px; /* Reduced margin */
+}
+
+/* Form label styling */
+.form-label {
+  font-size: 14px; /* Reduced font size */
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px; /* Adjusted margin */
+  display: block;
+}
+
+/* Input fields */
+.form-control {
+  width: 100%;
+  padding: 10px 12px; /* Reduced padding */
+  margin: 8px 0; /* Adjusted margin */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 14px; /* Reduced font size */
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+/* Focus state for input fields */
+.form-control:focus {
+  border-color: #FF5252;
+  box-shadow: 0 0 0 0.2rem rgba(255, 82, 82, 0.25);
+  outline: none;
+}
+
+/* Button styling */
+.btn-primary {
+  padding: 10px 15px; /* Reduced padding */
+  border-radius: 8px;
+  background-color: #FF5252;
+  border: none;
+  color: white;
+  font-size: 14px; /* Reduced font size */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  margin-top: 15px; /* Reduced margin */
+}
+
+/* Hover state for button */
+.btn-primary:hover, 
+.btn-primary:focus {
+  background-color: #FF8080;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Success message styling */
+.alert-success {
+  padding: 12px; /* Reduced padding */
+  border-radius: 8px;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+  font-size: 14px; /* Reduced font size */
+  margin-top: 15px; /* Reduced margin */
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design for smaller screens */
+@media screen and (max-width: 768px) {
+  .contact-container {
+      padding: 15px; /* Further reduced padding for small screens */
+      max-width: 100%;
   }
-  
+
   .contact-container h1 {
-    color: #FF5252;
-    margin-bottom: 2rem;
+      font-size: 20px; /* Further reduced font size */
   }
-  
-  .form-label {
-    font-weight: bold;
-  }
-  
-  .form-control:focus {
-    border-color: #FF5252;
-    box-shadow: 0 0 0 0.2rem rgba(255, 82, 82, 0.25);
-  }
-  
-  .btn-primary {
-    background-color: #FF5252;
-    border-color: #FF5252;
-  }
-  
-  .btn-primary:hover, .btn-primary:focus {
-    background-color: #FF8080;
-    border-color: #FF8080;
-  }
-  
-  .alert-success {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-    color: #155724;
-  }
+}

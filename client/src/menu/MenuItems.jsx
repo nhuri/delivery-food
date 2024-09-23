@@ -37,13 +37,13 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
 
   const contentStyle = {
     flex: "1",
-    marginRight: "20px", // Space between content and image
+    marginRight: "20px",
   };
 
   const imageStyle = {
-    width: "250px", // Adjust the width as needed
+    width: "250px",
     height: "auto",
-    borderRadius: "8px", // Optional: rounded corners for the image
+    borderRadius: "8px",
   };
 
   // const reviewTarget = id;
@@ -130,11 +130,15 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
         </Button>
         {addMode && (
           <div style={{ marginTop: "20px" }}>
-            <AddMenuItem setAddMode={setAddMode} id={id} />
+            <AddMenuItem
+              setAddMode={setAddMode}
+              id={id}
+              onAddSuccess={handleAddMenuItem}
+            />
           </div>
         )}
 
-        {items?.map((item) => (
+        {localItems?.map((item) => (
           <div key={item._id} style={{ marginBottom: "20px" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: "1" }}>
@@ -167,7 +171,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                   variant="primary"
                   style={{ marginLeft: "10px" }}
                 >
-                  look at the reviews
+                  Look at the reviews
                 </Button>
               </div>
               <img
@@ -188,7 +192,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
         show={showOrderModal}
         onHide={() => {
           setShowOrderModal(false);
-          setSelectedItem(null); // Reset selectedItem when closing the modal
+          setSelectedItem(null);
         }}
         item={selectedItem}
         onAddToOrder={handleAddToOrder}

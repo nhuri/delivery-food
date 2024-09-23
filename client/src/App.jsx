@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
-import Order from "./pages/Order";
+import Profile from "./pages/Profile";
 // import Review from "./pages/Review";
 import LoginPage1 from "./pages/LoginPage1";
 import Payment from "./pages/Payment";
@@ -43,7 +43,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/Home" element={<Home />} />
-            <Route path="/Order" element={<Order />} />
+            <Route path="/Profile" element={<Profile />} />
             {/* <Route path="/Review" element={<Review />} /> */}
             <Route path="/Payment" element={<Payment />} />
             <Route path="/LoginPage1" element={<LoginPage1 />} />

@@ -1,0 +1,137 @@
+/* Container for the profile */
+.profile-container {
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f1f1f1;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Title Styling */
+.profile-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Profile card styling */
+.profile-card {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Subtitle */
+.profile-subtitle {
+    font-size: 20px;
+    color: #444;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Text styling for profile information */
+.profile-text {
+    font-size: 17px;
+    color: #666;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+/* Message for empty profile info */
+.profile-message {
+    font-size: 16px;
+    color: #aaa;
+    text-align: center;
+}
+
+/* Input field styling */
+input[type="text"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Buttons Styling */
+button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Save button */
+button:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Save Button */
+button:first-of-type {
+    background-color: #007bff;
+    color: white;
+    margin-right: 10px;
+}
+
+button:first-of-type:hover {
+    background-color: #0056b3;
+}
+
+/* Cancel Button */
+button:last-of-type {
+    background-color: #f44336;
+    color: white;
+}
+
+button:last-of-type:hover {
+    background-color: #d32f2f;
+}
+
+/* Make sure input fields and buttons are aligned */
+.profile-card input,
+.profile-card button {
+    display: block;
+    width: calc(100% - 20px); /* Ensures button and input fields align properly */
+    margin: 10px auto;
+}
+
+/* Responsive Design for smaller screens */
+@media screen and (max-width: 768px) {
+    .profile-container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .profile-title {
+        font-size: 24px;
+    }
+
+    .profile-card {
+        padding: 15px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
