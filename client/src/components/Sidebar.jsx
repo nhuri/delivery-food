@@ -3,11 +3,11 @@ import { Navbar, Nav, Container, Badge } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import "./components.css";
 import Login from "../users/Login";
-import foodDeliveryLogo from '../assets/food-delivery-logo.svg';
+import foodDeliveryLogo from "../assets/food-delivery-logo.svg";
 import { IoCart } from "react-icons/io5";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import Cart from "./Cart";
-import { setCartItems } from '../slices/cartSlice';
+import { setCartItems } from "../slices/cartSlice";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -15,9 +15,12 @@ const Sidebar = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const totalQuantity = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+  const totalQuantity = cartItems.reduce(
+    (total, item) => total + (item.quantity || 0),
+    0
+  );
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       dispatch(setCartItems(JSON.parse(savedCart)));
     }
@@ -52,15 +55,23 @@ const Sidebar = () => {
             <Nav.Link as={Link} to="/Payment" active={location.pathname === "/Payment"}>Payment</Nav.Link>
             <Nav.Link as={Link} to="/Contact" active={location.pathname === "/Contact"}>Contact</Nav.Link>
           </Nav>
-          <Login />
-          <Nav.Link onClick={handleCartClick} className="ms-2 position-relative">
+
+          <Nav.Link
+            onClick={handleCartClick}
+            className="ms-2 position-relative"
+          >
             <IoCart size={24} />
             {totalQuantity > 0 && (
-              <Badge bg="danger" pill className="position-absolute top-0 start-100 translate-middle">
+              <Badge
+                bg="danger"
+                pill
+                className="position-absolute top-0 start-100 translate-middle"
+              >
                 {totalQuantity}
               </Badge>
             )}
           </Nav.Link>
+          <Login />
         </Navbar.Collapse>
       </Container>
       <Cart show={showCart} onHide={() => setShowCart(false)} />

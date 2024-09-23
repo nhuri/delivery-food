@@ -34,12 +34,15 @@ const menuItemSchema = new mongoose.Schema({
     percentage: { type: Number, default: 0 }, // Discount percentage
     category: { type: String }, // Discount category
   },
+  sold: {
+    type: { type: Number, default: 0 }, //counter of sales ToDo update sold after payment
+  },
   bundle: {
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" }], // List of items in the bundle
     bundlePrice: { type: Number }, // Bundle price for all items
     category: { type: String }, // Bundle category
   },
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] // Added reviews field
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], // Added reviews field
 });
 
 const MenuItem = mongoose.model("MenuItem", menuItemSchema);
