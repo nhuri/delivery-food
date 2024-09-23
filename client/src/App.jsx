@@ -14,8 +14,9 @@ import ForgotPasswordPage from "./users/ForgotPasswordPage";
 import SingleRestaurant from "./restaurant/SingleRestaurant";
 import MenuList from "./menu/MenuList";
 import ReviewsPage from "./reviews/reviewsPage";
+import ReviewMenuItem from "./reviews/ReiviewMenuItem";
 import { useVerifyTokenQuery } from "./slices/userApiSlice";
-import { setUserInfoOnLoginOrRegister , logout } from "./slices/authSlice";
+import { setUserInfoOnLoginOrRegister, logout } from "./slices/authSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,8 +34,6 @@ function App() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-
 
   return (
     <Router>
@@ -57,6 +56,7 @@ function App() {
             <Route path="/SingleRestaurant" element={<SingleRestaurant />} />
             <Route path="/MenuList" element={<MenuList />} />
             <Route path="/ReviewsPage" element={<ReviewsPage />} />
+            <Route path="/ReviewMenuItem" element={<ReviewMenuItem />} />
           </Routes>
         </div>
       </div>

@@ -1,27 +1,27 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { Card, Button, Nav } from "react-bootstrap";
-import { useDispatch, useSelector } from 'react-redux'; // Added useSelector import
+import { useDispatch, useSelector } from "react-redux"; // Added useSelector import
 import {
   useDeleteMenuItemMutation,
   useGetMenuItemsQuery,
 } from "../slices/menuApiSlice";
 import EditMenuItem from "./EditMenuItem";
 import AddMenuItem from "./AddMenuItem";
-import { useGetReviewsQuery } from "../slices/reviewApiSlice";
-import ReiviewMenuItem from "./reiviewMenuItem";
-import { useUpdateOrderMutation } from '../slices/orderSlice'; // Added import for addToOrder action
+import ReiviewMenuItem from "../reviews/ReiviewMenuItem";
+import { useUpdateOrderMutation } from "../slices/orderSlice"; // Added import for addToOrder action
 import {
   useCreateOrderMutation,
-  useAddItemToOrderMutation
-} from '../slices/orderSlice'; // Updated imports
-import { setCurrentOrderId } from '../slices/orderSlice';
-import { addToCart } from '../slices/cartSlice';
-import OrderItemModal from '../components/OrderItemModal';
+  useAddItemToOrderMutation,
+} from "../slices/orderSlice"; // Updated imports
+import { setCurrentOrderId } from "../slices/orderSlice";
+import { addToCart } from "../slices/cartSlice";
+import OrderItemModal from "../components/OrderItemModal";
 
 const MenuItems = ({ id, name, description, image, items, res_id }) => {
-
-
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const cardStyle = {
     display: "flex",
@@ -60,14 +60,13 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const dispatch = useDispatch();
   const [createOrder] = useCreateOrderMutation();
   const [addItemToOrder] = useAddItemToOrderMutation();
-  const currentOrderId = useSelector(state => state.order.currentOrderId); // Changed from state.order to state.auth
-  const userInfo = useSelector(state => state.auth.userInfo);
+  const currentOrderId = useSelector((state) => state.order.currentOrderId); // Changed from state.order to state.auth
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   // console.log("DSADSADASD");
   // console.log(userInfo?.data?.user?.id);
   // console.log(currentOrderId);
-
 
   const handleDeleteMenuItem = async (itemId) => {
     const menuId = itemId;
@@ -86,36 +85,40 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
         console.log("User needs to log in");
         return;
       }
-  
+
       let orderId = currentOrderId;
-  
+
       if (!orderId) {
         const newOrder = await createOrder({
           customer: userInfo?.id,
           restaurant: res_id,
           deliveryTime: new Date(),
-          communication: ""
+          communication: "",
         }).unwrap();
         orderId = newOrder.order._id;
         dispatch(setCurrentOrderId(orderId));
       }
-  
+
       const result = await addItemToOrder({
         orderId: orderId,
         menuItemId: itemWithSelections._id,
-        removedIngredientsIds: itemWithSelections.ingredients?.filter(ing => !itemWithSelections.selectedIngredients.includes(ing.name))
-          .map(ing => ing._id),
-        extrasIds: itemWithSelections.selectedExtras.map(extra => extra._id),
+        removedIngredientsIds: itemWithSelections.ingredients
+          ?.filter(
+            (ing) => !itemWithSelections.selectedIngredients.includes(ing.name)
+          )
+          .map((ing) => ing._id),
+        extrasIds: itemWithSelections.selectedExtras.map((extra) => extra._id),
       }).unwrap();
-  
+
       dispatch(addToCart(itemWithSelections));
-  
     } catch (err) {
       console.error("Failed to add item to order:", err);
     }
   };
 
-  const handleReviewsMenuItem = async () => { };
+  const handleReviewsMenuItem = async (id) => {
+    navigate(`/ReviewMenuItem?id=${id}`);
+  };
 
   return (
     <Card style={cardStyle}>
@@ -139,7 +142,6 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                 <Card.Text>{item.description}</Card.Text>
                 <Card.Text>price: {item.price}</Card.Text>
                 <Card.Text>{item.category}</Card.Text>
-                <ReiviewMenuItem id={item._id} />
                 <Button
                   variant="primary"
                   onClick={() => setEditMode((prev) => !prev)}

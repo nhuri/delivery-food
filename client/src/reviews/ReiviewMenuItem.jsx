@@ -1,27 +1,27 @@
 import React from "react";
 import { Card, Row, Col } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
-import { useGetReviewsForRestaurantQuery } from "../slices/reviewApiSlice";
+import { useGetReviewsForMenuItemQuery } from "../slices/reviewApiSlice";
 import ReviewCard from "./ReviewCard";
+import { useLocation } from "react-router-dom";
 import "./ReviewsPage.css";
 
-const ReviewsPage = () => {
+const ReiviewMenuItem = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
 
   const {
-    data: getReviewsRestaurant,
+    data: getReviewsMenuItem,
     isLoading,
     error,
-  } = useGetReviewsForRestaurantQuery(id, {
+  } = useGetReviewsForMenuItemQuery(id, {
     skip: !id,
   });
 
   if (isLoading) return <p>Loading reviews...</p>;
   if (error) return <p>Error loading reviews: {error.message}</p>;
 
-  const reviewsArr = getReviewsRestaurant?.data?.reviews || [];
+  const reviewsArr = getReviewsMenuItem?.data?.reviews || [];
 
   return (
     <div className="reviews-container">
@@ -45,4 +45,4 @@ const ReviewsPage = () => {
   );
 };
 
-export default ReviewsPage;
+export default ReiviewMenuItem;

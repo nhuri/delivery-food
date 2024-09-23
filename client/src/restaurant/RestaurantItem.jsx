@@ -8,7 +8,7 @@ import {
   useGetRestaurantQuery,
 } from "../slices/restaurantApiSlice";
 import "./restaurant.css";
-import { useGetReviewsQuery } from "../slices/reviewApiSlice";
+import { useGetReviewsForRestaurantQuery } from "../slices/reviewApiSlice";
 import Colors from "../utils/Colors";
 
 const RestaurantItem = ({
@@ -34,9 +34,12 @@ const RestaurantItem = ({
     refetch();
   };
   const reviewTarget = id;
-  const { data: getReviewsRestaurant } = useGetReviewsQuery(reviewTarget, {
-    skip: !reviewTarget,
-  });
+  const { data: getReviewsRestaurant } = useGetReviewsForRestaurantQuery(
+    reviewTarget,
+    {
+      skip: !reviewTarget,
+    }
+  );
   // console.log(getReviewsRestaurant);
   // const reviewsArr = getReviewsRestaurant?.data?.reviews?.length > 0;
   const [reviewsArr, setReviewsArr] = useState([]);

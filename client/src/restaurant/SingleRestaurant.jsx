@@ -168,10 +168,10 @@ const SingleRestaurant = () => {
         </div>
         <h1>Most popular by sales</h1>
         <div className="d-flex flex-wrap justify-content-start">
-          {getTopThreeBySales?.map((obj) => {
+          {getTopThreeBySales?.map((obj, index) => {
             return (
               <Card
-                key={obj.menuItem?._id}
+                key={`${obj.menuItem?._id}-${index}`}
                 style={{
                   width: "18rem",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
