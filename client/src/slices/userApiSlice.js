@@ -74,6 +74,14 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url: `${USER_URL}/${data._id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["User"],  // Invalidate user cache to refetch data if needed
+    }),
   }),
 });
 export const {
@@ -86,4 +94,5 @@ export const {
   useLogoutUserMutation,
   useForgotPasswordMutation,
   useVerifyTokenQuery,
+  useUpdateUserMutation,
 } = userApiSlice;

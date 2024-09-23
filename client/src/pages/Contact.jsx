@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
-import './Contact.css'; // We'll create this file for custom styling
-
+import './Contact.css';
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
