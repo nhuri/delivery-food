@@ -9,7 +9,7 @@ import {
 } from "../slices/restaurantApiSlice";
 import "./restaurant.css";
 import { useGetReviewsQuery } from "../slices/reviewApiSlice";
-import Colors from "../utils/Colors"
+import Colors from "../utils/Colors";
 
 const RestaurantItem = ({
   id,
@@ -68,7 +68,13 @@ const RestaurantItem = ({
 
   const handleCardClick = () => {
     navigate(
-      `/SingleRestaurant?id=${id}&name=${encodeURIComponent(name)}&logo=${encodeURIComponent(logo)}&address=${encodeURIComponent(address)}&averageRating=${encodeURIComponent(averageRating)}&distanceKM=${encodeURIComponent(distanceKM)}`
+      `/SingleRestaurant?id=${id}&name=${encodeURIComponent(
+        name
+      )}&logo=${encodeURIComponent(logo)}&address=${encodeURIComponent(
+        address
+      )}&averageRating=${encodeURIComponent(
+        averageRating
+      )}&distanceKM=${encodeURIComponent(distanceKM)}`
     );
   };
 
@@ -96,29 +102,40 @@ const RestaurantItem = ({
     >
       <Card.Img variant="top" src={urlImage} />
       <Card.Body>
-        <Card.Title style={{
-          color: "#FF5252",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginBottom: "15px"
-        }}>{name}</Card.Title>
-        <Card.Text style={{ fontWeight: "bold", fontSize: "1.1em" }}>{address}</Card.Text>
-        <Card.Text> <span style={{ fontWeight: "bold" }}>Distance:</span> {distanceKM}</Card.Text>
-        <Card.Text> <span style={{ fontWeight: "bold" }}>Rating:</span> {averageRating}</Card.Text>
+        <Card.Title
+          style={{
+            color: "#FF5252",
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: "15px",
+          }}
+        >
+          {name}
+        </Card.Title>
+        <Card.Text style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+          {address}
+        </Card.Text>
+        <Card.Text>
+          {" "}
+          <span style={{ fontWeight: "bold" }}>Distance:</span> {distanceKM}
+        </Card.Text>
+        <Card.Text>
+          {" "}
+          <span style={{ fontWeight: "bold" }}>Rating:</span> {averageRating}
+        </Card.Text>
 
         <Button
           variant="primary"
           id="btn"
-          onClick={(e) => e.stopPropagation()
-      } // הימנע מהפצת האירוע
+          onClick={(e) => e.stopPropagation()} // הימנע מהפצת האירוע
           style={{
-            backgroundColor: '#FF5252',
-            color: '#f8f9fa',
-            fontWeight: 'bold',
-            padding: '0.5rem 1rem',
-            borderRadius: '9999px',
-            border: '1px solid #FF5252',
-            transition: 'all 0.3s ease-in-out',
+            backgroundColor: "#FF5252",
+            color: "#f8f9fa",
+            fontWeight: "bold",
+            padding: "0.5rem 1rem",
+            borderRadius: "9999px",
+            border: "1px solid #FF5252",
+            transition: "all 0.3s ease-in-out",
             marginTop: 5,
           }}
         >

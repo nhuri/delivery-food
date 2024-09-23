@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "./SingleRestaurant.css";
 import { useGetTopThreeByRestaurantIdQuery } from "../slices/reviewApiSlice";
+import { useGetTopThreeBySalesQuery } from "../slices/restaurantApiSlice";
 
 const SingleRestaurant = () => {
   const location = useLocation();
@@ -27,6 +28,15 @@ const SingleRestaurant = () => {
   );
   useEffect(() => {}, [getTopThree]);
   // console.log(getTopThree.data.topThree);
+
+  const restaurantId = id;
+  const { data: getTopThreeBySales } = useGetTopThreeBySalesQuery(
+    restaurantId,
+    {
+      skip: !restaurantId,
+    }
+  );
+  useEffect(() => {}, [getTopThreeBySales]);
 
   let urlImage;
   if (logo?.startsWith("/uploads")) {
@@ -157,6 +167,57 @@ const SingleRestaurant = () => {
           })}
         </div>
         <h1>Most popular by sales</h1>
+        <div className="d-flex flex-wrap justify-content-start">
+          {getTopThreeBySales?.map((obj) => {
+            return (
+              <Card
+                key={obj.menuItem?._id}
+                style={{
+                  width: "18rem",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  cursor: "pointer", // מציין שהכרטיס ניתן ללחיצה
+                  transform: hover ? "scale(1.02)" : "scale(1)", // מגדיל את הכרטיס כאשר העכבר עובר עליו
+                  boxShadow: hover
+                    ? "0 4px 8px rgba(0, 0, 0, 0.2)"
+                    : "0 2px 4px rgba(0, 0, 0, 0.1)", // מוסיף צל כאשר העכבר עובר עליו
+                  border: "1px solid #FF5252",
+                }}
+                onClick={handleCardClick}
+                onMouseEnter={() => setHover(true)} // הגדרת מצב hover
+                onMouseLeave={() => setHover(false)} // הגדרת מצב hover
+              >
+                <Card.Img variant="top" src={obj.menuItem?.image} />
+                <Card.Body>
+                  <Card.Title
+                    style={{
+                      color: "#FF5252",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      marginBottom: "15px",
+                    }}
+                  >
+                    {obj.menuItem?.name}
+                  </Card.Title>
+                  <Card.Text style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+                    price:
+                    {obj.menuItem?.price}
+                  </Card.Text>
+                  <Card.Text>
+                    {" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      Description:
+                    </span>{" "}
+                    {obj.menuItem?.description}
+                  </Card.Text>
+                  <Card.Text>
+                    {" "}
+                    <span style={{ fontWeight: "bold" }}>Sold:</span> {obj.sold}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

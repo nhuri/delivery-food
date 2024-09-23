@@ -33,7 +33,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});  //  state for form validation errors
+  const [errors, setErrors] = useState({}); //  state for form validation errors
   const dispatch = useDispatch();
 
   const handleLogout = async (e) => {
@@ -102,12 +102,12 @@ const Login = () => {
       <div id="login">
         {!bool && (
           <button id="openLoginModal" onClick={handleOpenLoginModal}>
-            <img src="images/login.png" alt="sc-icon" />
+            <img id="loginLogo" src="images/login.png" alt="sc-icon" />
           </button>
         )}
         {bool && (
           <button id="openLogoutModal" onClick={handleLogout}>
-            <img src="images/logout.jpg" alt="sc-icon" />
+            <img id="logoutLogo" src="images/logout.jpg" alt="sc-icon" />
           </button>
         )}
       </div>
