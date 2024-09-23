@@ -11,11 +11,13 @@ const menuItemController = require("../controllers/menuItemController");
 // Route to get all restaurants
 router.get("/", restaurantController.getRestaurants);
 
+//Route to get the top three menu item by sales by restaurant ID
+router.get("/topThreeBySales/:id", restaurantController.getTopThreeBySales);
+
 // Route to get a single restaurant by ID
 router.get("/:id", restaurantController.getRestaurantById);
 
-//Route to get the top three menu item by sales by restaurant ID
-router.get("/topThreeBySales/:id", restaurantController.getTopThreeBySales);
+
 
 // Route to update a restaurant by ID
 router.patch("/:id", restaurantController.updateRestaurant);
