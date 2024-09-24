@@ -134,7 +134,6 @@ const SingleRestaurant = () => {
                 onMouseEnter={() => setHover(true)} // הגדרת מצב hover
                 onMouseLeave={() => setHover(false)} // הגדרת מצב hover
               >
-                <p>{`http://localhost:8000/${obj.item.image?.substring(9)}`}</p>
                 <Card.Img
                   variant="top"
                   src={`http://localhost:8000/${obj.item.image?.substring(9)}`}
@@ -191,7 +190,12 @@ const SingleRestaurant = () => {
                 onMouseEnter={() => setHover(true)} // הגדרת מצב hover
                 onMouseLeave={() => setHover(false)} // הגדרת מצב hover
               >
-                <Card.Img variant="top" src={obj.menuItem?.image} />
+                <Card.Img
+                  variant="top"
+                  src={`http://localhost:8000/${obj.menuItem?.image?.substring(
+                    9
+                  )}`}
+                />
                 <Card.Body>
                   <Card.Title
                     style={{
