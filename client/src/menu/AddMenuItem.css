@@ -1,0 +1,21 @@
+.image-drop-zone {
+    border: 2px dashed #007bff; /* Change to a modern color */
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: border 0.3s ease; /* Smooth border transition */
+  }
+  
+  .image-drop-zone:hover {
+    border-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .img-preview {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 15px;
+    border-radius: 8px; /* Rounded corners for the preview */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for the preview */
+  }
+  

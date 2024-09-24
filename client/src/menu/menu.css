@@ -13,3 +13,13 @@
   display: flex;
   align-items: center;
 }
+.category-section {
+  margin-top: 20px;
+}
+
+.category-title {
+  font-size: 1.5rem; /* Size of the category title */
+  font-weight: bold; /* Bold text */
+  color: #333; /* Color of the category title */
+  margin-bottom: 10px; /* Space below the title */
+}
