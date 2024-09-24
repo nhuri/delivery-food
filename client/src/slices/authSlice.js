@@ -1,23 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  userInfo: null,
+};
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    userInfo: null,
-  },
-    reducers: {
-    setUserInfoOnLoginOrRegister: (state, action) => {
-      // console.log(action);
-
-      state.userInfo = action.payload;
+  initialState,
+  reducers: {
+    setUserInfoOnLoginOrRegister(state, action) {
+      state.userInfo = action.payload; // Set user info
     },
-    logout: (state) => {
-      state.userInfo = null;
-      document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    logout(state) {
+      state.userInfo = null; // Clear user info on logout
     },
   },
 });
+
 export const { setUserInfoOnLoginOrRegister, logout } = authSlice.actions;
 
 export default authSlice.reducer;
