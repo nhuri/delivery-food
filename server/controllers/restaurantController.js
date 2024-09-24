@@ -10,6 +10,7 @@ const { Client } = require("@googlemaps/google-maps-services-js");
 const Menu = require("../models/menuModel");
 const MenuItem = require("../models/menuItemModel");
 const client = new Client({});
+const User = require("../models/userModel");
 
 // Use environment variable for API key
 const apiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -59,12 +60,20 @@ exports.createRestaurant = asyncHandler(async (req, res) => {
     });
 
     const savedRestaurant = await newRestaurant.save();
+    console.log(req.user) 
+    // Update the user's restaurants array
+    const user = await User.findById(req.user._id);
+      console.log(req.user)  // Assuming req.user contains the logged-in user's info
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    user.restaurants.push(savedRestaurant._id);  // Add the new restaurant's ID to the user's restaurants field
+    await user.save();  // Save the updated user document
 
     res.status(201).json(savedRestaurant);
   } catch (error) {
-    res
-      .status(500)
-      .json({ msg: "Error creating restaurant", error: error.message });
+    res.status(500).json({ msg: "Error creating restaurant", error: error.message });
   }
 });
 

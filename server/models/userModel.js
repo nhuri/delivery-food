@@ -14,17 +14,13 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: [true, "Please provide your name."],
+    required: [true, 'Please provide your address'],
   },
   password: {
     type: String,
     required: [true, "Please provide a password."],
     minlength: 8,
     select: false,
-  },
-  address: {
-    type: String,
-    required: [true, 'Please provide your address'],
   },
   phoneNumber: {
     type: String,
@@ -38,6 +34,13 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
+    },
+  ],
+  // Add the new 'restaurants' field
+  restaurants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
     },
   ],
   role: {
