@@ -128,7 +128,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   return (
     <Card className="mb-4 shadow-sm rounded">
       <Card.Body>
-        <Card.Img variant="top" src={urlImage} />
+        {/* <Card.Img variant="top" src={urlImage} /> */}
         <Card.Title className="text-center mb-3 restaurant-name">
           {name}
         </Card.Title>
