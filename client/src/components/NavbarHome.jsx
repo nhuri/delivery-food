@@ -18,9 +18,9 @@ import { FcSearch } from "react-icons/fc";
 import Modal from "react-bootstrap/Modal";
 import RButton from './rButton';
 import { useSelector } from 'react-redux';
+
 function NavbarHome() {
-  // const [activeKey, setActiveKey] = useState(); //removed
-  const [showModal, setShowModal] = useState(false); // Added 
+  const [showModal, setShowModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const handleInputSearch = (e) => {
     setSearchValue(e.target.value);
@@ -35,7 +35,6 @@ function NavbarHome() {
   const handleCloseModal = () => setShowModal(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const currentUserType = userInfo ? userInfo.role : 'guest';
-  // console.log(userInfo)
 
   return (
     <>
@@ -55,32 +54,12 @@ function NavbarHome() {
               <Offcanvas.Body>
                 <div id="addRestaurant">
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                    <RButton onClick={handleShowModal} hoverEffect={true} visibleTo={'all'} currentUserType={currentUserType}>
-                      Add Restaurant
-                    </RButton>
-                    {/* <Button id="red-btn"
-                      onClick={handleShowModal}
-                      style={{
-                        backgroundColor: '#FF5252',
-                        color: '#f8f9fa',
-                        fontWeight: 'bold',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '9999px',
-                        border: '1px solid #FF5252',
-                        transition: 'all 0.3s ease-in-out',
-                        marginTop: 5,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = '#f8f9fa';
-                        e.target.style.color = '#FF5252';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = '#FF5252';
-                        e.target.style.color = '#f8f9fa';
-                      }}
-                    >
-                      Add Restaurant
-                    </Button> */}
+                    {/* Conditionally render the Add Restaurant button for restaurant owners */}
+                    {currentUserType === "restaurant-owner" && (
+                      <RButton onClick={handleShowModal} hoverEffect={true} visibleTo={'all'} currentUserType={currentUserType}>
+                        Add Restaurant
+                      </RButton>
+                    )}
                   </Nav>
                 </div>
                 <Nav id="iconNav" className="d-flex flex-column">
