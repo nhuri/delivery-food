@@ -138,7 +138,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
           </div>
         )}
 
-        {localItems?.map((item) => (
+        {items?.map((item) => (
           <div key={item._id} style={{ marginBottom: "20px" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: "1" }}>
