@@ -39,8 +39,9 @@ const SingleRestaurant = () => {
   useEffect(() => {}, [getTopThreeBySales]);
 
   let urlImage;
+
   if (logo?.startsWith("/uploads")) {
-    urlImage = `http://localhost:8000/${logo}`;
+    urlImage = `http://localhost:8000/${logo.substring(9)}`;
   } else {
     urlImage = logo;
   }
@@ -133,7 +134,11 @@ const SingleRestaurant = () => {
                 onMouseEnter={() => setHover(true)} // הגדרת מצב hover
                 onMouseLeave={() => setHover(false)} // הגדרת מצב hover
               >
-                <Card.Img variant="top" src={obj.item.image} />
+                <p>{`http://localhost:8000/${obj.item.image?.substring(9)}`}</p>
+                <Card.Img
+                  variant="top"
+                  src={`http://localhost:8000/${obj.item.image?.substring(9)}`}
+                />
                 <Card.Body>
                   <Card.Title
                     style={{

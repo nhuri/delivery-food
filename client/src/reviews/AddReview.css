@@ -1,0 +1,22 @@
+/* מחלקת הכרטיסיות */
+.review-card {
+  border: 1px solid #ccc; /* גבול הכרטיסייה */
+  border-radius: 5px; /* פינות מעוגלות */
+  padding: 15px; /* ריווח פנימי */
+  margin: 10px; /* ריווח חיצוני */
+  display: flex; /* מאפשר שימוש ב-flexbox */
+  flex-direction: column; /* מגדיר את כיוון האלמנטים בכרטיסייה */
+  justify-content: space-between; /* מרווח שווה בין האלמנטים */
+  height: 250px; /* גובה קבוע לכל הכרטיסיות */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* צל מתון */
+}
+
+/* הכותרת של הכרטיסייה */
+.review-card h4 {
+  margin: 0; /* מבטל ריווח של ברירת מחדל */
+}
+
+/* כפתור בתחתית הכרטיסייה */
+.review-card button {
+  margin-top: auto; /* דוחף את הכפתור לתחתית */
+}

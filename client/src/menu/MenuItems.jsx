@@ -14,6 +14,33 @@ import './MenuItems.css';
 const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const cardStyle = {
+    display: "flex",
+    alignItems: "flex-start",
+    marginBottom: "20px",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    border: "1px solid #ddd",
+    flexDirection: "row",
+    position: "relative",
+  };
+
+  const contentStyle = {
+    flex: "1",
+    marginRight: "20px",
+  };
+
+  const imageStyle = {
+    width: "250px",
+    height: "auto",
+    borderRadius: "8px",
+  };
+
+  const [activeKey, setActiveKey] = useState();
+  const [addMode, setAddMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   
   const dispatch = useDispatch();
   const [deleteMenuItem] = useDeleteMenuItemMutation();
@@ -29,8 +56,10 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleDeleteMenuItem = async (itemId) => {
-    await deleteMenuItem({ menuId: itemId }).unwrap();
-    setMenuItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
+    const menuId = itemId;
+    await deleteMenuItem({ menuId }).unwrap();
+    refetch();
+    window.location.reload();
   };
 
   const handleOrderMenuItem = (item) => {
@@ -85,10 +114,16 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     acc[item.category].push(item);
     return acc;
   }, {});
+  let urlImage;
+
+  if (JSON.stringify(image).slice(1, 9) === "/uploads") {
+    urlImage = `http://localhost:8000/${image.substring(9)}`;
+  } else urlImage = image;
 
   return (
     <Card className="mb-4 shadow-sm rounded">
       <Card.Body>
+        <Card.Img variant="top" src={urlImage} />
         <Card.Title className="text-center mb-3 restaurant-name">{name}</Card.Title>
         <Card.Text className="text-muted restaurant-description">{description}</Card.Text>
         <Button 
@@ -99,7 +134,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
           {addMode ? "Cancel" : "Add Menu Item"}
         </Button>
         {addMode && (
-          <AddMenuItem setAddMode={setAddMode} id={id} onAddSuccess={handleAddMenuItem} />
+          <AddMenuItem setAddMode={setAddMode} id={id} // onAddSuccess={handleAddMenuItem} />
         )}
 
 <div className="menu-items-container">

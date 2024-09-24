@@ -53,6 +53,7 @@ const Login = () => {
       handleCloseLoginModal();
       handleCloseForgotPasswordModal();
       setBool(true);
+      window.location.reload();
     }
   };
 
@@ -72,10 +73,10 @@ const Login = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   const data = userInfo ? true : false;
-  // console.log(userInfo)
-  // console.log(data)
-
   const [bool, setBool] = useState(data);
+  useEffect(() => {
+    setBool(data);
+  }, [userInfo]);
 
   useEffect(() => {
     if (data) {
@@ -86,17 +87,10 @@ const Login = () => {
     bool;
   }, [bool]);
 
-  useEffect(() => {
-    if (data) {
-      setBool(data);
-    }
-  }, [data]);
-
-  useEffect(() => {}, [bool]);
-  const handleSocialLogin = (provider) => {
-    // This is a placeholder function. You would implement the actual social login logic here.
-    console.log(`Logging in with ${provider}`);
-  };
+  // const handleSocialLogin = (provider) => {
+  //   // This is a placeholder function. You would implement the actual social login logic here.
+  //   console.log(`Logging in with ${provider}`);
+  // };
   return (
     <>
       <div id="login">
