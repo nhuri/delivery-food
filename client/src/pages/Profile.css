@@ -1,44 +1,46 @@
 /* Container for the profile */
 .profile-container {
-    padding: 30px;
+    padding: 40px;
     max-width: 600px;
     margin: 0 auto;
-    background-color: #f1f1f1;
+    background-color: #f9f9f9;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat', sans-serif; /* Changed font for a modern look */
 }
 
 /* Title Styling */
 .profile-title {
-    font-size: 28px;
+    font-size: 32px; /* Increased font size */
     font-weight: 700;
     color: #333;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 /* Profile card styling */
 .profile-card {
-    padding: 20px;
+    padding: 25px;
     background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px; /* Slightly rounded corners */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     margin-top: 20px;
     text-align: left;
 }
 
 /* Subtitle */
 .profile-subtitle {
-    font-size: 20px;
+    font-size: 24px; /* Increased font size */
     color: #444;
-    font-weight: 500;
-    margin-bottom: 10px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff; /* Added underline for emphasis */
+    padding-bottom: 5px; /* Added padding */
 }
 
 /* Text styling for profile information */
 .profile-text {
-    font-size: 17px;
+    font-size: 18px; /* Increased font size */
     color: #666;
     margin: 10px 0;
     line-height: 1.6;
@@ -46,7 +48,7 @@
 
 /* Message for empty profile info */
 .profile-message {
-    font-size: 16px;
+    font-size: 18px;
     color: #aaa;
     text-align: center;
 }
@@ -55,43 +57,44 @@
 input[type="text"],
 input[type="email"] {
     width: 100%;
-    padding: 12px 15px;
+    padding: 15px; /* Increased padding */
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd; /* Lightened border color */
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #f5f5f5; /* Lightened input background */
     font-size: 16px;
     color: #333;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background-color 0.3s; /* Added transition for background */
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus {
     border-color: #007bff;
     outline: none;
+    background-color: #fff; /* Change background on focus */
 }
 
 /* Buttons Styling */
 button {
-    padding: 12px 20px;
+    padding: 15px 25px; /* Increased padding for buttons */
     border-radius: 8px;
     border: none;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600; /* Bolder font */
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Save button */
 button:hover {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Save Button */
 button:first-of-type {
     background-color: #007bff;
     color: white;
-    margin-right: 10px;
+    margin-right: 15px; /* Increased margin */
 }
 
 button:first-of-type:hover {
@@ -112,23 +115,37 @@ button:last-of-type:hover {
 .profile-card input,
 .profile-card button {
     display: block;
-    width: calc(100% - 20px); /* Ensures button and input fields align properly */
+    width: calc(100% - 30px); /* Adjusted for better alignment */
     margin: 10px auto;
+}
+
+/* Restaurant statistics styling */
+.restaurant-stats {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-stats p {
+    margin: 5px 0; /* Reduced margin */
+    font-size: 16px;
 }
 
 /* Responsive Design for smaller screens */
 @media screen and (max-width: 768px) {
     .profile-container {
-        padding: 20px;
+        padding: 25px; /* Reduced padding */
         max-width: 100%;
     }
 
     .profile-title {
-        font-size: 24px;
+        font-size: 28px; /* Slightly reduced size */
     }
 
     .profile-card {
-        padding: 15px;
+        padding: 20px; /* Adjusted padding */
     }
 
     button {

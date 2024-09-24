@@ -257,16 +257,33 @@ exports.addItemToMenu = asyncHandler(async (req, res) => {
   const parsedDiscountPercentage =
     discount && discount.percentage ? parseFloat(discount.percentage) : 0;
 
+  // // Parse ingredients
+  // const parsedIngredients =
+  //   ingredients && Array.isArray(ingredients)
+  //     ? ingredients.map((item) => ({ name: item.name }))
+  //     : [];
+
+  // // Parse extras
+  // const parsedExtras =
+  //   extras && Array.isArray(extras)
+  //     ? extras.map((item) => ({
+  //         name: item.name,
+  //         price: parseFloat(item.price),
+  //       }))
+  //     : [];
+
   // Parse ingredients
+  const objIngredients = JSON.parse(ingredients)
   const parsedIngredients =
-    ingredients && Array.isArray(ingredients)
-      ? ingredients.map((item) => ({ name: item.name }))
+    objIngredients && Array.isArray(objIngredients)
+      ? objIngredients.map((item) => ({ name: item.name }))
       : [];
 
   // Parse extras
+  const objExtras = JSON.parse(extras)
   const parsedExtras =
-    extras && Array.isArray(extras)
-      ? extras.map((item) => ({
+    objExtras && Array.isArray(objExtras)
+      ? objExtras.map((item) => ({
           name: item.name,
           price: parseFloat(item.price),
         }))

@@ -3,6 +3,7 @@ import { apiSlice } from "./slices/apiSlice";
 import authSliceReducer from "./slices/authSlice";
 import orderReducer from './slices/orderSlice';
 import cartReducer from './slices/cartSlice'; 
+import { statisticsApiSlice } from "./slices/StatisticsApiSlice";
 import {
   persistStore,
   persistReducer,
@@ -22,9 +23,10 @@ const persistConfig = {
   storage,
 };
 
-// Combine reducers if needed
+// Combine reducers
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
+  [statisticsApiSlice.reducerPath]: statisticsApiSlice.reducer, // Add the statisticsApi reducer
   auth: persistReducer(persistConfig, authSliceReducer), // Add persistReducer here
   order: orderReducer,
   cart: cartReducer,
@@ -38,7 +40,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSlice.middleware),
+    }).concat(apiSlice.middleware, statisticsApiSlice.middleware), // Add statisticsApi middleware
   devTools: true,
 });
 

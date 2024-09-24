@@ -138,25 +138,27 @@ exports.verifyToken = asyncHandler(async (req, res) => {
     return res.status(401).json({ status: "fail", message: "User not authenticated or token invalid" });
   }
 
+  // Populate restaurants if the user is a restaurant-owner
+  const userWithRestaurants = await User.findById(req.user._id)
+    .populate("restaurants") // Populate the restaurants field
+    .select("-password"); // Exclude the password from the response
+
   // Return user data if authenticated
   res.status(200).json({
     status: "success",
     data: {
       user: {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        role: req.user.role,
-        phoneNumber: req.user.phoneNumber,
-        address: req.user.address,
+        id: userWithRestaurants._id,
+        name: userWithRestaurants.name,
+        email: userWithRestaurants.email,
+        role: userWithRestaurants.role,
+        phoneNumber: userWithRestaurants.phoneNumber,
+        address: userWithRestaurants.address,
+        restaurants: userWithRestaurants.restaurants, // Include populated restaurants
       }
     }
   });
 });
-///1 forgot password :
-//נבדוק את המייל  ונשלח אליו קישור לשינוי סיסמה  הקישור יהיה תקף כ 5 דק
-//sending emails
-//change password
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const { email, phoneNumber } = req.body;

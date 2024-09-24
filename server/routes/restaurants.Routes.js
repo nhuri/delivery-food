@@ -6,10 +6,12 @@ const storage = multer.memoryStorage(); // Temporarily store files in memory
 const upload = multer({ storage });
 const restaurantController = require("../controllers/restaurantController");
 const menuItemController = require("../controllers/menuItemController");
+const authController = require("../controllers/authController");
 // Route to create a new restaurant
-
+router.post("/", authController.protect, upload.single("logo"), restaurantController.createRestaurant);
 // Route to get all restaurants
 router.get("/", restaurantController.getRestaurants);
+
 
 //Route to get the top three menu item by sales by restaurant ID
 router.get("/topThreeBySales/:id", restaurantController.getTopThreeBySales);
@@ -18,14 +20,13 @@ router.get("/topThreeBySales/:id", restaurantController.getTopThreeBySales);
 router.get("/:id", restaurantController.getRestaurantById);
 
 
-
 // Route to update a restaurant by ID
 router.patch("/:id", restaurantController.updateRestaurant);
 
 // Route to delete a restaurant by ID
 router.delete("/:id", restaurantController.deleteRestaurant);
 
-router.post("/", upload.single("logo"), restaurantController.createRestaurant);
+
 
 // Route for applying a discount to a specific menu item
 router.post("/:id/discount", menuItemController.applyDiscountToMenuItem);

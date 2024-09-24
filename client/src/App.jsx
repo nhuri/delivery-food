@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 // import Review from "./pages/Review";
 import LoginPage1 from "./pages/LoginPage1";
-import Payment from "./pages/Payment";
 import Contact from "./pages/Contact";
 import RegisterPage from "./users/RegisterPage";
 import ForgotPasswordPage from "./users/ForgotPasswordPage";
@@ -44,8 +43,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/Home" element={<Home />} />
             <Route path="/Profile" element={<Profile />} />
-            {/* <Route path="/Review" element={<Review />} /> */}
-            <Route path="/Payment" element={<Payment />} />
             <Route path="/LoginPage1" element={<LoginPage1 />} />
             <Route path="/Contact" element={<Contact />} />
             <Route path="/RegisterPage" element={<RegisterPage />} />

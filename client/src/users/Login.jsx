@@ -123,7 +123,7 @@ const Login = () => {
           <input
             type="text"
             id="usernameLogin"
-            placeholder="enter your email"
+            placeholder="enter your phone number"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
@@ -168,7 +168,7 @@ const Login = () => {
             {/* {isLoading2 && <Loader />} */}
             <Button
               id="register-btn"
-              variant="tertiary"
+              variant="primary"
               onClick={handleOpenRegisterModal}
             >
               register
@@ -186,9 +186,6 @@ const Login = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseLoginModal}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleCloseLoginModal}>
-            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
