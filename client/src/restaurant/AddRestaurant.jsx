@@ -10,18 +10,21 @@ import {
 import Button from "react-bootstrap/Button";
 
 const AddRestaurant = ({ setActiveKey }) => {
-  /////////////////////////////////////////////
-
-  const [image, setImage] = useState(null);
-  // const [inputLogo, setInputLogo] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [inputName, setInputName] = useState("");
+  const [inputAddress, setInputAddress] = useState("");
+  const [inputFoodCategory, setInputFoodCategory] = useState("");
+  const [addRestaurant] = useAddRestaurantMutation();
+  const { refetch } = useGetRestaurantQuery();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
-        setInputLogo(reader.result);
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -31,10 +34,10 @@ const AddRestaurant = ({ setActiveKey }) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
-        setInputLogo(reader.result);
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -43,50 +46,46 @@ const AddRestaurant = ({ setActiveKey }) => {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
-  /////////////////////////////////////////////
-
-  const [inputName, setInputName] = useState("");
-  const [inputLogo, setInputLogo] = useState("");
-  const [inputAddress, setInputAddress] = useState("");
-  const [inputStatistics, setInputStatistics] = useState("");
-  const [addRestaurant] = useAddRestaurantMutation();
-  const { refetch } = useGetRestaurantQuery();
 
   const handleAddRestaurant = async (e) => {
     e.preventDefault();
-    const response = await addRestaurant({
-      name: inputName,
-      logo: inputLogo,
-      address: inputAddress,
-      statistics: inputStatistics,
-    }).unwrap();
-    setActiveKey(null);
+    try {
+      const formData = new FormData();
+      formData.append("name", inputName);
+      formData.append("address", inputAddress);
+      formData.append("foodCategory", inputFoodCategory);
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const menuId = id ?? "test";
+
+      const response = await addRestaurant({ formData }).unwrap();
+
+      // Call the onAddSuccess callback with the new item
+      // onAddSuccess(response);
+
+      // Reset form and close add mode
+      setActiveKey(false);
+      setInputName("");
+      setInputAddress("");
+      setInputFoodCategory("");
+      setImageFile(null);
+      setImagePreview("");
+    } catch (error) {
+      console.error("Error creating menu item:", error);
+    }
     refetch();
   };
   return (
     <>
-      <h4>Add restaurant</h4>
-      <InputGroup size="sm" className="mb-3">
-        <Form.Control
-          placeholder="name"
-          onChange={(e) => setInputName(e.target.value)}
-        />
-      </InputGroup>
-      {/* <InputGroup size="sm" className="mb-3">
-        <Form.Control
-          placeholder="logo"
-          onChange={(e) => setInputLogo(e.target.value)}
-        />
-
-      </InputGroup> */}
-      {/* ////////////////////////////// */}
-      <div>
+      <Form onSubmit={handleAddRestaurant}>
+        <h4>Add restaurant</h4>
         <InputGroup size="sm" className="mb-3">
           <Form.Control
-            type="text"
-            placeholder="Enter image URL or drag and drop an image"
-            value={inputLogo}
-            onChange={(e) => setInputLogo(e.target.value)}
+            placeholder="name"
+            onChange={(e) => setInputName(e.target.value)}
           />
         </InputGroup>
         <div
@@ -115,28 +114,27 @@ const AddRestaurant = ({ setActiveKey }) => {
             <Button variant="primary">Choose Image</Button>
           </label>
         </div>
-        {image && (
+        {imagePreview && (
           <img
-            src={image}
+            src={imagePreview}
             alt="Preview"
             style={{ width: "100%", maxWidth: "400px" }}
           />
         )}
-      </div>
-      {/* /////////////////////////////// */}
-      <InputGroup size="sm" className="mb-3">
-        <Form.Control
-          placeholder="Address"
-          onChange={(e) => setInputAddress(e.target.value)}
-        />
-      </InputGroup>
-      <InputGroup size="sm" className="mb-3">
-        <Form.Control
-          placeholder="statistics"
-          onChange={(e) => setInputStatistics(e.target.value)}
-        />
-      </InputGroup>
-      <Button onClick={handleAddRestaurant}>Add Restaurant</Button>
+        <InputGroup size="sm" className="mb-3">
+          <Form.Control
+            placeholder="Address"
+            onChange={(e) => setInputAddress(e.target.value)}
+          />
+        </InputGroup>
+        <InputGroup size="sm" className="mb-3">
+          <Form.Control
+            placeholder="foodCategory"
+            onChange={(e) => setInputFoodCategory(e.target.value)}
+          />
+        </InputGroup>
+        <Button type="submit">Add Restaurant</Button>
+      </Form>
     </>
   );
 };

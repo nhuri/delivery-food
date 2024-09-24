@@ -46,12 +46,6 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     borderRadius: "8px",
   };
 
-  // const reviewTarget = id;
-  // const { data: getReviewsMenuItem } = useGetReviewsQuery(
-  //   "menuItem",
-  //   reviewTarget,
-  //   { skip: reviewTarget === "undefined" }
-  // );
   const [activeKey, setActiveKey] = useState();
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -64,14 +58,12 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  // console.log("DSADSADASD");
-  // console.log(userInfo?.data?.user?.id);
-  // console.log(currentOrderId);
 
   const handleDeleteMenuItem = async (itemId) => {
     const menuId = itemId;
     await deleteMenuItem({ menuId }).unwrap();
     refetch();
+    window.location.reload();
   };
 
   const handleOrderMenuItem = (item) => {
@@ -119,10 +111,16 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const handleReviewsMenuItem = async (id) => {
     navigate(`/ReviewMenuItem?id=${id}`);
   };
+  let urlImage;
+
+  if (JSON.stringify(image).slice(1, 9) === "/uploads") {
+    urlImage = `http://localhost:8000/${image.substring(9)}`;
+  } else urlImage = image;
 
   return (
     <Card style={cardStyle}>
       <div style={contentStyle}>
+        <Card.Img variant="top" src={urlImage} />
         <Card.Title>name: {name}</Card.Title>
         <Card.Text>{description}</Card.Text>
         <Button variant="primary" onClick={() => setAddMode((prev) => !prev)}>
@@ -133,7 +131,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
             <AddMenuItem
               setAddMode={setAddMode}
               id={id}
-              onAddSuccess={handleAddMenuItem}
+              // onAddSuccess={handleAddMenuItem}
             />
           </div>
         )}
