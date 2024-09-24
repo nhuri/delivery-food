@@ -66,7 +66,7 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
       const response = await createMenuItem({ formData, menuId }).unwrap();
 
       // Call the onAddSuccess callback with the new item
-      // onAddSuccess(response);
+      onAddSuccess(response);
 
       // Reset form and close add mode
       setAddMode(false);
