@@ -114,6 +114,28 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                 <Card.Title className="menu-item-name">{item.name}</Card.Title>
                 <Card.Text>{item.description}</Card.Text>
                 <Card.Text className="font-weight-bold menu-item-price">Price: ${item.price}</Card.Text>
+                {item.extras && item.extras.length > 0 && (
+                  <div>
+                    <Card.Text>Extras:</Card.Text>
+                    <ul>
+                      {item.extras.map((extra, index) => (
+                        <li key={index}>
+                          {extra.name} - ${extra.price}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {item.ingredients && item.ingredients.length > 0 && (
+                  <div>
+                    <Card.Text>Ingredients:</Card.Text>
+                    <ul>
+                      {item.ingredients.map((ingredients, index) => (
+                        <li key={index}>{ingredients.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className="button-group">
                   <Button variant="warning" onClick={() => setEditMode((prev) => !prev)} className="me-2">
                     {editMode ? "Cancel" : "Edit Menu Item"}

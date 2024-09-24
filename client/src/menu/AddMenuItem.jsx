@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import { useCreateMenuItemMutation } from "../slices/menuApiSlice";
-import { Container, Card } from "react-bootstrap"; // Import Card and Container from Bootstrap
+import { Container, Card, ListGroup } from "react-bootstrap"; // Import Card and Container from Bootstrap
 import "./AddMenuItem.css"; // Import custom CSS for further styling
 
 const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
@@ -13,6 +13,12 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
   const [inputDescription, setInputDescription] = useState("");
   const [inputPrice, setInputPrice] = useState("");
   const [inputCategory, setInputCategory] = useState("");
+
+  const [extras, setExtras] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [extraName, setExtraName] = useState("");
+  const [extraPrice, setExtraPrice] = useState("");
+  const [ingredientName, setIngredientName] = useState("");
 
   const [createMenuItem] = useCreateMenuItemMutation();
 
@@ -45,6 +51,24 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
     e.preventDefault();
   };
 
+  const handleAddExtra = () => {
+    if (extraName && extraPrice) {
+      setExtras([
+        ...extras,
+        { name: extraName, price: parseFloat(extraPrice) },
+      ]);
+      setExtraName("");
+      setExtraPrice("");
+    }
+  };
+
+  const handleAddIngredient = () => {
+    if (ingredientName) {
+      setIngredients([...ingredients, { name: ingredientName }]);
+      setIngredientName("");
+    }
+  };
+
   const handleAddMenuItem = async (e) => {
     e.preventDefault();
 
@@ -54,6 +78,8 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
       formData.append("description", inputDescription);
       formData.append("price", inputPrice);
       formData.append("category", inputCategory);
+      formData.append("extras", JSON.stringify(extras));
+      formData.append("ingredients", JSON.stringify(ingredients));
 
       if (imageFile) {
         formData.append("image", imageFile);
@@ -70,6 +96,8 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
       setInputCategory("");
       setImageFile(null);
       setImagePreview("");
+      setExtras([]);
+      setIngredients([]);
     } catch (error) {
       console.error("Error creating menu item:", error);
     }
@@ -102,19 +130,12 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
                 style={{ display: "none" }}
                 id="fileInput"
               />
-              <label
-                htmlFor="fileInput"
-                className="d-block text-center"
-              >
+              <label htmlFor="fileInput" className="d-block text-center">
                 <Button variant="primary">Choose Image</Button>
               </label>
             </div>
             {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="img-preview"
-              />
+              <img src={imagePreview} alt="Preview" className="img-preview" />
             )}
             <InputGroup size="sm" className="mb-3">
               <Form.Control
@@ -141,7 +162,51 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
                 required
               />
             </InputGroup>
-            <Button type="submit" variant="success" className="w-100">Add Menu Item</Button>
+            <h5>Extras</h5>
+            <InputGroup size="sm" className="mb-3">
+              <Form.Control
+                placeholder="Extra Name"
+                value={extraName}
+                onChange={(e) => setExtraName(e.target.value)}
+              />
+              <Form.Control
+                placeholder="Extra Price"
+                type="number"
+                value={extraPrice}
+                onChange={(e) => setExtraPrice(e.target.value)}
+              />
+              <Button onClick={handleAddExtra}>Add Extra</Button>
+            </InputGroup>
+            <ListGroup>
+              {extras.map((extra, index) => (
+                <ListGroup.Item key={index}>
+                  {extra.name} - ${extra.price.toFixed(2)}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+
+            <h5>Ingredients</h5>
+            <InputGroup size="sm" className="mb-3">
+              <Form.Control
+                placeholder="Ingredient Name"
+                value={ingredientName}
+                onChange={(e) => setIngredientName(e.target.value)}
+              />
+
+              <Button onClick={handleAddIngredient}>Add Ingredient</Button>
+            </InputGroup>
+            <ListGroup>
+              {ingredients.map((ingredient, index) => (
+                <ListGroup.Item key={index}>{ingredient.name}</ListGroup.Item>
+              ))}
+            </ListGroup>
+
+            {/* <Button type="submit" className="mt-3">
+        Add Menu Item
+      </Button> */}
+            <Button type="submit" variant="success" className="w-100">
+              Add Menu Item
+            </Button>
           </Form>
         </Card.Body>
       </Card>
