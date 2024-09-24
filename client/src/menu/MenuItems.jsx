@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import { Card, Button, Nav } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux"; // Added useSelector import
-import {
-  useDeleteMenuItemMutation,
-  useGetMenuItemsQuery,
-} from "../slices/menuApiSlice";
+import { Card, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useDeleteMenuItemMutation } from "../slices/menuApiSlice";
 import EditMenuItem from "./EditMenuItem";
 import AddMenuItem from "./AddMenuItem";
-import ReiviewMenuItem from "../reviews/ReiviewMenuItem";
-import { useUpdateOrderMutation } from "../slices/orderSlice"; // Added import for addToOrder action
+import { useUpdateOrderMutation } from "../slices/orderSlice";
 import {
   useCreateOrderMutation,
   useAddItemToOrderMutation,
-} from "../slices/orderSlice"; // Updated imports
+} from "../slices/orderSlice";
 import { setCurrentOrderId } from "../slices/orderSlice";
 import { addToCart } from "../slices/cartSlice";
 import OrderItemModal from "../components/OrderItemModal";
@@ -46,32 +41,25 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     borderRadius: "8px",
   };
 
-  // const reviewTarget = id;
-  // const { data: getReviewsMenuItem } = useGetReviewsQuery(
-  //   "menuItem",
-  //   reviewTarget,
-  //   { skip: reviewTarget === "undefined" }
-  // );
-  const [activeKey, setActiveKey] = useState();
+  const [menuItems, setMenuItems] = useState(items); // Initialize local state
   const [addMode, setAddMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteMenuItem] = useDeleteMenuItemMutation();
-  const { refetch } = useGetMenuItemsQuery();
   const dispatch = useDispatch();
   const [createOrder] = useCreateOrderMutation();
   const [addItemToOrder] = useAddItemToOrderMutation();
-  const currentOrderId = useSelector((state) => state.order.currentOrderId); // Changed from state.order to state.auth
+  const currentOrderId = useSelector((state) => state.order.currentOrderId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  // console.log("DSADSADASD");
-  // console.log(userInfo?.data?.user?.id);
-  // console.log(currentOrderId);
 
   const handleDeleteMenuItem = async (itemId) => {
     const menuId = itemId;
     await deleteMenuItem({ menuId }).unwrap();
-    refetch();
+    // Update local state
+    setMenuItems((prevItems) =>
+      prevItems.filter((item) => item._id !== itemId)
+    );
   };
 
   const handleOrderMenuItem = (item) => {
@@ -99,7 +87,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
         dispatch(setCurrentOrderId(orderId));
       }
 
-      const result = await addItemToOrder({
+      await addItemToOrder({
         orderId: orderId,
         menuItemId: itemWithSelections._id,
         removedIngredientsIds: itemWithSelections.ingredients
@@ -116,8 +104,14 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     }
   };
 
-  const handleReviewsMenuItem = async (id) => {
-    navigate(`/ReviewMenuItem?id=${id}`);
+  const handleReviewsMenuItem = async (itemId) => {
+    navigate(`/ReviewMenuItem?id=${itemId}`);
+  };
+
+  // Define the missing function
+  const handleAddMenuItem = (newItem) => {
+    // Update the local state with the new item
+    setMenuItems((prevItems) => [...prevItems, newItem]);
   };
 
   return (
@@ -133,12 +127,12 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
             <AddMenuItem
               setAddMode={setAddMode}
               id={id}
-              onAddSuccess={handleAddMenuItem}
+              onAddSuccess={handleAddMenuItem} // Pass the handler here
             />
           </div>
         )}
 
-        {items?.map((item) => (
+        {menuItems?.map((item) => (
           <div key={item._id} style={{ marginBottom: "20px" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: "1" }}>
