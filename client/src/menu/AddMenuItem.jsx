@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
-import {
-  useCreateMenuItemMutation,
-  useGetMenuItemsQuery,
-} from "../slices/menuApiSlice";
+import { useCreateMenuItemMutation } from "../slices/menuApiSlice";
 
 const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
   const [imageFile, setImageFile] = useState(null);
@@ -16,7 +13,6 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
   const [inputCategory, setInputCategory] = useState("");
 
   const [createMenuItem] = useCreateMenuItemMutation();
-  const { refetch } = useGetMenuItemsQuery();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -61,7 +57,7 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
         formData.append("image", imageFile);
       }
 
-      const menuId = id ?? "test";
+      const menuId = id;
 
       const response = await createMenuItem({ formData, menuId }).unwrap();
 
