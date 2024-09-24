@@ -1,14 +1,16 @@
-import React from "react";
-import { Card, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Row, Col, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useGetReviewsForRestaurantQuery } from "../slices/reviewApiSlice";
 import ReviewCard from "./ReviewCard";
 import "./ReviewsPage.css";
+import AddReview from "./AddReview";
 
 const ReviewsPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
+  const [addMode, setAddMode] = useState(false);
 
   const {
     data: getReviewsRestaurant,
@@ -40,6 +42,14 @@ const ReviewsPage = () => {
             <p>No reviews available</p>
           )}
         </Card.Body>
+        <Button variant="primary" onClick={() => setAddMode((prev) => !prev)}>
+          {addMode ? "Cancel" : "Add review on the restaurant"}
+        </Button>
+        {addMode && (
+          <div style={{ marginTop: "20px" }}>
+            <AddReview setAddMode={setAddMode} id={id} type={"r"} />
+          </div>
+        )}
       </Card>
     </div>
   );

@@ -1,5 +1,8 @@
 import { apiSlice } from "./apiSlice";
-import { REVIEWS_FOR_RESTAURANT_URL } from "./urlConstrains";
+import {
+  REVIEWS_FOR_MENUITEM_URL,
+  REVIEWS_FOR_RESTAURANT_URL,
+} from "./urlConstrains";
 const reviewApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getReviewsForRestaurant: builder.query({
@@ -30,13 +33,20 @@ const reviewApiSlice = apiSlice.injectEndpoints({
     //   keepUnusedDataFor: 5,
     //   provideTags: ["reviews"],
     // }),
-    // createReview: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${REVIEW_URL}`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
+    createReviewForRestaurant: builder.mutation({
+      query: (data) => ({
+        url: `${REVIEWS_FOR_RESTAURANT_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    createReviewForMenuItem: builder.mutation({
+      query: (data) => ({
+        url: `${REVIEWS_FOR_MENUITEM_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
     // updateReview: builder.mutation({
     //   query: ({ reviewId, data }) => ({
     //     url: `${REVIEW_URL}/${reviewId}`,
@@ -56,8 +66,8 @@ export const {
   useGetReviewsForRestaurantQuery,
   useGetReviewsForMenuItemQuery,
   useGetTopThreeByRestaurantIdQuery,
-  useGetReviewByIdQuery,
-  useCreateReviewMutation,
+  useCreateReviewForRestaurantMutation,
+  useCreateReviewForMenuItemMutation,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
 } = reviewApiSlice;
