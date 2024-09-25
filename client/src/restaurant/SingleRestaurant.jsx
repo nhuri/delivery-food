@@ -6,7 +6,12 @@ import "./SingleRestaurant.css";
 import { useGetTopThreeByRestaurantIdQuery } from "../slices/reviewApiSlice";
 import { useGetTopThreeBySalesQuery } from "../slices/restaurantApiSlice";
 import RButton from "../components/rButton";
+import OrderItemModal from "../components/OrderItemModal";
+
 const SingleRestaurant = () => {
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -45,6 +50,11 @@ const SingleRestaurant = () => {
   } else {
     urlImage = logo;
   }
+
+  const handleOrderMenuItem = (item) => {
+    setSelectedItem(item);
+    setShowOrderModal(true);
+  };
 
   const handleMenuPage = () => {
     navigate(`/MenuList?id=${id}`);
@@ -224,7 +234,22 @@ const SingleRestaurant = () => {
                     {" "}
                     <span style={{ fontWeight: "bold" }}>Sold:</span> {obj.sold}
                   </Card.Text>
+                  <Button
+                    variant="success"
+                    onClick={() => handleOrderMenuItem(obj.menuItem)}
+                    className="me-2"
+                  >
+                    Add to Order
+                  </Button>
                 </Card.Body>
+                <OrderItemModal
+                  show={showOrderModal}
+                  onHide={() => {
+                    setShowOrderModal(false);
+                    setSelectedItem(null);
+                  }}
+                  item={selectedItem}
+                />
               </Card>
             );
           })}
