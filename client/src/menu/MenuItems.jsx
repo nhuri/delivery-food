@@ -54,15 +54,12 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   const [menuItems, setMenuItems] = useState(items);
-  // const [addMode, setAddMode] = useState(false);
-  // const [editMode, setEditMode] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleDeleteMenuItem = async (itemId) => {
     const menuId = itemId;
     await deleteMenuItem({ menuId }).unwrap();
-    refetch();
     window.location.reload();
   };
 
@@ -111,9 +108,10 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   const handleAddMenuItem = (newItem) => {
     setMenuItems((prevItems) => [...prevItems, newItem]);
   };
-    const handleBackClick = () => {
-      navigate(-1); // Navigate to the previous page
-    };
+  
+  const handleBackClick = () => {
+    navigate(-1); // Navigate to the previous page
+  };
 
   // Group menu items by category
   const groupedItems = menuItems.reduce((acc, item) => {
@@ -123,6 +121,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     acc[item.category].push(item);
     return acc;
   }, {});
+
   let urlImage;
 
   if (JSON.stringify(image).slice(1, 9) === "/uploads") {
@@ -140,7 +139,6 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
           Back
         </RButton>
         <Card.Body>
-          {/* <Card.Img variant="top" src={urlImage} /> */}
           <Card.Title className="text-center mb-3 restaurant-name">
             {name}
           </Card.Title>
@@ -148,19 +146,23 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
             {description}
           </Card.Text>
 
-          <Button
-            variant="success"
-            onClick={() => setAddMode((prev) => !prev)}
-            className="mb-3 add-menu-item-button"
-          >
-            {addMode ? "Cancel" : "Add Menu Item"}
-          </Button>
-          {addMode && (
-            <AddMenuItem
-              setAddMode={setAddMode}
-              id={id}
-              // onAddSuccess={handleAddMenuItem}
-            />
+          {/* Show Add Menu Item button only for restaurant owners */}
+          {userInfo?.role === "restaurant-owner" && (
+            <>
+              <Button
+                variant="success"
+                onClick={() => setAddMode((prev) => !prev)}
+                className="mb-3 add-menu-item-button"
+              >
+                {addMode ? "Cancel" : "Add Menu Item"}
+              </Button>
+              {addMode && (
+                <AddMenuItem
+                  setAddMode={setAddMode}
+                  id={id}
+                />
+              )}
+            </>
           )}
 
           <div className="menu-items-container">
@@ -169,11 +171,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                 <h5 className="category-title">{category}</h5>
                 {groupedItems[category].map((item) => (
                   <Row key={item._id} className="mb-3">
-                    {" "}
-                    {/* Each item in its own row */}
                     <Col xs={12}>
-                      {" "}
-                      {/* Full width for each item */}
                       <div className="d-flex align-items-start border p-3 rounded menu-item-card">
                         <div className="flex-grow-1 me-3">
                           <Card.Title className="menu-item-name">
@@ -199,27 +197,32 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                             <div>
                               <Card.Text>Ingredients:</Card.Text>
                               <ul>
-                                {item.ingredients.map((ingredients, index) => (
-                                  <li key={index}>{ingredients.name}</li>
+                                {item.ingredients.map((ingredient, index) => (
+                                  <li key={index}>{ingredient.name}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
                           <div className="button-group">
-                            <Button
-                              variant="warning"
-                              onClick={() => setEditMode((prev) => !prev)}
-                              className="me-2"
-                            >
-                              {editMode ? "Cancel" : "Edit Menu Item"}
-                            </Button>
-                            <Button
-                              variant="danger"
-                              onClick={() => handleDeleteMenuItem(item._id)}
-                              className="me-2"
-                            >
-                              Delete
-                            </Button>
+                            {/* Show Edit and Delete buttons only for restaurant owners */}
+                            {userInfo?.role === "restaurant-owner" && (
+                              <>
+                                <Button
+                                  variant="warning"
+                                  onClick={() => setEditMode((prev) => !prev)}
+                                  className="me-2"
+                                >
+                                  {editMode ? "Cancel" : "Edit Menu Item"}
+                                </Button>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleDeleteMenuItem(item._id)}
+                                  className="me-2"
+                                >
+                                  Delete
+                                </Button>
+                              </>
+                            )}
                             <Button
                               variant="success"
                               onClick={() => handleOrderMenuItem(item)}
@@ -236,9 +239,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                           </div>
                         </div>
                         <img
-                          src={`http://localhost:8000/${item.image?.substring(
-                            9
-                          )}`}
+                          src={`http://localhost:8000/${item.image?.substring(9)}`}
                           alt={item.name}
                           className="img-fluid rounded"
                           style={{ maxWidth: "150px", height: "auto" }}
