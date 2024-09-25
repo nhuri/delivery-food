@@ -10,7 +10,6 @@ import {
   useAddItemToOrderMutation,
 } from "../slices/orderSlice";
 import { setCurrentOrderId } from "../slices/orderSlice";
-import { addToCart } from "../slices/cartSlice";
 import OrderItemModal from "../components/OrderItemModal";
 import RButton from "../components/rButton";
 import "./MenuItems.css";
@@ -63,43 +62,12 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
     window.location.reload();
   };
 
-  const handleOrderMenuItem = (item) => {
+  const handleOrderMenuItem = (item) => { // to do : button handler add to order
     setSelectedItem(item);
     setShowOrderModal(true);
   };
 
-  const handleAddToOrder = async (itemWithSelections) => {
-    if (!userInfo) {
-      console.log("User needs to log in");
-      return;
-    }
-
-    let orderId = currentOrderId;
-
-    if (!orderId) {
-      const newOrder = await createOrder({
-        customer: userInfo?.id,
-        restaurant: res_id,
-        deliveryTime: new Date(),
-        communication: "",
-      }).unwrap();
-      orderId = newOrder.order._id;
-      dispatch(setCurrentOrderId(orderId));
-    }
-
-    await addItemToOrder({
-      orderId: orderId,
-      menuItemId: itemWithSelections._id,
-      removedIngredientsIds: itemWithSelections.ingredients
-        ?.filter(
-          (ing) => !itemWithSelections.selectedIngredients.includes(ing.name)
-        )
-        .map((ing) => ing._id),
-      extrasIds: itemWithSelections.selectedExtras.map((extra) => extra._id),
-    }).unwrap();
-
-    dispatch(addToCart(itemWithSelections));
-  };
+  
 
   const handleReviewsMenuItem = (itemId) => {
     navigate(`/ReviewMenuItem?id=${itemId}`);
@@ -244,32 +212,24 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
                           className="img-fluid rounded"
                           style={{ maxWidth: "150px", height: "auto" }}
                         />
-                        {editMode && (
-                          <EditMenuItem
-                            menuId={item._id}
-                            setEditMode={setEditMode}
-                            className="mt-3"
-                          />
-                        )}
-                      </div>
-                    </Col>
-                  </Row>
-                ))}
-              </div>
-            ))}
-          </div>
-        </Card.Body>
-        <OrderItemModal
-          show={showOrderModal}
-          onHide={() => {
-            setShowOrderModal(false);
-            setSelectedItem(null);
-          }}
-          item={selectedItem}
-          onAddToOrder={handleAddToOrder}
-        />
-      </div>
-    </>
+                      )}
+                    </div>
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          ))}
+        </div>
+      </Card.Body>
+      <OrderItemModal
+        show={showOrderModal}
+        onHide={() => {
+          setShowOrderModal(false);
+          setSelectedItem(null);
+        }}
+        item={selectedItem}
+      />
+    </Card>
   );
 };
 

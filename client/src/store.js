@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./slices/apiSlice";
 import authSliceReducer from "./slices/authSlice";
 import orderReducer from './slices/orderSlice';
-import cartReducer from './slices/cartSlice'; 
 import { statisticsApiSlice } from "./slices/StatisticsApiSlice";
 import paymentReducer from './slices/PaymentSlice'; // Adjust the import path
 import {
@@ -17,6 +16,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { combineReducers } from "redux";
+import cartReducer from './slices/cartSlice';
+
 
 // Persist configuration for auth slice
 const persistConfig = {

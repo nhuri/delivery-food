@@ -1,0 +1,32 @@
+/* src/Cart/Cart.css */
+
+.cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .cart-items-container {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+  
+  .offcanvas-header {
+    background-color: #FF5252;
+    color: #ffffff;
+  }
+  
+  .offcanvas-body {
+    background-color: #ffffff;
+  }
+  
+  .cart-total {
+    color: #FF5252;
+    font-weight: bold;
+  }
+  .delete-btn {
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .delete-btn:hover {
+    background-color: #dc3545;
+    color: white;
+  }
