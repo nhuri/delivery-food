@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation ,useNavigate} from "react-router-dom";
 import { useGetReviewsForRestaurantQuery } from "../slices/reviewApiSlice";
 import ReviewCard from "./ReviewCard";
 import "./ReviewsPage.css";
 import AddReview from "./AddReview";
+import RButton from "../components/rButton";
 
 const ReviewsPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const [addMode, setAddMode] = useState(false);
+  const navigate = useNavigate();
 
   const {
     data: getReviewsRestaurant,
@@ -25,8 +27,19 @@ const ReviewsPage = () => {
 
   const reviewsArr = getReviewsRestaurant?.data?.reviews || [];
 
+    const handleBackClick = () => {
+      navigate(-1); // Navigate to the previous page
+    };
+
   return (
     <div className="reviews-container">
+      <RButton
+        onClick={handleBackClick} // Pass the navigation handler to onClick
+        hoverEffect={true}
+        visibleTo="all" // Visible to all users
+      >
+        Back
+      </RButton>
       <Card className="board">
         <Card.Header as="h4">Reviews</Card.Header>
         <Card.Body>

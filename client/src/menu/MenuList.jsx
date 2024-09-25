@@ -9,16 +9,13 @@ const MenuList = () => {
 
   const id = queryParams.get("id"); //restaurantId
 
-  const navigateB = useNavigate();
-  const handleBack = () => {
-    navigateB(-1); // חוזר לדף הקודם
-  };
+ 
   const { data } = useGetMenuByRestaurantIdQuery(id);
   
 
   return (
     <div>
-      <Button onClick={handleBack}>Back</Button>
+      
       <div className="row">
         {data?.map((menuItems) => (
           <MenuItems

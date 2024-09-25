@@ -16,13 +16,15 @@ const RButton = ({
   }
   
   const baseStyle = {
-    backgroundColor: '#FF5252',
-    color: '#f8f9fa',
-    fontWeight: 'bold',
-    padding: '0.5rem 1rem',
-    borderRadius: '9999px',
-    border: 'none',
-    transition: 'all 0.3s ease-in-out',
+    backgroundColor: "#FF5252",
+    color: "#f8f9fa",
+    fontWeight: "bold",
+    padding: "0.25rem 0.75rem", // Smaller padding for a compact button
+    borderRadius: "9999px",
+    border: "none",
+    transition: "all 0.3s ease-in-out",
+    width: "auto", // Auto width to match the content
+    fontSize: "0.875rem", // Smaller font size if needed
   };
 
   const [style, setStyle] = React.useState(baseStyle);

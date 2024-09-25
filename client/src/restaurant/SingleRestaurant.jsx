@@ -5,7 +5,7 @@ import Card from "react-bootstrap/Card";
 import "./SingleRestaurant.css";
 import { useGetTopThreeByRestaurantIdQuery } from "../slices/reviewApiSlice";
 import { useGetTopThreeBySalesQuery } from "../slices/restaurantApiSlice";
-
+import RButton from "../components/rButton";
 const SingleRestaurant = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ const SingleRestaurant = () => {
     // navigate(`/ReviewsPage?id=${id}`);
   };
 
-  const handleBack = () => {
+  const handleBackClick = () => {
     navigate(-1); // This will navigate back to the previous page
   };
   const handleCardClick = () => {
@@ -70,11 +70,13 @@ const SingleRestaurant = () => {
   return (
     <div className="single-restaurant-page">
       {/* Back button */}
-      <div className="back-button-container my-3">
-        <Button onClick={handleBack} className="btn btn-outline-dark">
-          &larr; Back
-        </Button>
-      </div>
+      <RButton
+        onClick={handleBackClick} // Pass the navigation handler to onClick
+        hoverEffect={true}
+        visibleTo="all" // Visible to all users
+      >
+        Back
+      </RButton>
 
       {/* Full-width image header */}
       <header className="restaurant-header">
@@ -83,18 +85,18 @@ const SingleRestaurant = () => {
           <div>
             <h1 className="restaurant-title">{name}</h1>
           </div>
-          <Button
+          <rButton
             onClick={handleMenuPage}
-            className="btn btn-outline-dark mx-2"
+            className="btn btn-outline-danger mx-2"
           >
             View Menu
-          </Button>
-          <Button
+          </rButton>
+          <rButton
             onClick={handleReviewsPage}
             className="btn btn-outline-dark mx-2"
           >
             View Reviews
-          </Button>
+          </rButton>
         </div>
       </header>
 
