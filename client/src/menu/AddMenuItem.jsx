@@ -101,6 +101,8 @@ const AddMenuItem = ({ setAddMode, id, onAddSuccess }) => {
     } catch (error) {
       console.error("Error creating menu item:", error);
     }
+    refetch();
+    window.location.reload();
   };
 
   return (

@@ -15,7 +15,7 @@ const menuApiSlice = apiSlice.injectEndpoints({
         url: MENUITEMS_URL,
       }),
       keepUnusedDataFor: 5,
-      providesTags: ["Menu"],
+      provideTags: ["Menu"],
     }),
     getMenuItemById: builder.query({
       query: (menuId) => ({

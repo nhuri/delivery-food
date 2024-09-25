@@ -23,10 +23,10 @@ const restaurantApiSlice = apiSlice.injectEndpoints({
       provideTags: ["restaurant"],
     }),
     addRestaurant: builder.mutation({
-      query: (data) => ({
+      query: ({ formData }) => ({
         url: `${RESTAURANT_URL}`,
         method: "POST",
-        body: data,
+        body: formData,
       }),
     }),
     editRestaurant: builder.mutation({

@@ -3,16 +3,13 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import {
-  useCreateMenuItemMutation,
-  useGetMenuItemsQuery,
-} from "../slices/menuApiSlice";
-import {
   useCreateReviewForMenuItemMutation,
   useCreateReviewForRestaurantMutation,
   useGetReviewsForMenuItemQuery,
   useGetReviewsForRestaurantQuery,
 } from "../slices/reviewApiSlice";
 import { useSelector } from "react-redux";
+import "./AddReview.css";
 
 const AddReview = ({ setAddMode, id, type }) => {
   const [inputComment, setInputComment] = useState("");
@@ -20,11 +17,16 @@ const AddReview = ({ setAddMode, id, type }) => {
   const [inputReview, setInputReview] = useState("");
 
   let createReview;
-  if (type === "m") [createReview] = useCreateReviewForMenuItemMutation();
-  //   const { refetch: } = useGetReviewsForMenuItemQuery();
-  else if (type === "r")
+  let refetch;
+  if (type === "m") {
+    [createReview] = useCreateReviewForMenuItemMutation();
+    const { refetch: refetchReviews } = useGetReviewsForMenuItemQuery(id);
+    refetch = refetchReviews;
+  } else if (type === "r") {
     [createReview] = useCreateReviewForRestaurantMutation();
-  //   const { refetch } = useGetReviewsForRestaurantQuery();
+    const { refetch: refetchReviews } = useGetReviewsForRestaurantQuery(id);
+    refetch = refetchReviews;
+  }
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo?.id;
 
@@ -50,6 +52,7 @@ const AddReview = ({ setAddMode, id, type }) => {
       setInputComment("");
       setInputRating("");
       setInputReview("");
+      if (refetch) refetch();
     } catch (error) {
       console.error("Error creating review:", error);
     }
@@ -68,10 +71,17 @@ const AddReview = ({ setAddMode, id, type }) => {
       </InputGroup>
       <InputGroup size="sm" className="mb-3">
         <Form.Control
-          placeholder="Rating"
+          placeholder="Rating (1-5)"
           type="number"
           value={inputRating}
-          onChange={(e) => setInputRating(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value >= 0 && value <= 5) {
+              setInputRating(value);
+            }
+          }}
+          min="0"
+          max="5"
           required
         />
       </InputGroup>
