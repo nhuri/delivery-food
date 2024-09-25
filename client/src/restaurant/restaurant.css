@@ -79,7 +79,7 @@ html */
   /* margin-bottom: 10px; */
   color: #333;
   padding: 10px;
-  background: linear-gradient(135deg, rgb(72, 82, 235), rgb(145, 200, 231));
+  background: linear-gradient(to bottom,white, #FF5252 );
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   /* margin: 20px; */
