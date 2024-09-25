@@ -4,6 +4,7 @@ import authSliceReducer from "./slices/authSlice";
 import orderReducer from './slices/orderSlice';
 import cartReducer from './slices/cartSlice'; 
 import { statisticsApiSlice } from "./slices/StatisticsApiSlice";
+import paymentReducer from './slices/PaymentSlice'; // Adjust the import path
 import {
   persistStore,
   persistReducer,
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(persistConfig, authSliceReducer), // Add persistReducer here
   order: orderReducer,
   cart: cartReducer,
+  payment: paymentReducer, // Add the payment reducer here
 });
 
 // Configure store
