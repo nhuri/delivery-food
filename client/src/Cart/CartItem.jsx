@@ -24,7 +24,7 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           <ListGroup.Item>
             <strong>Ingredients:</strong>
             <ul>
-              {item.ingredients.map((ing, index) => (
+              {item.ingredients?.map((ing, index) => (
                 <li key={index}>{ing}</li>
               ))}
             </ul>
@@ -32,7 +32,7 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           <ListGroup.Item>
             <strong>Extras:</strong>
             <ul>
-              {item.extras.map((extra, index) => (
+              {item.extras?.map((extra, index) => (
                 <li key={index}>{extra?.name} (+${extra?.price?.toFixed(2)})</li>
               ))}
             </ul>
