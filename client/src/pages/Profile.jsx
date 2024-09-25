@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setUserInfoOnLoginOrRegister } from "../slices/authSlice"; // Import the action
 import { useUpdateUserMutation } from "../slices/userApiSlice"; // Import the mutation
 import { useGetRestaurantStatisticsQuery } from "../slices/StatisticsApiSlice"; // Import the query for fetching statistics
-import './Profile.css';
+import "./Profile.css";
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
@@ -41,6 +41,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Failed to update user:", error);
     }
+    window.location.reload();
   };
 
   // Handle input changes
@@ -90,10 +91,18 @@ const Profile = () => {
             </div>
           ) : (
             <div>
-              <p className="profile-text"><strong>Name:</strong> {userInfo.name}</p>
-              <p className="profile-text"><strong>Email:</strong> {userInfo.email}</p>
-              <p className="profile-text"><strong>Phone:</strong> {userInfo.phoneNumber}</p>
-              <p className="profile-text"><strong>Address:</strong> {userInfo.address}</p>
+              <p className="profile-text">
+                <strong>Name:</strong> {userInfo.name}
+              </p>
+              <p className="profile-text">
+                <strong>Email:</strong> {userInfo.email}
+              </p>
+              <p className="profile-text">
+                <strong>Phone:</strong> {userInfo.phoneNumber}
+              </p>
+              <p className="profile-text">
+                <strong>Address:</strong> {userInfo.address}
+              </p>
               <button onClick={() => setIsEditing(true)}>Edit</button>
             </div>
           )}
@@ -108,19 +117,24 @@ const Profile = () => {
                   {userInfo.restaurants.map((restaurant) => (
                     <li key={restaurant._id}>
                       <strong>{restaurant.name}</strong> - {restaurant.address}
-                      <Statistics restaurantId={restaurant._id} /> {/* No need to check for restaurant._id here */}
+                      <Statistics restaurantId={restaurant._id} />{" "}
+                      {/* No need to check for restaurant._id here */}
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p>No restaurants added yet.</p>
               )}
-              <button className="add-restaurant-button">Add New Restaurant</button>
+              <button className="add-restaurant-button">
+                Add New Restaurant
+              </button>
             </div>
           )}
         </div>
       ) : (
-        <p className="profile-message">No user information available. Please log in.</p>
+        <p className="profile-message">
+          No user information available. Please log in.
+        </p>
       )}
     </div>
   );
@@ -128,16 +142,26 @@ const Profile = () => {
 
 // New component to fetch and display statistics for each restaurant
 const Statistics = ({ restaurantId }) => {
-  const { data: stats, error, isLoading } = useGetRestaurantStatisticsQuery(restaurantId); // Fetch statistics for the given restaurantId
+  const {
+    data: stats,
+    error,
+    isLoading,
+  } = useGetRestaurantStatisticsQuery(restaurantId); // Fetch statistics for the given restaurantId
 
   if (isLoading) return <p>Loading statistics...</p>;
   if (error) return <p>Error fetching statistics.</p>;
 
   return (
     <div className="restaurant-stats">
-      <p><strong>Orders:</strong> {stats.orders}</p>
-      <p><strong>Average Rating:</strong> {stats.averageRating}</p>
-      <p><strong>Total Reviews:</strong> {stats.reviews.length}</p>
+      <p>
+        <strong>Orders:</strong> {stats.orders}
+      </p>
+      <p>
+        <strong>Average Rating:</strong> {stats.averageRating}
+      </p>
+      <p>
+        <strong>Total Reviews:</strong> {stats.reviews.length}
+      </p>
     </div>
   );
 };
