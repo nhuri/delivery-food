@@ -132,21 +132,22 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
   return (
     <>
       <div className="mb-4 shadow-sm rounded">
+        <RButton
+          onClick={handleBackClick} // Pass the navigation handler to onClick
+          hoverEffect={true}
+          visibleTo="all" // Visible to all users
+        >
+          Back
+        </RButton>
         <Card.Body>
           {/* <Card.Img variant="top" src={urlImage} /> */}
           <Card.Title className="text-center mb-3 restaurant-name">
             {name}
           </Card.Title>
-          <RButton
-            onClick={handleBackClick} // Pass the navigation handler to onClick
-            hoverEffect={true}
-            visibleTo="all" // Visible to all users
-          >
-            Back
-          </RButton>
-          <Card.Text className="text-muted restaurant-description">
+          <Card.Text className="text-center restaurant-description">
             {description}
           </Card.Text>
+
           <Button
             variant="success"
             onClick={() => setAddMode((prev) => !prev)}
