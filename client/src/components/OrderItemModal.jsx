@@ -61,8 +61,7 @@ const OrderItemModal = ({ show, onHide, item, }) => {
 
   let cartItem;
   const handleAddToOrder = () => {
-
-     cartItem = {
+    const cartItem = {
       id: item?._id,
       name: item?.name,
       price: item?.price,
@@ -71,12 +70,7 @@ const OrderItemModal = ({ show, onHide, item, }) => {
       extras: selectedExtras,
       totalPrice: totalPrice.toFixed(2),
     };
-    // Dispatch action to add item to cart
     dispatch(addToCart(cartItem));
-
-    // Save updated cart to localStorage
-    saveCartToLocalStorage();
-    window.location.reload();
     onHide();
   };
   // Function to save cart to localStorage

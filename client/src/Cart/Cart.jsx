@@ -1,54 +1,47 @@
 // src/Cart/Cart.jsx
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Offcanvas, Button } from 'react-bootstrap';
 import CartItem from './CartItem';
 import './Cart.css';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { loadCart, updateQuantity, removeFromCart } from '../slices/cartSlice';
 
 const Cart = ({ show, onHide }) => {
-    const [cartItems, setCartItems] = useState([]);
+    const cartItems = useSelector(state => state.cart.items);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Load cart items from localStorage when component mounts
-        const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCartItems(savedCart);
-    }, []);
-
-    const saveCartToLocalStorage = (updatedCart) => {
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-    };
+        dispatch(loadCart());
+    }, [dispatch]);
 
     const handleIncrease = (itemId, itemExtras, itemIngredients) => {
-        const updatedCart = cartItems.map(item =>
-            ((item.id === itemId) && (item.extras === itemExtras) &&
-                (item.ingredients === itemIngredients)) ? { ...item, quantity: item.quantity + 1 }
-                : item
+        const item = cartItems.find(item => 
+            item.id === itemId && 
+            JSON.stringify(item.extras) === JSON.stringify(itemExtras) && 
+            JSON.stringify(item.ingredients) === JSON.stringify(itemIngredients)
         );
-        setCartItems(updatedCart);
-        saveCartToLocalStorage(updatedCart);
+        if (item) {
+            dispatch(updateQuantity({ id: itemId, quantity: item.quantity + 1, extras: itemExtras, ingredients: itemIngredients }));
+        }
     };
 
     const handleDecrease = (itemId, itemExtras, itemIngredients) => {
-        const updatedCart = cartItems.map(item =>
-            ((item.id === itemId) && (item.extras === itemExtras) &&
-                (item.ingredients === itemIngredients) && (item.quantity > 1)) ?
-                { ...item, quantity: item.quantity - 1 } : item
-        ).filter(item => item.quantity > 0);
-        
-        setCartItems(updatedCart);
-        saveCartToLocalStorage(updatedCart);
+        const item = cartItems.find(item => 
+            item.id === itemId && 
+            JSON.stringify(item.extras) === JSON.stringify(itemExtras) && 
+            JSON.stringify(item.ingredients) === JSON.stringify(itemIngredients)
+        );
+        if (item && item.quantity > 1) {
+            dispatch(updateQuantity({ id: itemId, quantity: item.quantity - 1, extras: itemExtras, ingredients: itemIngredients }));
+        } else if (item && item.quantity === 1) {
+            dispatch(removeFromCart({ id: itemId, extras: itemExtras, ingredients: itemIngredients }));
+        }
     };
 
-    // const handleRemove =  (itemId,  itemExtras, itemIngredients) => {
-
-    //     const updatedCart = cartItems.filter(item => ((item.id !== itemId) && 
-    //     (item.extras !== itemExtras) &&
-    //     (item.ingredients !== itemIngredients)));
-    //     setCartItems(updatedCart);
-    //     saveCartToLocalStorage(updatedCart);
-    // };
+    const handleRemove = (itemId, itemExtras, itemIngredients) => {
+        dispatch(removeFromCart({ id: itemId, extras: itemExtras, ingredients: itemIngredients }));
+    };
 
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => total + item.totalPrice * item.quantity, 0);
@@ -63,26 +56,13 @@ const Cart = ({ show, onHide }) => {
                 <div className="cart-items-container">
                     {cartItems.map(item => (
                         <CartItem
-                            key={item.id}
+                            key={`${item.id}-${JSON.stringify(item.extras)}-${JSON.stringify(item.ingredients)}`}
                             item={item}
                             onIncrease={handleIncrease}
                             onDecrease={handleDecrease}
-                            // onRemove={handleRemove}
+                            onRemove={handleRemove}
                         />
-                    )
-                    )}
-                    {/* <TransitionGroup>
-                        {cartItems.map((item) => (
-                            <CSSTransition key={item._id} timeout={500} classNames="item">
-                                <CartItem
-                                    key={item.id}
-                                    item={item}
-                                    onIncrease={handleIncrease}
-                                    onDecrease={handleDecrease}
-                                />
-                            </CSSTransition>
-                        ))}
-                    </TransitionGroup> */}
+                    ))}
                 </div>
                 <div className="cart-total mt-3">
                     <h5>Total: ${calculateTotal().toFixed(2)}</h5>

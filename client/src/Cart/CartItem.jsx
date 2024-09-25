@@ -3,8 +3,7 @@
 import React from 'react';
 import { Card, Button, ListGroup } from 'react-bootstrap';
 import './Cart.css';
-import { FaTrash } from 'react-icons/fa'; // Added import for trash icon
-
+import { FaTrash } from 'react-icons/fa';
 
 const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
 
@@ -43,14 +42,14 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           <Card.Text>
             Total Price: ${(item.totalPrice * item.quantity).toFixed(2)}
           </Card.Text>
-          {/* <Button 
+          <Button 
             variant="danger" 
             size="sm" 
-            onClick={() => onRemove(item.id, item.extras, item.ingredients)}
+            onClick={() => onRemove(item.id, item.extras, item.ingredients)} // Added onClick handler
             className="delete-btn"
           >
             <FaTrash />
-          </Button> */}
+          </Button>
         </div>
       </Card.Body>
     </Card>

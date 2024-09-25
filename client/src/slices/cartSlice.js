@@ -9,28 +9,41 @@ const cartSlice = createSlice({
   },
   reducers: {
     addToCart: (state, action) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+      const existingItem = state.items.find(item => 
+        item.id === action.payload.id && 
+        JSON.stringify(item.extras) === JSON.stringify(action.payload.extras) &&
+        JSON.stringify(item.ingredients) === JSON.stringify(action.payload.ingredients)
+      );
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
         state.items.push(action.payload);
       }
       // Save to localStorage
-      // localStorage.setItem('cart', JSON.stringify(state.items));
+      localStorage.setItem('cart', JSON.stringify(state.items));
     },
     removeFromCart: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(item => 
+        !(item.id === action.payload.id && 
+          JSON.stringify(item.extras) === JSON.stringify(action.payload.extras) &&
+          JSON.stringify(item.ingredients) === JSON.stringify(action.payload.ingredients))
+      );
       localStorage.setItem('cart', JSON.stringify(state.items));
     },
     updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const item = state.items.find(item => item.id === id);
+      const { id, quantity, extras, ingredients } = action.payload;
+      const item = state.items.find(item => 
+        item.id === id && 
+        JSON.stringify(item.extras) === JSON.stringify(extras) &&
+        JSON.stringify(item.ingredients) === JSON.stringify(ingredients)
+      );
       if (item) {
         item.quantity = quantity;
       }
       localStorage.setItem('cart', JSON.stringify(state.items));
     },
     loadCart: (state) => {
+      // Load cart items from localStorage
       const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
       state.items = savedCart;
     },
