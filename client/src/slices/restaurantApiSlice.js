@@ -36,6 +36,12 @@ const restaurantApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getPhoneByResID: builder.mutation({
+      query: ({ restaurantId }) => ({
+        url: `${RESTAURANT_URL}/${restaurantId}`,
+        method: "GET",
+      }),
+    }),
     deleteRestaurant: builder.mutation({
       query: ({ restaurantId }) => ({
         url: `${RESTAURANT_URL}/${restaurantId}`,
@@ -50,5 +56,6 @@ export const {
   useGetTopThreeBySalesQuery,
   useAddRestaurantMutation,
   useEditRestaurantMutation,
+  useGetPhoneByResIDMutation,
   useDeleteRestaurantMutation,
 } = restaurantApiSlice;

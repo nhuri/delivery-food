@@ -76,16 +76,16 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
 
     let orderId = currentOrderId;
 
-    if (!orderId) {
-      const newOrder = await createOrder({
-        customer: userInfo?.id,
-        restaurant: res_id,
-        deliveryTime: new Date(),
-        communication: "",
-      }).unwrap();
-      orderId = newOrder.order._id;
-      dispatch(setCurrentOrderId(orderId));
-    }
+    // if (!orderId) {
+    //   const newOrder = await createOrder({
+    //     customer: userInfo?.id,
+    //     restaurant: res_id,
+    //     deliveryTime: new Date(),
+    //     communication: "",
+    //   }).unwrap();
+    //   orderId = newOrder.order._id;
+    //   dispatch(setCurrentOrderId(orderId));
+    // }
 
     await addItemToOrder({
       orderId: orderId,
@@ -266,7 +266,7 @@ const MenuItems = ({ id, name, description, image, items, res_id }) => {
             setSelectedItem(null);
           }}
           item={selectedItem}
-          onAddToOrder={handleAddToOrder}
+          resId={res_id}
         />
       </div>
     </>

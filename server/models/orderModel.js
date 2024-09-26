@@ -66,13 +66,6 @@ const orderSchema = new mongoose.Schema({
     enum: ["Pending", "Paid"],
     default: "Pending",
   },
-  transactionId: {
-    type: String,
-  },
-  deliveryPerson: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
   communication: {
     type: String,
   },

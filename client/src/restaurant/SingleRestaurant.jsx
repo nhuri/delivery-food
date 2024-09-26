@@ -96,18 +96,18 @@ const SingleRestaurant = () => {
           <div>
             <h1 className="restaurant-title">{name}</h1>
           </div>
-          <rButton
+          <RButton
             onClick={handleMenuPage}
             className="btn btn-outline-danger mx-2"
           >
             View Menu
-          </rButton>
-          <rButton
+          </RButton>
+          <RButton
             onClick={handleReviewsPage}
             className="btn btn-outline-dark mx-2"
           >
             View Reviews
-          </rButton>
+          </RButton>
         </div>
       </header>
 

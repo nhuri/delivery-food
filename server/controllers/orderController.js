@@ -5,21 +5,22 @@ const User = require("../models/userModel");
 // const { processGooglePayPayment } = require("../utils/googlePay");
 const asyncHandler = require("express-async-handler");
 const AppError = require("../utils/AppError");
-const mockProcessPayment = require("../utils/googlePay");
+
 // 1. Create a new order
 exports.createOrder = asyncHandler(async (req, res) => {
-  const { customer, restaurant, deliveryTime, communication } = req.body;
+  const { customer, restaurant, deliveryTime, customer_phone, newItems, finalAmount } = req.body;
 
   const newOrder = new Order({
-    customer,
-    restaurant,
-    deliveryTime,
-    communication,
-    items: [],
-    totalAmount: 0,
-    paymentStatus: "Pending",
+    customer : customer,
+    restaurant : restaurant,
+    deliveryTime : deliveryTime,
+    communication : customer_phone,
+    items : newItems,
+    totalAmount : finalAmount,
+    paymentStatus : "Pending",
+    status : "Pending",
   });
-
+  
   const savedOrder = await newOrder.save();
   res.status(201).json({ status: "success", order: savedOrder });
 });
@@ -97,31 +98,23 @@ exports.removeExtras = asyncHandler(async (req, res) => {
   res.status(200).json({ status: "success", order });
 });
 
-// 4. Finalize Order
+// 4. Finalize Order in backend : finish payment and update Order accordingly
 exports.finalizeOrder = asyncHandler(async (req, res, next) => {
-  const { paymentData } = req.body;
-
-  if (!paymentData || !paymentData.paymentToken || !paymentData.amount) {
-    return next(new AppError(400, 'Invalid payment data.'));
-  }
-
-  const order = await Order.findById(req.params.orderId);
-  if (!order) {
-    return next(new AppError(404, 'Order not found.'));
-  }
+  // const  {orderId} = req.body;
+  const {orderId} = req.params;
+  console.log("orderIdorderIdorderId:", orderId);
 
   try {
-    const paymentResult = await mockProcessPayment(paymentData, order.totalAmount);
-    // const paymentResult = await processGooglePayPayment(paymentData, order.totalAmount);
-    if (!paymentResult.success) {
-      return next(new AppError(500, 'Payment processing failed.'));
+    const order = await Order.findById(orderId);
+    console.log("Found order:", order);
+
+    if (!order) {
+      console.log("No order found with ID:", cur_order_id);
+      return next(new AppError(404, 'Order not fouond.'));
     }
 
-    order.paymentStatus = 'Paid';
-    order.transactionId = paymentResult.transactionId;
-    order.status = 'Completed';
-    await order.save();
-
+    const updatedOrder = await order.save();
+    console.log("Updated order:", updatedOrder);
     const customer = await User.findById(order.customer);
     if (customer) {
       customer.orders.push(order._id);
@@ -137,12 +130,12 @@ exports.finalizeOrder = asyncHandler(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       message: 'Order finalized successfully.',
-      order
+      order: updatedOrder
     });
   } catch (error) {
     res.status(500).json({
       status: 'fail',
-      message: 'Payment processing error',
+      message: 'Payment processing / Database error',
       error: error.message
     });
   }
