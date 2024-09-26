@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { useGetReviewsForMenuItemQuery } from "../slices/reviewApiSlice";
 import ReviewCard from "./ReviewCard";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import "./ReviewsPage.css";
 import AddReview from "./AddReview";
+import RButton from "../components/rButton";
 
 const ReiviewMenuItem = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const [addMode, setAddMode] = useState(false);
+  const navigate = useNavigate();
+
 
   const {
     data: getReviewsMenuItem,
@@ -24,9 +27,20 @@ const ReiviewMenuItem = () => {
   if (error) return <p>Error loading reviews: {error.message}</p>;
 
   const reviewsArr = getReviewsMenuItem?.data?.reviews || [];
+     
+  const handleBackClick = () => {
+       navigate(-1); // Navigate to the previous page
+     };
 
   return (
     <div className="reviews-container">
+      <RButton
+        onClick={handleBackClick} // Pass the navigation handler to onClick
+        hoverEffect={true}
+        visibleTo="all" // Visible to all users
+      >
+        Back
+      </RButton>
       <Card className="board">
         <Card.Header as="h4">Reviews</Card.Header>
         <Card.Body>
