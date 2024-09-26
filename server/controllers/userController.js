@@ -1,6 +1,7 @@
 const User = require("../models/userModel"); // Adjust the path as needed
 const asyncHandler = require("express-async-handler");
 const Restaurant = require("../models/restaurantModel");
+const geocoder = require("../utils/geocoder");
 
 // Create a new user
 exports.createUser = asyncHandler(async (req, res) => {
@@ -27,9 +28,25 @@ exports.getUserById = asyncHandler(async (req, res) => {
 
 // Update a user by ID
 exports.updateUserById = asyncHandler(async (req, res) => {
+  const address = req.body.address;
+  // Geocode the address using Google Maps API
+  const geoData = await geocoder.geocode(address);
+
+  if (!geoData.length) {
+    return res.status(400).json({ msg: "Unable to geocode address" });
+  }
+
+  const { latitude, longitude } = geoData[0];
+
+  req.body.location = {
+    type: "Point",
+    coordinates: [longitude, latitude],
+  };
+
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
+
   if (user) {
     res.status(200).json(user);
   } else {

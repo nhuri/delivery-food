@@ -8,6 +8,7 @@ import {
   useIsAuthQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
+  useUpdateUserMutation,
 } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, setUserInfoOnLoginOrRegister } from "../slices/authSlice";
@@ -28,11 +29,13 @@ const Login = () => {
   const handleCloseLoginModal = () => setLoginModal(false);
   const handleOpenLoginModal = () => setLoginModal(true);
   const [login, { isLoading }] = useLoginUserMutation();
+  const [updateUserAddress] = useUpdateUserMutation();
 
   const [logoutBack] = useLogoutUserMutation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [updatedAddress, setUpdatedAddress] = useState("");
   const [errors, setErrors] = useState({}); //  state for form validation errors
   const dispatch = useDispatch();
 
@@ -48,6 +51,18 @@ const Login = () => {
     dispatch(logout());
     logoutBack().unwrap();
     const response = await login({ email, password }).unwrap();
+    const userId = response.data.user.id;
+
+    if (updatedAddress) {
+      try {
+        const res = await updateUserAddress({
+          _id: userId,
+          address: updatedAddress,
+        }).unwrap();
+      } catch (error) {
+        console.error("Failed to update address:", error);
+      }
+    }
     dispatch(setUserInfoOnLoginOrRegister({ ...response }));
     if (response.status === "success") {
       handleCloseLoginModal();
@@ -156,6 +171,13 @@ const Login = () => {
               placeholder="enter your password"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
+            />
+            <input
+              type="text"
+              id="passwordLogin"
+              placeholder="Enter your current location if it is different from the original address"
+              onChange={(e) => setUpdatedAddress(e.target.value)}
+              value={updatedAddress}
             />
             <Button
               id="login-btn"
