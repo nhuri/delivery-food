@@ -1,22 +1,20 @@
-// Sidebar.jsx
-
-import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Container, Badge } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import "./components.css";
 import Login from "../users/Login";
 import foodDeliveryLogo from "../assets/food-delivery-logo.svg";
-import { IoCart } from "react-icons/io5"; // Uncomment this line
-import { useSelector, useDispatch } from "react-redux";
+import { IoCart } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import Cart from "../Cart/Cart";
 
 const Sidebar = () => {
   const location = useLocation();
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const cartItems = useSelector((state) => state.cart.items); // חיבור לסטייט של העגלה
   const dispatch = useDispatch();
-  const [showCart, setShowCart] = useState(false); // Add this state
+  const [showCart, setShowCart] = useState(false);
 
-  // Add this function to handle cart icon click
   const handleCartClick = () => {
     setShowCart(true);
   };
@@ -36,23 +34,46 @@ const Sidebar = () => {
         <Navbar.Toggle aria-controls="sidebar-nav" />
         <Navbar.Collapse id="sidebar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/Home" active={location.pathname === "/Home"}>Home</Nav.Link>
-            <Nav.Link as={Link} to="/Profile" active={location.pathname === "/Profile"}>Profile</Nav.Link>
-            <Nav.Link as={Link} to="/Contact" active={location.pathname === "/Contact"}>Contact</Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/Home"
+              active={location.pathname === "/Home"}
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/Profile"
+              active={location.pathname === "/Profile"}
+            >
+              Profile
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/Contact"
+              active={location.pathname === "/Contact"}
+            >
+              Contact
+            </Nav.Link>
           </Nav>
           <div className="d-flex align-items-center">
-            {/* Add the cart icon */}
-            <IoCart
-              size={24}
-              className="me-3 cursor-pointer"
-              onClick={handleCartClick}
-              style={{ color: "#ffffff", cursor: "pointer" }}
-            />
+            <div className="position-relative me-3">
+              {cartItems.length > 0 && (
+                <span className="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+                  {cartItems.length}
+                </span>
+              )}
+              <IoCart
+                size={24}
+                className="cursor-pointer"
+                onClick={handleCartClick}
+                style={{ color: "#ffffff", cursor: "pointer" }}
+              />
+            </div>
             <Login />
           </div>
         </Navbar.Collapse>
       </Container>
-      {/* Add the Cart component */}
       <Cart show={showCart} onHide={() => setShowCart(false)} />
     </Navbar>
   );
