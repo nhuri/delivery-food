@@ -31,6 +31,7 @@ const SingleRestaurant = () => {
       skip: !reviewTarget,
     }
   );
+
   useEffect(() => {}, [getTopThree]);
   // console.log(getTopThree.data.topThree);
 
@@ -178,6 +179,21 @@ const SingleRestaurant = () => {
                     {obj.averageRating}
                   </Card.Text>
                 </Card.Body>
+                <Button
+                  variant="success"
+                  onClick={() => handleOrderMenuItem(obj.item)}
+                  className="me-2"
+                >
+                  Add to Order
+                </Button>
+                <OrderItemModal
+                  show={showOrderModal}
+                  onHide={() => {
+                    setShowOrderModal(false);
+                    setSelectedItem(null);
+                  }}
+                  item={selectedItem}
+                />
               </Card>
             );
           })}
@@ -234,14 +250,14 @@ const SingleRestaurant = () => {
                     {" "}
                     <span style={{ fontWeight: "bold" }}>Sold:</span> {obj.sold}
                   </Card.Text>
-                  <Button
-                    variant="success"
-                    onClick={() => handleOrderMenuItem(obj.menuItem)}
-                    className="me-2"
-                  >
-                    Add to Order
-                  </Button>
                 </Card.Body>
+                <Button
+                  variant="success"
+                  onClick={() => handleOrderMenuItem(obj.menuItem)}
+                  className="me-2"
+                >
+                  Add to Order
+                </Button>
                 <OrderItemModal
                   show={showOrderModal}
                   onHide={() => {

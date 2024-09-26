@@ -1,41 +1,46 @@
 // OrderItemModal.jsx
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAddItemToOrderMutation } from '../slices/orderSlice';
-import { addToCart } from '../slices/cartSlice';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useAddItemToOrderMutation } from "../slices/orderSlice";
+import { addToCart } from "../slices/cartSlice";
+
 
 
 const OrderItemModal = ({ show, onHide, item, resId}) => {
+
+
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const dispatch = useDispatch();
   const [addItemToOrder] = useAddItemToOrderMutation();
-  const currentOrderId = useSelector(state => state.order.currentOrderId);
+  const currentOrderId = useSelector((state) => state.order.currentOrderId);
 
   useEffect(() => {
     if (item) {
       // Initialize selected ingredients and price when item changes
+
       setSelectedIngredients(item.ingredients?.map(ing => ing.name) || []);
       setTotalPrice(item.price.toFixed(2) || 0);
+
       setSelectedExtras([]);
     }
   }, [item]);
 
   const handleIngredientToggle = (ingredient) => {
-    setSelectedIngredients(prev =>
+    setSelectedIngredients((prev) =>
       prev.includes(ingredient)
-        ? prev.filter(ing => ing !== ingredient)
+        ? prev.filter((ing) => ing !== ingredient)
         : [...prev, ingredient]
     );
     // Added: Toggle ingredient selection
   };
 
   const handleExtraToggle = (extra) => {
-    setSelectedExtras(prev => {
+    setSelectedExtras((prev) => {
       const newExtras = prev.includes(extra)
-        ? prev.filter(ext => ext.name !== extra.name)
+        ? prev.filter((ext) => ext.name !== extra.name)
         : [...prev, extra];
       calculateTotalPrice(newExtras);
       return newExtras;
@@ -43,16 +48,15 @@ const OrderItemModal = ({ show, onHide, item, resId}) => {
     // Added: Toggle extra selection and recalculate price
   };
 
-
   const calculateTotalPrice = (extras) => {
     if (!item) return;
-    console.log("extras:")
-    console.log(extras)
+    console.log("extras:");
+    console.log(extras);
     let newTotal = item.price;
-    extras?.forEach(ext => {
-      const extra = item.extras?.find(e => e.name === ext.name);
-      console.log("extra:")
-      console.log(extra)
+    extras?.forEach((ext) => {
+      const extra = item.extras?.find((e) => e.name === ext.name);
+      console.log("extra:");
+      console.log(extra);
       if (extra) newTotal += extra.price;
     });
     newTotal = newTotal.toFixed(2)
@@ -82,15 +86,14 @@ const OrderItemModal = ({ show, onHide, item, resId}) => {
     // };
     dispatch(addToCart(cartItem));
     onHide();
+    alert("The menu item added to the cart successfully");
   };
   // Function to save cart to localStorage
   const saveCartToLocalStorage = () => {
-    const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
     const updatedCart = [...currentCart, cartItem];
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
-
-
 
   if (!item) return null;
 
@@ -123,8 +126,12 @@ const OrderItemModal = ({ show, onHide, item, resId}) => {
         <h5>Total Price: ${totalPrice}</h5>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>Cancel</Button>
-        <Button variant="primary" onClick={handleAddToOrder}>Add to Order</Button>
+        <Button variant="secondary" onClick={onHide}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleAddToOrder}>
+          Add to Order
+        </Button>
       </Modal.Footer>
     </Modal>
   );
