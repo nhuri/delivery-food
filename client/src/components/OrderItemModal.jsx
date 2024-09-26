@@ -6,7 +6,7 @@ import { useAddItemToOrderMutation } from '../slices/orderSlice';
 import { addToCart } from '../slices/cartSlice';
 
 
-const OrderItemModal = ({ show, onHide, item, }) => {
+const OrderItemModal = ({ show, onHide, item, resId}) => {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -18,7 +18,7 @@ const OrderItemModal = ({ show, onHide, item, }) => {
     if (item) {
       // Initialize selected ingredients and price when item changes
       setSelectedIngredients(item.ingredients?.map(ing => ing.name) || []);
-      setTotalPrice(item.price || 0);
+      setTotalPrice(item.price.toFixed(2) || 0);
       setSelectedExtras([]);
     }
   }, [item]);
@@ -55,21 +55,31 @@ const OrderItemModal = ({ show, onHide, item, }) => {
       console.log(extra)
       if (extra) newTotal += extra.price;
     });
+    newTotal = newTotal.toFixed(2)
     setTotalPrice(newTotal);
     // Added: Calculate new total price based on selected extras
   };
 
-  let cartItem;
   const handleAddToOrder = () => {
-    const cartItem = {
-      id: item?._id,
-      name: item?.name,
-      price: item?.price,
-      quantity: 1,
-      ingredients: selectedIngredients,
-      extras: selectedExtras,
-      totalPrice: totalPrice.toFixed(2),
-    };
+    let cartItem = JSON.parse(JSON.stringify(item));
+    cartItem.quantity = 1;
+    cartItem.totalPrice = parseFloat(totalPrice);
+    cartItem.res_id = resId;
+    cartItem.ingredients = selectedIngredients;
+    cartItem.extras = selectedExtras;
+
+    console.log("cartItem:");
+    console.log(cartItem);
+        // const cartItem = {
+    //   id: item?._id,
+    //   name: item?.name,
+    //   price: item?.price,
+    //   quantity: 1,
+    //   ingredients: selectedIngredients,
+    //   extras: selectedExtras,
+    //   totalPrice: totalPrice.toFixed(2),
+    //   res_id :resId,
+    // };
     dispatch(addToCart(cartItem));
     onHide();
   };
@@ -110,7 +120,7 @@ const OrderItemModal = ({ show, onHide, item, }) => {
             onChange={() => handleExtraToggle(extra)}
           />
         ))}
-        <h5>Total Price: ${totalPrice.toFixed(2)}</h5>
+        <h5>Total Price: ${totalPrice}</h5>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>Cancel</Button>

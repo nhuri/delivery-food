@@ -141,6 +141,17 @@ exports.updateRestaurant = asyncHandler(async (req, res) => {
 });
 
 // Delete a restaurant by ID
+exports.getPhoneByResID = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const restaurant = await Restaurant.findById(id);
+  if (!restaurant) {
+    return res.status(404).json({ msg: "Restaurant not found" });
+  }
+
+  res.json(restaurant.phone);
+});
+// Delete a restaurant by ID
 exports.deleteRestaurant = asyncHandler(async (req, res) => {
   const { id } = req.params;
 

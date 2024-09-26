@@ -5,7 +5,7 @@ import { Card, Button, ListGroup } from 'react-bootstrap';
 import './Cart.css';
 import { FaTrash } from 'react-icons/fa';
 
-const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
+const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
 
   return (
     <Card className="mb-3 w-100">
@@ -24,8 +24,8 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           <ListGroup.Item>
             <strong>Ingredients:</strong>
             <ul>
-              {item.ingredients?.map((ing, index) => (
-                <li key={index}>{ing}</li>
+              {item.ingredients.map((ingredient, index) => (
+                <li key={index}>{typeof ingredient === 'object' ? ingredient.name : ingredient}</li>
               ))}
             </ul>
           </ListGroup.Item>
@@ -33,7 +33,7 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
             <strong>Extras:</strong>
             <ul>
               {item.extras?.map((extra, index) => (
-                <li key={index}>{extra?.name} (+${extra?.price?.toFixed(2)})</li>
+                <li key={index}>{extra.name} (${extra.price})</li>
               ))}
             </ul>
           </ListGroup.Item>
@@ -42,9 +42,9 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           <Card.Text>
             Total Price: ${(item.totalPrice * item.quantity).toFixed(2)}
           </Card.Text>
-          <Button 
-            variant="danger" 
-            size="sm" 
+          <Button
+            variant="danger"
+            size="sm"
             onClick={() => onRemove(item.id, item.extras, item.ingredients)} // Added onClick handler
             className="delete-btn"
           >
@@ -52,7 +52,7 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove  }) => {
           </Button>
         </div>
       </Card.Body>
-    </Card>
+    </Card >
   );
 };
 
