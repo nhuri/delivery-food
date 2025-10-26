@@ -99,6 +99,26 @@ cd ../client && npm install
 # Run backend
 npm run start
 
+🧾 API & Configuration
+
+.env file includes environment variables for database connection, Firebase keys, and payment API keys
+
+Example configurations can be added under /config/ directory
+
+📸 UI & Design Resources
+
+Design mockups and wireframes:
+👉 App Design Link
+
+🧑‍💻 Author
+
+Netanel Khuri
+GitHub Profile
+
+🪪 License
+
+This project is licensed under the MIT License — feel free to use and modify for educational or commercial purposes.
+
 # Run frontend
 npm start
 
